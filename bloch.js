@@ -14,13 +14,18 @@ const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
 camera.position.set(2.8, 1.8, 2.8);
 
 // ── Renderers ───────────────────────────────────────────────────────────────
+// canvasWrap takes all remaining height; btnRow sits below it in normal flow
+const canvasWrap = document.createElement('div');
+canvasWrap.style.cssText = 'flex:1;position:relative;min-height:0;';
+container.appendChild(canvasWrap);
+
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.domElement.style.cssText = 'position:absolute;top:0;left:0;';
-container.appendChild(renderer.domElement);
+canvasWrap.appendChild(renderer.domElement);
 
 const labelRenderer = new CSS2DRenderer();
 labelRenderer.domElement.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
-container.appendChild(labelRenderer.domElement);
+canvasWrap.appendChild(labelRenderer.domElement);
 
 // ── Sphere body ─────────────────────────────────────────────────────────────
 scene.add(new THREE.Mesh(
@@ -118,14 +123,11 @@ function applyGate(gate) {
 // ── Gate buttons ──────────────────────────────────────────────────────────────
 const btnRow = document.createElement('div');
 btnRow.style.cssText = [
-  'position:absolute',
-  'bottom:28px',
-  'left:50%',
-  'transform:translateX(-50%)',
   'display:flex',
+  'justify-content:center',
   'gap:4px',
   'white-space:nowrap',
-  'z-index:10',
+  'padding:12px 0 4px',
 ].join(';');
 
 GATES.forEach(gate => {
@@ -148,7 +150,7 @@ GATES.forEach(gate => {
   btn.addEventListener('click', () => applyGate(gate));
   btnRow.appendChild(btn);
 });
-container.appendChild(btnRow);
+container.appendChild(btnRow); // sits below canvasWrap in flex-column
 
 // ── OrbitControls ────────────────────────────────────────────────────────────
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -163,8 +165,8 @@ controls.maxDistance     = 7;
 
 // ── Resize ────────────────────────────────────────────────────────────────────
 function resize() {
-  const w = container.clientWidth;
-  const h = container.clientHeight;
+  const w = canvasWrap.clientWidth;
+  const h = canvasWrap.clientHeight;
   if (!w || !h) return;
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
@@ -173,7 +175,7 @@ function resize() {
   labelRenderer.setSize(w, h);
 }
 resize();
-window.addEventListener('resize', resize);
+window.addEventListener('resize', () => { requestAnimationFrame(resize); });
 
 // ── Animation loop ────────────────────────────────────────────────────────────
 const clock = new THREE.Clock();
