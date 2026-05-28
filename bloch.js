@@ -36,7 +36,6 @@ function greatCircle(normalArr, opacity = 0.35) {
   if (Math.abs(n.x) < 0.9) u.crossVectors(n, new THREE.Vector3(1, 0, 0)).normalize();
   else                      u.crossVectors(n, new THREE.Vector3(0, 1, 0)).normalize();
   v.crossVectors(n, u).normalize();
-
   const pts = [];
   for (let i = 0; i <= 80; i++) {
     const a = (i / 80) * Math.PI * 2;
@@ -47,10 +46,9 @@ function greatCircle(normalArr, opacity = 0.35) {
     new THREE.LineBasicMaterial({ color: OLIVE, transparent: true, opacity })
   );
 }
-
-scene.add(greatCircle([0, 1, 0], 0.9)); // equator
-scene.add(greatCircle([1, 0, 0], 0.9)); // YZ meridian
-scene.add(greatCircle([0, 0, 1], 0.9)); // XZ meridian
+scene.add(greatCircle([0, 1, 0], 0.9));
+scene.add(greatCircle([1, 0, 0], 0.9));
+scene.add(greatCircle([0, 0, 1], 0.9));
 
 // ── Axes ────────────────────────────────────────────────────────────────────
 function axisLine(a, b) {
@@ -78,7 +76,6 @@ function label(text, pos) {
   obj.position.set(...pos);
   scene.add(obj);
 }
-
 label('|0⟩',  [0,     1.70,  0]);
 label('|1⟩',  [0,    -1.70,  0]);
 label('|+⟩',  [ 1.65,  0,    0]);
@@ -87,26 +84,82 @@ label('|+i⟩', [0,      0,  -1.65]);
 label('|-i⟩', [0,      0,   1.65]);
 
 // ── State vector ─────────────────────────────────────────────────────────────
-const arrow = new THREE.ArrowHelper(
-  new THREE.Vector3(0, 1, 0),
-  new THREE.Vector3(0, 0, 0),
-  0.97,
-  CREAM,
-  0.15,
-  0.07
-);
+const THETA         = Math.PI / 3.5;
+const PRECESS_SPEED = 0.65; // rad/s around Bloch Z (Three.js Y)
+const Y_UP          = new THREE.Vector3(0, 1, 0);
+
+let stateDir = new THREE.Vector3(Math.sin(THETA), Math.cos(THETA), 0);
+let gateAnim = null; // { axis, totalAngle, appliedAngle, elapsed, duration }
+
+const arrow = new THREE.ArrowHelper(stateDir.clone(), new THREE.Vector3(), 0.97, CREAM, 0.15, 0.07);
 scene.add(arrow);
+
+// ── Gate definitions ──────────────────────────────────────────────────────────
+// Axes in Three.js coords: Bloch X→(1,0,0), Bloch Y→(0,0,-1), Bloch Z→(0,1,0)
+const S2 = 1 / Math.sqrt(2);
+const GATES = [
+  { label: 'X',  axis: new THREE.Vector3(1,  0,  0),        angle: Math.PI       },
+  { label: 'Y',  axis: new THREE.Vector3(0,  0, -1),        angle: Math.PI       },
+  { label: 'Z',  axis: new THREE.Vector3(0,  1,  0),        angle: Math.PI       },
+  { label: 'H',  axis: new THREE.Vector3(S2, S2, 0),        angle: Math.PI       },
+  { label: 'S',  axis: new THREE.Vector3(0,  1,  0),        angle: Math.PI / 2   },
+  { label: 'S†', axis: new THREE.Vector3(0,  1,  0),        angle: -Math.PI / 2  },
+  { label: 'T',  axis: new THREE.Vector3(0,  1,  0),        angle: Math.PI / 4   },
+  { label: 'T†', axis: new THREE.Vector3(0,  1,  0),        angle: -Math.PI / 4  },
+];
+
+function easeInOut(t) { return t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t; }
+
+function applyGate(gate) {
+  if (gateAnim) return;
+  gateAnim = { axis: gate.axis.clone(), totalAngle: gate.angle, appliedAngle: 0, elapsed: 0, duration: 0.55 };
+}
+
+// ── Gate buttons ──────────────────────────────────────────────────────────────
+const btnRow = document.createElement('div');
+btnRow.style.cssText = [
+  'position:absolute',
+  'bottom:28px',
+  'left:50%',
+  'transform:translateX(-50%)',
+  'display:flex',
+  'gap:4px',
+  'white-space:nowrap',
+  'z-index:10',
+].join(';');
+
+GATES.forEach(gate => {
+  const btn = document.createElement('button');
+  btn.textContent = gate.label;
+  const base = 'background:rgba(84,83,51,0.75);color:#FDFBD4;border:1px solid rgba(135,134,114,0.55);';
+  btn.style.cssText = base + [
+    'padding:3px 8px',
+    'font-size:0.65rem',
+    'letter-spacing:0.09em',
+    'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Georgia,serif',
+    'cursor:pointer',
+    'border-radius:3px',
+    'backdrop-filter:blur(4px)',
+    '-webkit-backdrop-filter:blur(4px)',
+    'transition:background 0.15s',
+  ].join(';');
+  btn.addEventListener('mouseenter', () => { btn.style.background = 'rgba(135,134,114,0.55)'; });
+  btn.addEventListener('mouseleave', () => { btn.style.background = 'rgba(84,83,51,0.75)'; });
+  btn.addEventListener('click', () => applyGate(gate));
+  btnRow.appendChild(btn);
+});
+container.appendChild(btnRow);
 
 // ── OrbitControls ────────────────────────────────────────────────────────────
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping    = true;
-controls.dampingFactor    = 0.06;
-controls.autoRotate       = true;
-controls.autoRotateSpeed  = 0.5;
-controls.enablePan        = false;
-controls.enableZoom       = false;
-controls.minDistance      = 2.5;
-controls.maxDistance      = 7;
+controls.enableDamping   = true;
+controls.dampingFactor   = 0.06;
+controls.autoRotate      = true;
+controls.autoRotateSpeed = 0.5;
+controls.enablePan       = false;
+controls.enableZoom      = false;
+controls.minDistance     = 2.5;
+controls.maxDistance     = 7;
 
 // ── Resize ────────────────────────────────────────────────────────────────────
 function resize() {
@@ -123,18 +176,24 @@ resize();
 window.addEventListener('resize', resize);
 
 // ── Animation loop ────────────────────────────────────────────────────────────
-const clock  = new THREE.Clock();
-const THETA  = Math.PI / 3.5; // ~51° from Z (pole) — clearly visible cone
+const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);
-  const t   = clock.getElapsedTime();
-  const phi = t * 0.65;
-  arrow.setDirection(new THREE.Vector3(
-    Math.sin(THETA) * Math.cos(phi),
-    Math.cos(THETA),
-    Math.sin(THETA) * Math.sin(phi)
-  ).normalize());
+  const delta = clock.getDelta();
+
+  if (gateAnim) {
+    gateAnim.elapsed += delta;
+    const t  = Math.min(gateAnim.elapsed / gateAnim.duration, 1);
+    const da = gateAnim.totalAngle * easeInOut(t) - gateAnim.appliedAngle;
+    stateDir.applyAxisAngle(gateAnim.axis, da).normalize();
+    gateAnim.appliedAngle += da;
+    if (t >= 1) gateAnim = null;
+  } else {
+    stateDir.applyAxisAngle(Y_UP, PRECESS_SPEED * delta);
+  }
+
+  arrow.setDirection(stateDir);
   controls.update();
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
