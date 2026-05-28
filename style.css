@@ -17,50 +17,9 @@ body {
   line-height: 1.65;
 }
 
-/* Nav */
-header {
-  position: sticky;
-  top: 0;
-  background: var(--dark);
-  border-bottom: 1px solid rgba(135, 134, 114, 0.3);
-  z-index: 10;
-}
-
-nav {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--cream);
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 2rem;
-}
-
-nav a {
-  text-decoration: none;
-  color: var(--olive);
-  font-size: 0.9rem;
-  letter-spacing: 0.04em;
-  transition: color 0.2s;
-}
-
-nav a:hover { color: var(--cream); }
-
 /* Hero */
 .hero {
-  min-height: calc(100vh - 57px);
+  min-height: 100vh;
   display: flex;
   align-items: center;
   padding: 4rem 2rem;
@@ -93,19 +52,6 @@ h1 {
   margin-bottom: 2.5rem;
 }
 
-.btn {
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  background: var(--cream);
-  color: var(--dark);
-  text-decoration: none;
-  font-size: 0.9rem;
-  letter-spacing: 0.06em;
-  border-radius: 2px;
-  transition: background 0.2s, color 0.2s;
-}
-
-.btn:hover { background: var(--sage); }
 
 /* Footer */
 footer {
