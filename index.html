@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kate Bonner</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
 <body>
   <main>
@@ -14,7 +22,9 @@
         <h1>Kate Bonner</h1>
         <p class="tagline">Building quantum optimal control software.</p>
       </div>
+      <div class="bloch-container" id="bloch-container"></div>
     </section>
   </main>
+  <script type="module" src="bloch.js"></script>
 </body>
 </html>

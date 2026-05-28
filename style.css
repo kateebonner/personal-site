@@ -22,12 +22,34 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 4rem 2rem;
-  max-width: 900px;
+  gap: 3rem;
+  padding: 4rem 3rem;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-.hero-content { max-width: 620px; }
+.hero-content {
+  flex: 0 0 auto;
+  max-width: 460px;
+}
+
+.bloch-container {
+  flex: 1;
+  position: relative;
+  height: clamp(360px, 70vh, 620px);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    padding: 3rem 1.5rem;
+    gap: 2rem;
+  }
+  .bloch-container {
+    width: 100%;
+    height: clamp(300px, 60vw, 420px);
+  }
+}
 
 .eyebrow {
   font-size: 0.85rem;
