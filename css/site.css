@@ -41,10 +41,12 @@ body {
   display: flex;
   flex-direction: column;
 }
-/* the paper: a fixed layer behind the page, oversized so a slight rotation shows no edge */
+/* the sheet: paper and drawing move together frame to frame, about the viewport centre */
+:root { --sheet-rot: 0deg; --sheet-dx: 0px; --sheet-dy: 0px; --sheet-ox: 50%; --sheet-oy: 50%; }
 .paper {
   position: fixed; inset: -6%; z-index: -1;
   background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat;
+  transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot));
   will-change: transform;
   pointer-events: none;
 }
@@ -125,7 +127,12 @@ p + p { margin-top: 16px; }
 .state { position: absolute; inset: 0; margin: 0; display: grid; }
 .state > * { grid-area: 1 / 1; }
 .state .wp-frame { width: 100%; height: 100%; display: block; padding: 16px 24px; }
-.state .wp-mount { width: 100%; height: 100%; position: relative; overflow: hidden; }
+.state .wp-mount {
+  width: 100%; height: 100%; position: relative; overflow: hidden;
+  transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot));
+  transform-origin: var(--sheet-ox) var(--sheet-oy);
+  will-change: transform;
+}
 .state .wp-mount canvas { display: block; width: 100%; height: 100%; }
 .state.is-live .wp-frame { visibility: hidden; }
 .state:not(.is-live) .wp-mount { display: none; }
