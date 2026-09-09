@@ -1,20 +1,23 @@
 // The live figure as a pencil sketch, animated like stop motion: psi(x, t) drawn with a
 // graphite brush on a 2D canvas, ten frames a second, each frame a fresh hand-traced take.
-// Oblique projection: x runs across, Re psi up, Im psi toward the viewer. No WebGL and no
-// third-party code; if scripts are off the inline SVG frame stays in place.
+// Every pass is one continuous curve; the grain comes from a paper-tooth pattern fixed to
+// the canvas that the strokes pick up, the way pencil takes the texture of the sheet.
+// Oblique projection: x runs across, Re psi up, Im psi toward the viewer. No third-party
+// code; if scripts are off the static frame image stays in place.
 import { PARAMS, psi, makeBuffers } from './psi.js';
 
-const DRAW = Object.freeze({ ...PARAMS, samples: 1000 });   // finer than the record's grid, so the loops draw smooth
+const DRAW = Object.freeze({ ...PARAMS, samples: 1000 });
 const N = DRAW.samples;
 const FPS = 10;            // drawn frames per second
 const TAKES = 4;           // hand-traced takes, cycled frame to frame
+const CHUNK = 25;          // points per width-chunk along the curve
 const RING_EVERY = 30, RING_SEG = 90, LONG_LINES = 8, LONG_STEP = 5, AXIS_PTS = 64;
-const INK = '122,30,44';                            // #7A1E2C, the site's one ink
-const GRAPHITE = [
-  { a: 0.62, w: 1.15, wob: 1.0 },   // core
-  { a: 0.30, w: 0.85, wob: 1.9 },   // side stroke
-  { a: 0.22, w: 0.8,  wob: 2.6 },   // second side stroke
-  { a: 0.07, w: 2.8,  wob: 1.4 },   // soft halo
+const INK = [122, 30, 44]; // #7A1E2C
+const PASSES = [
+  { a: 0.16, w: 3.0,  wob: 1.4 },   // soft halo
+  { a: 0.42, w: 0.85, wob: 2.6 },   // outer side stroke
+  { a: 0.55, w: 0.95, wob: 1.9 },   // side stroke
+  { a: 0.95, w: 1.25, wob: 1.0 },   // core
 ];
 
 function mulberry32(a) {
@@ -25,12 +28,11 @@ function mulberry32(a) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-// smooth hand shake along a polyline, in unit scale (multiplied by pixels later)
+// smooth hand shake along a polyline, in unit scale
 function makeTake(seed, n) {
   const rnd = mulberry32(seed);
   const terms = 3, x = new Float32Array(n), y = new Float32Array(n);
-  const k = [], ph = [], a = [];
-  const sc = 600 / n;   // shake frequency is per unit of the curve, not per sample
+  const k = [], ph = [], a = [], sc = 600 / n;
   for (let j = 0; j < terms * 2; j++) { k.push((0.015 + rnd() * 0.09) * sc); ph.push(rnd() * Math.PI * 2); a.push(0.4 + rnd() * 0.8); }
   for (let i = 0; i < n; i++) {
     let sx = 0, sy = 0;
@@ -38,6 +40,18 @@ function makeTake(seed, n) {
     x[i] = sx / terms; y[i] = sy / terms;
   }
   return { x, y };
+}
+// paper tooth: ink at random density per device pixel
+function makeGrain() {
+  const s = 256, c = document.createElement('canvas'); c.width = c.height = s;
+  const g = c.getContext('2d'), img = g.createImageData(s, s), rnd = mulberry32(7);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = rnd();
+    img.data[i] = INK[0]; img.data[i + 1] = INK[1]; img.data[i + 2] = INK[2];
+    img.data[i + 3] = Math.round(255 * (0.2 + 0.8 * v * v));
+  }
+  g.putImageData(img, 0, 0);
+  return c;
 }
 
 export function mount(figure, host, clock) {
@@ -47,66 +61,57 @@ export function mount(figure, host, clock) {
   host.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   if (!ctx) return false;
+  const grain = ctx.createPattern(makeGrain(), 'repeat');
 
   const now = makeBuffers(DRAW);
   const zero = psi(0, DRAW);
   const cur = { re: new Float64Array(N), im: new Float64Array(N) };
-  const takes = Array.from({ length: TAKES * GRAPHITE.length }, (_, i) => makeTake(11 + i * 7, N));
+  const takes = Array.from({ length: TAKES * PASSES.length }, (_, i) => makeTake(11 + i * 7, N));
   const axisTakes = Array.from({ length: TAKES }, (_, i) => makeTake(201 + i * 7, AXIS_PTS));
   const ringIdx = [];
   for (let i = 0; i < N; i += RING_EVERY) ringIdx.push(i);
 
-  let W = 0, H = 0, dpr = 1;
+  let dpr = 1;
   const view = { left: 0, ex: 1, cy: 0, eRe: [0, 0], eIm: [0, 0], shake: 1 };
   function fit() {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = w; H = h;
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     view.left = 0.06 * w; view.ex = (0.97 * w - 0.06 * w) / (PARAMS.xMax - PARAMS.xMin); view.cy = 0.5 * h;
-    const v = Math.min(0.375 * h, 0.2 * w);        // keep the helix's proportions whatever the lane height
+    const v = Math.min(0.375 * h, 0.2 * w);
     view.eRe = [0, -v]; view.eIm = [0.058 * w, 0.26 * v];
-    view.shake = Math.max(1.2, 0.0045 * w);       // pixels of hand shake at unit amplitude
+    view.shake = Math.max(1.2, 0.0045 * w);
     drawFrame(true);
   }
   const proj = (x, r, i) => [view.left + (x - PARAMS.xMin) * view.ex + r * view.eRe[0] + i * view.eIm[0], view.cy + r * view.eRe[1] + i * view.eIm[1]];
 
-  // a graphite stroke: many short segments, each with its own grain of alpha and width
-  function pencil(pts, damp, pass, take, rnd) {
-    const g = GRAPHITE[pass];
-    const wob = takes[(take * GRAPHITE.length + pass) % takes.length];
-    ctx.strokeStyle = `rgb(${INK})`;
-    ctx.lineCap = 'round';
+  // one continuous Catmull-Rom curve through the points, in chunks so the width can follow pressure
+  function curve(X, Y, from, to) {
+    ctx.beginPath();
+    ctx.moveTo(X[from], Y[from]);
+    for (let i = from; i < to; i++) {
+      const i0 = Math.max(i - 1, 0), i3 = Math.min(i + 2, X.length - 1);
+      ctx.bezierCurveTo(X[i] + (X[i + 1] - X[i0]) / 6, Y[i] + (Y[i + 1] - Y[i0]) / 6, X[i + 1] - (X[i3] - X[i]) / 6, Y[i + 1] - (Y[i3] - Y[i]) / 6, X[i + 1], Y[i + 1]);
+    }
+    ctx.stroke();
+  }
+  function stroke(pts, damp, wob, wobScale, alpha, width, pressure) {
     const n = pts.length, X = new Float32Array(n), Y = new Float32Array(n);
     for (let i = 0; i < n; i++) {
       const d = damp ? damp[i] : 1;
-      X[i] = (pts[i][0] + wob.x[i] * view.shake * g.wob * d) * dpr;
-      Y[i] = (pts[i][1] + wob.y[i] * view.shake * g.wob * d) * dpr;
+      X[i] = (pts[i][0] + wob.x[i % wob.x.length] * view.shake * wobScale * d) * dpr;
+      Y[i] = (pts[i][1] + wob.y[i % wob.y.length] * view.shake * wobScale * d) * dpr;
     }
-    // Catmull-Rom through the points, one cubic per segment, so the loops stay curved
-    for (let i = 0; i + 1 < n; i++) {
-      const i0 = Math.max(i - 1, 0), i3 = Math.min(i + 2, n - 1);
-      const c1x = X[i] + (X[i + 1] - X[i0]) / 6, c1y = Y[i] + (Y[i + 1] - Y[i0]) / 6;
-      const c2x = X[i + 1] - (X[i3] - X[i]) / 6, c2y = Y[i + 1] - (Y[i3] - Y[i]) / 6;
-      const d = damp ? damp[i] : 1;
-      ctx.globalAlpha = g.a * (0.55 + 0.45 * rnd()) * (0.7 + 0.3 * d);
-      ctx.lineWidth = g.w * (0.75 + 0.5 * d) * (0.85 + 0.3 * rnd()) * dpr;
-      ctx.beginPath(); ctx.moveTo(X[i], Y[i]); ctx.bezierCurveTo(c1x, c1y, c2x, c2y, X[i + 1], Y[i + 1]); ctx.stroke();
-    }
-  }
-  function lightLine(pts, alpha, width, wob, rnd) {
-    ctx.strokeStyle = `rgb(${INK})`;
-    ctx.lineWidth = width * dpr;
-    let px = 0, py = 0;
-    for (let i = 0; i < pts.length; i++) {
-      const x = (pts[i][0] + (wob ? wob.x[i % wob.x.length] * view.shake : 0)) * dpr;
-      const y = (pts[i][1] + (wob ? wob.y[i % wob.y.length] * view.shake : 0)) * dpr;
-      if (i) {
-        ctx.globalAlpha = alpha * (0.5 + 0.5 * rnd());
-        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
-      }
-      px = x; py = y;
+    ctx.strokeStyle = grain;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.globalAlpha = alpha;
+    if (!pressure) { ctx.lineWidth = width * dpr; curve(X, Y, 0, n - 1); return; }
+    for (let from = 0; from < n - 1; from += CHUNK) {
+      const to = Math.min(from + CHUNK, n - 1);
+      let d = 0; for (let i = from; i <= to; i++) d += damp[i]; d /= (to - from + 1);
+      ctx.lineWidth = width * (0.7 + 0.6 * d) * dpr;
+      curve(X, Y, from, to);
     }
   }
 
@@ -116,7 +121,6 @@ export function mount(figure, host, clock) {
     if (!force && idx === frameIdx) return;
     frameIdx = idx;
     const take = idx % TAKES;
-    const rnd = mulberry32(1000 + idx);
     const t = lastT, u = lastU;
 
     psi(t, DRAW, now);
@@ -140,23 +144,23 @@ export function mount(figure, host, clock) {
       if (r < 0.03) continue;
       const pts = [];
       for (let k = 0; k <= RING_SEG; k++) { const a = (k / RING_SEG) * Math.PI * 2; pts.push(proj(now.xs[i], r * Math.cos(a), r * Math.sin(a))); }
-      lightLine(pts, 0.16, 0.7, takes[(take + i) % takes.length], rnd);
+      stroke(pts, null, takes[(take + i) % takes.length], 0.8, 0.28, 0.75, false);
     }
     for (let j = 0; j < LONG_LINES; j++) {
       const a = (j / LONG_LINES) * Math.PI * 2, ca = Math.cos(a), sa = Math.sin(a);
       const pts = [];
       for (let i = 0; i < N; i += LONG_STEP) { const r = Math.hypot(cur.re[i], cur.im[i]); pts.push(proj(now.xs[i], r * ca, r * sa)); }
-      lightLine(pts, 0.11, 0.65, takes[(take + j + 3) % takes.length], rnd);
+      stroke(pts, null, takes[(take + j + 3) % takes.length], 0.8, 0.2, 0.7, false);
     }
     // axis: two light passes
     const axisPts = [];
     for (let i = 0; i < AXIS_PTS; i++) axisPts.push(proj(PARAMS.xMin + (PARAMS.xMax + 0.4 - PARAMS.xMin) * (i / (AXIS_PTS - 1)), 0, 0));
-    lightLine(axisPts, 0.3, 0.8, axisTakes[take], rnd);
-    lightLine(axisPts, 0.14, 0.7, axisTakes[(take + 1) % TAKES], rnd);
+    stroke(axisPts, null, axisTakes[take], 0.5, 0.5, 0.9, false);
+    stroke(axisPts, null, axisTakes[(take + 1) % TAKES], 0.5, 0.25, 0.8, false);
     // the wavefunction: graphite passes, halo first, core last
     const pts = [];
     for (let i = 0; i < N; i++) pts.push(proj(now.xs[i], cur.re[i], cur.im[i]));
-    for (const pass of [3, 2, 1, 0]) pencil(pts, damp, pass, take, rnd);
+    PASSES.forEach((g, p) => stroke(pts, damp, takes[take * PASSES.length + p], g.wob, g.a, g.w, true));
     ctx.globalAlpha = 1;
   }
 

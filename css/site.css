@@ -10,9 +10,9 @@
   --lw-med: 1px;               /* every line on the site is 1px */
   --lw-thick: 1px;
 
-  --font-letter: "Share Tech", "Saira", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "Share Tech Mono", "SFMono-Regular", Menlo, Consolas, monospace;
-  --font-prose: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --font-letter: "Be Vietnam Pro", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Be Vietnam Pro", "Helvetica Neue", Arial, sans-serif;
+  --font-prose: "Be Vietnam Pro", "Helvetica Neue", Arial, sans-serif;
 
   --fs-0: 0.6875rem;   /* 11px: zone marks and title-block keys */
   --fs-1: 0.8125rem;   /* 13px: labels, readouts, captions */
@@ -32,7 +32,7 @@ body {
   margin: 0;
   position: relative;
   padding: var(--sheet-pad);
-  background: var(--paper) url('/assets/paper.jpg') left top / 880px auto repeat;
+  background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat;
   color: var(--ink);
   font-family: var(--font-prose);
   font-size: var(--fs-2);
@@ -46,7 +46,7 @@ body {
 a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
 a:hover { color: var(--ink); text-decoration-thickness: 2px; }
 
-h1, h2, h3 { font-family: var(--font-letter); font-weight: 400; line-height: 1.12; margin: 0; letter-spacing: 0.01em; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--font-letter); font-weight: 500; line-height: 1.12; margin: 0; letter-spacing: 0.01em; text-wrap: balance; }
 h1 { font-size: var(--fs-display); }
 h2 { font-size: var(--fs-3); text-transform: uppercase; letter-spacing: 0.08em; }
 h3 { font-size: var(--fs-2); text-transform: uppercase; letter-spacing: 0.06em; }
