@@ -66,7 +66,7 @@ p + p { margin-top: 16px; }
 .topbar {
   height: var(--bar-h);
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   align-items: center;
   border-bottom: var(--lw-med) solid var(--line);
   padding: 0 24px;
@@ -142,7 +142,6 @@ p + p { margin-top: 16px; }
 .prose code, .prose pre { font-family: var(--font-mono); font-size: 0.92em; }
 .prose pre { border: var(--lw-thin) solid var(--line); padding: 16px; overflow-x: auto; }
 .prose figure { margin: 24px 0; }
-.prose .katex-display { overflow-x: auto; overflow-y: hidden; padding: 6px 0; }
 .prose figcaption, .figcaption { font-family: var(--font-letter); font-size: var(--fs-1); letter-spacing: 0.04em; color: var(--ink-2); margin-top: 8px; line-height: 1.45; }
 .meta { font-family: var(--font-mono); font-size: var(--fs-1); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 
