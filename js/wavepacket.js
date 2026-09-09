@@ -9,7 +9,7 @@ import { PARAMS, psi, makeBuffers, peak } from './psi.js';
 const DRAW = Object.freeze({ ...PARAMS, samples: 1500 });
 const N = DRAW.samples;
 const UNIT = 1 / peak(0);   // draw psi relative to its t = 0 peak
-const FPS = 10;            // drawn frames per second
+const FPS = PARAMS.fps;    // drawn frames per second, shared with the paper layer
 const TAKES = 4;           // hand-traced takes, cycled frame to frame
 const CHUNK = 25;          // points per width-chunk along the curve
 const RING_EVERY = 30, RING_SEG = 90, LONG_LINES = 8, LONG_STEP = 5, AXIS_PTS = 64;

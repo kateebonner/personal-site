@@ -19,6 +19,7 @@ export const PARAMS = Object.freeze({
   T: 5,                 // the loop runs t from 0 to T, forward only
   loopSeconds: 12,      // wall-clock seconds per loop
   fade: 0.06,           // fraction of the loop over which the ink fades out and back in at the cut
+  fps: 10,              // drawn frames per second: the figure and the paper step together
   tFallback: 1.5,       // the frame used for the static image and the preview
 });
 

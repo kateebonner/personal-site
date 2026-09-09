@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
+  <div class="paper" id="paper" aria-hidden="true"></div>
   <header class="topbar">
     <a class="topbar__mark" href="/" aria-current="page">Kate Bonner</a>
   </header>
@@ -36,7 +37,7 @@
     </section>
   </main>
 
-
+  <script type="module" src="/js/paper.js"></script>
   <script type="module" src="/js/sequence.js"></script>
   <script type="module">
     const start = () => import('/js/sequence.js')

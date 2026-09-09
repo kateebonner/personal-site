@@ -32,7 +32,7 @@ body {
   margin: 0;
   position: relative;
   padding: var(--sheet-pad);
-  background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat;
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-prose);
   font-size: var(--fs-2);
@@ -40,6 +40,13 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+/* the paper: a fixed layer behind the page, oversized so a slight rotation shows no edge */
+.paper {
+  position: fixed; inset: -6%; z-index: -1;
+  background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat;
+  will-change: transform, filter;
+  pointer-events: none;
 }
 ::selection { background: var(--ink); color: var(--paper); }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
