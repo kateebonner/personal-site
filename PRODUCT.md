@@ -38,7 +38,7 @@ Pages (confirmed):
 - Projects and Notes: removed on 2026-09-09 (nothing to add yet); the pages and the note template are deleted.
 - Footer on every page: one line with kate@katebonner.ai and LinkedIn (linkedin.com/in/kate-bonner). Kate removed the title block and the sheet zone marks (2026-09-09). No GitHub, Scholar, or other links.
 
-Confirmed headline (Home):
+Confirmed headline (Home), currently replaced on the page by lorem ipsum placeholder text at Kate's request (2026-09-09) until she writes new copy:
 "Physicist building the software that steers qubits." Subline: "Quantum optimal control at Harmoniqs. M.S. in Quantum Science & Technology at Columbia, expected December 2026. Five years shipping software before physics pulled me back."
 
 Confirmed timeline content (newest first):
