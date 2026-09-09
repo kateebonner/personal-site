@@ -1,22 +1,24 @@
 // Free-particle Gaussian wavepacket in units where hbar = m = 1, in the form Kate's 2023
-// animation used (her momentum-space derivation with a constant prefactor and without the
-// p0^2 term), reproduced literally at her request:
+// animation used: her momentum-space derivation with a constant prefactor (the t = 0 value
+// of the exact one), so the peak does not decay as the packet spreads.
 //
-//   psi(x, t) = C exp( -(x - x0)^2 / (4 s0^2 c) + i k0 (x - x0) / c ),   c = 1 + i t / (2 s0^2)
-//   C = sqrt(pi) / s0  (the t = 0 value of the exact prefactor)
+//   psi(x, t) = C exp( -(x - x0)^2 / (4 s0^2 c) + i k0 (x - x0) / c - i k0^2 s0^2 tau / c )
+//   c = 1 + i tau,   tau = t / (2 s0^2),   C = sqrt(pi) / s0
 //
-// Shape, motion (centre at x0 + k0 t), spreading (width s(t) = s0 sqrt(1 + (t / 2 s0^2)^2)),
-// and phase are those of the exact solution. The amplitude is not: the exact prefactor falls
-// as (1 + (t / 2 s0^2)^2)^(-1/4), so this psi's norm grows as the packet spreads.
+// The last term is the p0^2 piece of the derivation. It does not depend on x; keeping it
+// makes the peak exactly constant for any k0 (without it the peak grows like
+// exp(k0^2 s0^2 tau^2 / (1 + tau^2)), negligible at k0 = 1 but sevenfold at k0 = 4).
+// Shape, motion (centre at x0 + k0 t), spreading (width s(t) = s0 sqrt(1 + tau^2)), and
+// phase are those of the exact solution; the norm grows with the width, by design.
 //
 // The same module runs in the browser (the live figure) and in node (the static frame).
 
 export const PARAMS = Object.freeze({
   x0: 0,
   sigma0: 0.35355339,   // position width at t = 0: hbar / (sqrt 2 * sigma_p) with sigma_p = 2
-  k0: 1,                // mean momentum p0 (hbar = m = 1), so the centre moves at speed 1
-  xMin: -18,
-  xMax: 28,
+  k0: 4,                // mean momentum p0 (hbar = m = 1): the centre moves at speed 4
+  xMin: -8,
+  xMax: 36,
   samples: 600,
   T: 5,                 // the loop runs t from 0 to T and back
   loopSeconds: 16,      // wall-clock seconds for the full there-and-back
@@ -29,8 +31,7 @@ export function width(t, p = PARAMS) {
 }
 
 export function peak(t, p = PARAMS) {
-  const tau = t / (2 * p.sigma0 * p.sigma0);
-  return (Math.sqrt(Math.PI) / p.sigma0) * Math.exp((p.k0 * p.k0 * t * t) / (4 * p.sigma0 * p.sigma0 * (1 + tau * tau)));
+  return Math.sqrt(Math.PI) / p.sigma0;   // constant by construction
 }
 
 export function makeBuffers(p = PARAMS) {
@@ -51,8 +52,8 @@ export function psi(t, p = PARAMS, out = makeBuffers(p)) {
     xs[i] = x;
     const d = x - p.x0;
     const g = (d * d) / (4 * s2);
-    const er = (-g + p.k0 * d * tau) * inv;
-    const ei = (g * tau + p.k0 * d) * inv;
+    const er = (-g + p.k0 * d * tau - p.k0 * p.k0 * s2 * tau * tau) * inv;
+    const ei = (g * tau + p.k0 * d - p.k0 * p.k0 * s2 * tau) * inv;
     const mag = C * Math.exp(er);
     re[i] = mag * Math.cos(ei);
     im[i] = mag * Math.sin(ei);
