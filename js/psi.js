@@ -12,15 +12,15 @@
 export const PARAMS = Object.freeze({
   x0: 0,
   sigma0: 0.35355339,   // position width at t = 0: hbar / (sqrt 2 * sigma_p) with sigma_p = 2
-  k0: 4,                // mean momentum p0 (hbar = m = 1): the centre moves at speed 4
+  k0: 1,                // mean momentum p0 (hbar = m = 1): the centre moves at speed 1
   xMin: -8,
-  xMax: 36,
+  xMax: 14,
   samples: 600,
-  T: 5,                 // the loop runs t from 0 to T, forward only
+  T: 3,                 // the loop runs t from 0 to T, forward only
   loopSeconds: 12,      // wall-clock seconds per loop
   fade: 0.06,           // fraction of the loop over which the ink fades out and back in at the cut
   fps: 10,              // drawn frames per second: the figure and the paper step together
-  tFallback: 1.5,       // the frame used for the static image and the preview
+  tFallback: 1.0,       // the frame used for the static image and the preview
 });
 
 export function width(t, p = PARAMS) {
