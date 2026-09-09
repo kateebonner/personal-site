@@ -50,7 +50,7 @@ Confirmed timeline content (newest first):
 - Comun, Software Engineer, October 2022 to August 2023. React Native mobile app for a seed-stage fintech; owned end-to-end delivery of the peer-to-peer payment feature.
 - Darktrace, Cyber Security Technologist, July 2021 to October 2022. Architected enterprise network security deployments and integrations; one of six global technical experts on the endpoint network traffic sensor; named Top New Cyber Technologist of 2022 after leading 44+ proof-of-value trials driving $2.6M+ in deals.
 - Georgetown University Department of Physics, Undergraduate Researcher, January to May 2020. PID control loops with 8-bit PWM (0.4% duty-cycle resolution) regulating substrate heating to within ±0.5 °C, critically damped; CAD photomasks and photolithography/sputtering processes for four-point, concentric-ring, and rectangular-array electrode geometries for silver-silicon junctions.
-- Georgetown University, Bachelor's Degree, Physics, August 2016 to May 2020. Earlier research assistant work (2019) modeling 3D animations of the 1D time-dependent Schrödinger equation for a free particle as a teaching tool; this is the origin of the site's signature animation.
+- Georgetown University, Bachelor's Degree, Physics, August 2016 to May 2020. Earlier research assistant work (February to April 2019) modeling 3D animations of the 1D time-dependent Schrödinger equation for a free particle as a teaching tool; this is the origin of the site's signature animation.
 
 Degree wording is Kate's: "Bachelor's Degree, Physics" and "Master's Degree, Quantum Science & Technology", not B.A./M.S. abbreviations.
 
