@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+  To add a note:
+  1. Copy this file to notes/<slug>.html (a name without a leading underscore).
+  2. Replace TITLE, DATE (YYYY-MM-DD), DESCRIPTION, and the body.
+  3. Add one <li> to notes/index.html, newest first.
+  Math: $$ ... $$ for display, $ ... $ or \( ... \) inline. KaTeX renders it; without
+  KaTeX the TeX source stays readable. Delete the KaTeX lines if the note has no math.
+  This file starts with an underscore, so GitHub Pages never serves it.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TITLE · Kate Bonner</title>
+  <meta name="description" content="DESCRIPTION">
+  <meta property="og:title" content="TITLE">
+  <meta property="og:description" content="DESCRIPTION">
+  <meta property="og:url" content="https://katebonner.ai/notes/SLUG.html">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://katebonner.ai/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://katebonner.ai/assets/og.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&family=B612+Mono&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}, {left: '$', right: '$', display: false}], throwOnError: false});"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="topbar__mark" href="/">Kate Bonner</a>
+    <nav class="topbar__nav" aria-label="Site">
+      <a href="/about.html">About</a>
+      <a href="/projects.html">Projects</a>
+      <a href="/notes/" aria-current="page">Notes</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div class="page__label"><h1>TITLE</h1></div>
+    <div class="page__body">
+      <article class="prose">
+        <p class="meta">DATE · <a href="/notes/">Notes</a></p>
+        <p>First paragraph.</p>
+        <h2>A section</h2>
+        <p>Prose with inline math $E = \hbar\omega$ and a display equation:</p>
+        <p>$$ i\hbar\,\partial_t \psi = H \psi $$</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__label"><span class="label">Contact</span></div>
+    <div class="foot__body">
+      <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
+      <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
+    </div>
+  </footer>
+</body>
+</html>

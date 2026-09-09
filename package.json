@@ -1,0 +1,6 @@
+{
+  "name": "katebonner-ai",
+  "private": true,
+  "type": "module",
+  "description": "Source of katebonner.ai. Static site, no build step; package.json exists only so the node tools under _tools can import the site's ES modules."
+}
