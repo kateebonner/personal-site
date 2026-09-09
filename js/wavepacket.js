@@ -6,7 +6,7 @@
 // code; if scripts are off the static frame image stays in place.
 import { PARAMS, psi, makeBuffers } from './psi.js';
 
-const DRAW = Object.freeze({ ...PARAMS, samples: 1000 });
+const DRAW = Object.freeze({ ...PARAMS, samples: 1500 });
 const N = DRAW.samples;
 const FPS = 10;            // drawn frames per second
 const TAKES = 4;           // hand-traced takes, cycled frame to frame
@@ -64,7 +64,6 @@ export function mount(figure, host, clock) {
   const grain = ctx.createPattern(makeGrain(), 'repeat');
 
   const now = makeBuffers(DRAW);
-  const zero = psi(0, DRAW);
   const cur = { re: new Float64Array(N), im: new Float64Array(N) };
   const takes = Array.from({ length: TAKES * PASSES.length }, (_, i) => makeTake(11 + i * 7, N));
   const axisTakes = Array.from({ length: TAKES }, (_, i) => makeTake(201 + i * 7, AXIS_PTS));
@@ -79,7 +78,7 @@ export function mount(figure, host, clock) {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     view.left = 0.06 * w; view.ex = (0.97 * w - 0.06 * w) / (PARAMS.xMax - PARAMS.xMin); view.cy = 0.5 * h;
-    const v = Math.min(0.375 * h, 0.2 * w);
+    const v = Math.min(0.36 * h, 0.2 * w);
     view.eRe = [0, -v]; view.eIm = [0.058 * w, 0.26 * v];
     view.shake = Math.max(1.2, 0.0045 * w);
     drawFrame(true);
@@ -115,21 +114,18 @@ export function mount(figure, host, clock) {
     }
   }
 
-  let frameIdx = -1, lastT = 0, lastU = 0;
+  let frameIdx = -1, lastT = 0;
   function drawFrame(force) {
     const idx = reduceMotion ? 0 : Math.floor(performance.now() / (1000 / FPS));
     if (!force && idx === frameIdx) return;
     frameIdx = idx;
     const take = idx % TAKES;
-    const t = lastT, u = lastU;
+    const t = lastT;
 
     psi(t, DRAW, now);
-    let s = 0;
-    if (u >= PARAMS.blendStart) { const k = (u - PARAMS.blendStart) / (1 - PARAMS.blendStart); s = k * k * (3 - 2 * k); }
     let peak = 1e-9;
     for (let i = 0; i < N; i++) {
-      cur.re[i] = now.re[i] + (zero.re[i] - now.re[i]) * s;
-      cur.im[i] = now.im[i] + (zero.im[i] - now.im[i]) * s;
+      cur.re[i] = now.re[i]; cur.im[i] = now.im[i];
       peak = Math.max(peak, Math.hypot(cur.re[i], cur.im[i]));
     }
     const damp = new Float32Array(N);
@@ -164,7 +160,7 @@ export function mount(figure, host, clock) {
     ctx.globalAlpha = 1;
   }
 
-  clock.subscribe((t, u) => { lastT = t; lastU = u; drawFrame(false); });
+  clock.subscribe((t) => { lastT = t; drawFrame(false); });
   new ResizeObserver(fit).observe(host);
   figure.classList.add('is-live');
   fit();

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Derivation · Kate Bonner</title>
+  <meta name="description" content="The free-particle Gaussian wavepacket behind the figure on katebonner.ai, derived in momentum space.">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Derivation · Kate Bonner">
+  <meta property="og:description" content="The free-particle Gaussian wavepacket, derived in momentum space.">
+  <meta property="og:url" content="https://katebonner.ai/derivation.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://katebonner.ai/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://katebonner.ai/assets/og.png">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}, {left: '$', right: '$', display: false}], throwOnError: false});"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="topbar__mark" href="/">Kate Bonner</a>
+    <nav class="topbar__nav" aria-label="Site">
+      <a href="/derivation.html" aria-current="page">Derivation</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div class="page__label"><h1>Derivation</h1></div>
+    <div class="page__body">
+      <article class="prose">
+        <p>The figure on the home page is a free particle whose wavefunction starts as a Gaussian. This is where it comes from: a superposition of plane waves with a Gaussian spread of momenta, integrated in closed form. I first worked it out at Georgetown; this is the corrected version, with the two pieces that are easy to drop kept in, because they are what keep the wavefunction normalised as it spreads.</p>
+
+        <h2>Setup</h2>
+        <p>With no potential, the time-dependent Schrödinger equation is</p>
+        <p>$$ i\hbar\,\frac{\partial\psi}{\partial t} = -\frac{\hbar^2}{2m}\,\frac{\partial^2\psi}{\partial x^2}, \qquad V = 0. $$</p>
+        <p>Each plane wave $e^{i(px - Et)/\hbar}$ with $E = p^2/2m$ solves it on its own, so any superposition of them does too. Take the amplitudes to be a Gaussian of width $\sigma$ in momentum, centred on $p_0$:</p>
+        <p>$$ \psi(x,t) = C \int_{-\infty}^{+\infty} dp\; e^{-\frac{(p-p_0)^2}{2\sigma^2}}\; e^{\,i\left(\frac{px}{\hbar} - \frac{p^2 t}{2m\hbar}\right)}. $$</p>
+
+        <h2>The integral</h2>
+        <p>Everything in the exponent is at most quadratic in $p$, so the integral is a Gaussian one. Completing the square gives the identity</p>
+        <p>$$ \int_{-\infty}^{+\infty} e^{-ap^2 + bp}\,dp = \sqrt{\frac{\pi}{a}}\; e^{\frac{b^2}{4a}}, \qquad \operatorname{Re} a > 0. $$</p>
+        <p>Expanding $-(p-p_0)^2/2\sigma^2 = -p^2/2\sigma^2 + p\,p_0/\sigma^2 - p_0^2/2\sigma^2$ and collecting powers of $p$:</p>
+        <p>$$ a = \frac{1}{2\sigma^2} + \frac{i t}{2m\hbar}, \qquad b = \frac{p_0}{\sigma^2} + \frac{i x}{\hbar}, $$</p>
+        <p>with the leftover constant $-p_0^2/2\sigma^2$ riding along outside the integral. It helps to name the dimensionless time</p>
+        <p>$$ \tau = \frac{\sigma^2 t}{m\hbar}, \qquad\text{so that}\qquad 4a = \frac{2}{\sigma^2}\,(1 + i\tau). $$</p>
+        <p>Then</p>
+        <p>$$ \frac{b^2}{4a} = \frac{\sigma^2}{2(1+i\tau)}\left[\frac{p_0^2}{\sigma^4} + \frac{2 i p_0 x}{\sigma^2\hbar} - \frac{x^2}{\hbar^2}\right] = \frac{p_0^2}{2\sigma^2(1+i\tau)} + \frac{i p_0 x}{\hbar(1+i\tau)} - \frac{\sigma^2 x^2}{2\hbar^2(1+i\tau)}. $$</p>
+        <p>The $\sigma^2$ cancels in the middle term. That term is the one that carries the motion, and $p_0 x/\hbar$ is dimensionless where $p_0 x/\sigma^2\hbar$ is not, which is a quick way to catch a slip there.</p>
+
+        <h2>Result</h2>
+        <p>Adding the constant $-p_0^2/2\sigma^2$ to the first term collapses the two $p_0^2$ pieces into one:</p>
+        <p>$$ \frac{p_0^2}{2\sigma^2}\left[\frac{1}{1+i\tau} - 1\right] = -\frac{p_0^2}{2\sigma^2}\cdot\frac{i\tau}{1+i\tau}. $$</p>
+        <p>So the wavefunction is</p>
+        <p>$$ \psi(x,t) = C\sqrt{\frac{\pi}{a}}\;\exp\!\left[-\frac{\sigma^2 x^2}{2\hbar^2(1+i\tau)} + \frac{i p_0 x}{\hbar(1+i\tau)} - \frac{p_0^2}{2\sigma^2}\,\frac{i\tau}{1+i\tau}\right]. $$</p>
+        <p>Fixing $C$ by $\int |\psi|^2\,dx = 1$ at $t = 0$ gives $C = (2\pi^{3/2}\sigma\hbar)^{-1/2}$, and since $\sqrt{\pi/a} = \sqrt{2\pi\sigma^2/(1+i\tau)}$, the prefactor tidies to</p>
+        <p>$$ \psi(x,t) = \left(\frac{\sigma}{\sqrt{\pi}\,\hbar}\right)^{\!1/2} \frac{1}{\sqrt{1+i\tau}}\;\exp\!\left[-\frac{\sigma^2 x^2}{2\hbar^2(1+i\tau)} + \frac{i p_0 x}{\hbar(1+i\tau)} - \frac{p_0^2}{2\sigma^2}\,\frac{i\tau}{1+i\tau}\right]. $$</p>
+
+        <h2>What it says</h2>
+        <p>Take the real part of the exponent, using $1/(1+i\tau) = (1 - i\tau)/(1+\tau^2)$, and complete the square in $x$. The $p_0^2$ term cancels exactly against the remainder of the square, leaving</p>
+        <p>$$ |\psi(x,t)|^2 = \frac{\sigma}{\sqrt{\pi}\,\hbar\sqrt{1+\tau^2}}\;\exp\!\left[-\frac{\sigma^2\,(x - p_0 t/m)^2}{\hbar^2(1+\tau^2)}\right]. $$</p>
+        <p>Three things are in that line. The centre moves at the group velocity $p_0/m$. The width in position is</p>
+        <p>$$ \sigma_x(t) = \frac{\hbar}{\sqrt{2}\,\sigma}\,\sqrt{1+\tau^2}, $$</p>
+        <p>which is the spreading of a free packet: a narrow spread in position is a wide spread in momentum, and the fast components pull away from the slow ones. And the peak falls as $(1+\tau^2)^{-1/4}$, exactly enough to keep the area under $|\psi|^2$ equal to one at every time.</p>
+        <p>The imaginary part of the exponent is the phase. Its $x$-dependence is no longer the plane wave $p_0 x/\hbar$ once $\tau \neq 0$: the term $\sigma^2 x^2\tau/2\hbar^2(1+\tau^2)$ curves it, so the local wavenumber rises ahead of the centre and falls behind it. In the figure that is the chirp: the helix winds tighter at the front of the packet and looser at the tail.</p>
+
+        <h2>Two pieces that are easy to drop</h2>
+        <p>Neither the prefactor $\sqrt{\pi/a}$ nor the $p_0^2$ term depends on $x$, so leaving them out changes nothing about the shape of the envelope at any one instant. What they control is the amplitude as a function of time. Without the prefactor the peak stays put while the width grows like $\sqrt{1+\tau^2}$, so the norm grows by the same factor; without the $p_0^2$ term the modulus picks up a spurious factor $e^{p_0^2\tau^2/\sigma^2(1+\tau^2)}$ on top. With both in place the norm is conserved, as it must be for a free particle.</p>
+
+        <h2>On the home page</h2>
+        <p>The figure uses $\hbar = m = 1$, $\sigma = 2$ (so the packet starts $\sigma_x(0) = 1/2\sqrt{2} \approx 0.35$ wide), $p_0 = 1$, and runs $t$ from $0$ to $5$ and back. Over that span the width grows twenty-fold while the centre moves five units, so the spreading is the whole event. The curve is $\psi$ drawn along $x$ with $\operatorname{Re}\psi$ up and $\operatorname{Im}\psi$ toward you, evaluated from the closed form above at every frame.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
+    <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
+  </footer>
+</body>
+</html>
