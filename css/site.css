@@ -3,9 +3,9 @@
 :root {
   --paper: #F2ECE1;             /* off-white tan paper */
   --ink: #7A1E2C;               /* burgundy ink: every line and letter */
-  --ink-2: #9A4A55;             /* lighter burgundy for secondary text */
+  --ink-2: #7A1E2C;             /* one ink for everything */
   --line: #7A1E2C;
-  --red: #C43A2E;               /* vermilion: hover and focus only */
+  --red: #7A1E2C;               /* the same ink; hover thickens the underline instead */
   --lw-thin: 1px;
   --lw-med: 1px;               /* every line on the site is 1px */
   --lw-thick: 1px;
@@ -32,7 +32,7 @@ body {
   margin: 0;
   position: relative;
   padding: var(--sheet-pad);
-  background: var(--paper) url('/assets/paper.jpg') center top / cover no-repeat;
+  background: var(--paper) url('/assets/paper.jpg') left top / 880px auto repeat;
   color: var(--ink);
   font-family: var(--font-prose);
   font-size: var(--fs-2);
@@ -44,7 +44,7 @@ body {
 ::selection { background: var(--ink); color: var(--paper); }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
-a:hover { color: var(--red); }
+a:hover { color: var(--ink); text-decoration-thickness: 2px; }
 
 h1, h2, h3 { font-family: var(--font-letter); font-weight: 400; line-height: 1.12; margin: 0; letter-spacing: 0.01em; text-wrap: balance; }
 h1 { font-size: var(--fs-display); }
@@ -66,7 +66,7 @@ p + p { margin-top: 16px; }
 .topbar {
   height: var(--bar-h);
   display: grid;
-  grid-template-columns: var(--label-w) 1fr auto;
+  grid-template-columns: 1fr;
   align-items: center;
   border-bottom: var(--lw-med) solid var(--line);
   padding: 0 24px;
@@ -90,7 +90,7 @@ p + p { margin-top: 16px; }
   padding: 6px 0;
   border-bottom: var(--lw-med) solid transparent;
 }
-.topbar__nav a:hover { color: var(--red); }
+.topbar__nav a:hover { border-bottom-color: var(--line); }
 .topbar__nav a[aria-current="page"] { border-bottom-color: var(--line); }
 /* ---------- sequence (home) ---------- */
 .seq { position: relative; flex: 1; display: flex; flex-direction: column; }
@@ -126,7 +126,7 @@ p + p { margin-top: 16px; }
 /* ---------- footer ---------- */
 .foot { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; min-height: var(--bar-h); padding: 12px 24px; border-top: var(--lw-thin) solid var(--line); font-family: var(--font-mono); font-size: var(--fs-1); }
 .foot a { color: var(--ink); }
-.foot a:hover { color: var(--red); }
+.foot a:hover { text-decoration-thickness: 2px; }
 
 /* ---------- content pages ---------- */
 .page { flex: 1; display: grid; grid-template-columns: var(--label-w) 1fr; }
