@@ -7,8 +7,8 @@
   --line: #7A1E2C;
   --red: #C43A2E;               /* vermilion: hover and focus only */
   --lw-thin: 1px;
-  --lw-med: 1.5px;
-  --lw-thick: 2.5px;
+  --lw-med: 1px;               /* every line on the site is 1px */
+  --lw-thick: 1px;
 
   --font-letter: "Share Tech", "Saira", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Share Tech Mono", "SFMono-Regular", Menlo, Consolas, monospace;
