@@ -34,7 +34,7 @@ Viewed on desktop and mobile, usually from a LinkedIn profile or an email thread
 
 Pages (confirmed):
 - Home: short intro with the confirmed headline and the signature animation. Nav links to About, Projects, Notes.
-- About: first-person bio plus the experience and education timeline. No separate résumé PDF.
+- About: first-person bio plus the experience and education entries as a ruled list. Kate rejected a visual timeline figure (2026-09-09). No separate résumé PDF.
 - Projects: one entry at launch, the Schrödinger animation, linking to its write-up. More added over time.
 - Notes: writing index. One seeded note at launch: how the hero animation works (math, numerics, rendering).
 - Footer on every page: kate@katebonner.ai (lightly obfuscated) and LinkedIn (linkedin.com/in/kate-bonner). No GitHub, Scholar, or other links at launch.
@@ -67,7 +67,7 @@ Undecided: how notes are authored once there are several (template copy versus a
 - Name: Kate Bonner. Domain: katebonner.ai. Site title: "Kate Bonner".
 - Voice: first person, plain and direct. Short sentences, concrete nouns, no hype. Reads like a competent colleague.
 - No photo of Kate anywhere on the site.
-- Light theme with a new palette. The prior olive/cream palette is dropped along with the rest of the old concept.
+- The whole site looks like a mechanical technical drawing (Kate's direction, 2026-09-09, keeping the pulse-sequence layout): black ink on white paper, ISO-style line-weight hierarchy, drafting red as the only accent, hatched fills, dimension lines, a sheet border with zone marks, and a title block on every page. Lettering: upright engineering lettering (Share Tech) with Share Tech Mono for readouts and Atkinson Hyperlegible for long prose. The prior olive palette, the matplotlib channel hues, and Barlow/STIX/B612 are all rejected.
 - The Schrödinger animation is the single spectacle; everything else recedes.
 
 ## Evidence on Hand

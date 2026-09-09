@@ -21,6 +21,13 @@
     onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}, {left: '$', right: '$', display: false}], throwOnError: false});"></script>
 </head>
 <body>
+  <div class="sheet" aria-hidden="true">
+    <div class="sheet__frame"></div>
+    <div class="sheet__zones sheet__zones--top"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+    <div class="sheet__zones sheet__zones--bottom"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+    <div class="sheet__zones sheet__zones--left"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+    <div class="sheet__zones sheet__zones--right"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+  </div>
   <header class="topbar">
     <a class="topbar__mark" href="/">Kate Bonner</a>
     <nav class="topbar__nav" aria-label="Site">
@@ -74,12 +81,14 @@
     </div>
   </main>
 
-  <footer class="foot">
-    <div class="foot__label"><span class="label">Contact</span></div>
-    <div class="foot__body">
-      <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
-      <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
-    </div>
+  <footer class="tblock" aria-label="Title block">
+    <div class="tblock__cell tblock__cell--title"><span class="k">Title</span><span class="v">Kate Bonner · Note: hero animation</span></div>
+    <div class="tblock__cell"><span class="k">Sheet</span><span class="v">4.1</span></div>
+    <div class="tblock__cell"><span class="k">Rev</span><span class="v">A</span></div>
+    <div class="tblock__cell"><span class="k">Date</span><span class="v">2026-09-09</span></div>
+    <div class="tblock__cell"><span class="k">Scale</span><span class="v">NTS</span></div>
+    <div class="tblock__cell tblock__cell--email"><span class="k">Email</span><a class="v" href="mailto:kate@katebonner.ai">kate@katebonner.ai</a></div>
+    <div class="tblock__cell tblock__cell--linkedin"><span class="k">LinkedIn</span><a class="v" href="https://www.linkedin.com/in/kate-bonner" rel="me">linkedin.com/in/kate-bonner</a></div>
   </footer>
 </body>
 </html>
