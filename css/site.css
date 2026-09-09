@@ -10,12 +10,12 @@
 
   --ch-i: #1F77B4;                 /* channel I: blue  */
   --ch-i-ink: #175C8C;
-  --ch-i-tint: rgba(31, 119, 180, 0.14);
-  --ch-i-tint-2: rgba(31, 119, 180, 0.30);
+  --ch-i-tint: #E0ECF4;            /* channel blue at 14% on white, opaque */
+  --ch-i-tint-2: #BCD6E8;          /* 30% */
   --ch-q: #FF7F0E;                 /* channel Q: orange */
   --ch-q-ink: #9A4A00;
-  --ch-q-tint: rgba(255, 127, 14, 0.16);
-  --ch-q-tint-2: rgba(255, 127, 14, 0.34);
+  --ch-q-tint: #FFEBD8;            /* channel orange at 16% on white, opaque */
+  --ch-q-tint-2: #FFD3AD;          /* 34% */
 
   --font-label: "Barlow", "Helvetica Neue", Arial, sans-serif;
   --font-prose: "STIX Two Text", "Times New Roman", Times, serif;
@@ -352,7 +352,7 @@ p + p { margin-top: calc(var(--grid) * 2); }
   .lane--block { min-height: 0; }
   .lane--block .lane__label { padding-bottom: 4px; }
   .lane--block .lane__body { min-height: 56px; padding: 0 16px 12px; }
-  .pulse { position: relative; left: auto; width: auto; min-height: 44px; z-index: 1; }
+  .pulse { position: relative; top: auto; bottom: auto; left: auto; width: auto; min-height: 44px; z-index: 1; }
   .axis__label { padding-block: 6px; }
   .axis__body { margin: 0 16px; }
   .cursor { left: calc(16px + (100% - 32px) * var(--u, 0)); }
