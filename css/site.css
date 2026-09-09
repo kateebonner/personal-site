@@ -6,13 +6,13 @@
   --ink: #111111;
   --ink-2: #4E4E4E;
   --line: #111111;              /* drawn lines */
-  --line-light: #BDBDBD;        /* construction lines and grids */
+  --line-light: #8A8A8A;        /* construction lines */
   --red: #D0202A;               /* drafting red: cursor, active, focus */
   --lw-thin: 1px;
   --lw-med: 1.5px;
   --lw-thick: 2.5px;
-  --hatch: repeating-linear-gradient(45deg, rgba(17, 17, 17, 0.55) 0 1px, transparent 1px 7px);
-  --hatch-x: repeating-linear-gradient(-45deg, rgba(17, 17, 17, 0.55) 0 1px, transparent 1px 7px);
+  --hatch: repeating-linear-gradient(45deg, var(--ink) 0 1px, transparent 1px 8px);
+  --hatch-x: repeating-linear-gradient(-45deg, var(--ink) 0 1px, transparent 1px 8px);
 
   --font-letter: "Share Tech", "Saira", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Share Tech Mono", "SFMono-Regular", Menlo, Consolas, monospace;
@@ -151,10 +151,10 @@ p + p { margin-top: 16px; }
 }
 .lane__body { position: relative; min-height: var(--lane-h); }
 
-.lane--state { min-height: min(44vh, 620px); flex: 1 0 auto; }
-.lane--state .lane__label { justify-content: center; gap: 20px; padding-block: 28px; }
+.lane--state { min-height: min(40vh, 620px); flex: 1 0 auto; }
+.lane--state .lane__label { justify-content: center; gap: 12px; padding-block: 20px; }
 .lane--state .lane__label h1 { max-width: 12ch; }
-.lane--state .lane__label .sub { font-family: var(--font-prose); font-size: var(--fs-2); color: var(--ink-2); max-width: 30ch; }
+.lane--state .lane__label .sub { font-family: var(--font-prose); font-size: var(--fs-2); color: var(--ink-2); max-width: 34ch; }
 .contact { display: flex; flex-wrap: wrap; gap: 16px; font-family: var(--font-mono); font-size: var(--fs-1); }
 
 .state { position: absolute; inset: 0; margin: 0; display: grid; }
@@ -182,7 +182,7 @@ p + p { margin-top: 16px; }
 .dim__ext--start { left: 0; }
 .dim__ext--end { right: 0; }
 .dim__text {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  position: absolute; z-index: 1; left: 50%; top: 50%; transform: translate(-50%, -50%);
   font-family: var(--font-mono); font-size: var(--fs-1); color: var(--ink);
   background: var(--paper); padding: 0 8px; white-space: nowrap;
 }
@@ -208,6 +208,7 @@ p + p { margin-top: 16px; }
   transition: border-color 160ms ease-out;
 }
 .pulse__text {
+  position: relative; z-index: 1;
   font-family: var(--font-letter);
   font-size: var(--fs-1);
   letter-spacing: 0.02em;
@@ -216,7 +217,7 @@ p + p { margin-top: 16px; }
   padding: 3px 6px;
   text-wrap: balance;
 }
-.pulse .arrow { flex: 0 0 auto; margin-left: auto; padding: 4px; background: var(--paper); box-sizing: content-box; color: var(--ink); }
+.pulse .arrow { position: relative; z-index: 1; flex: 0 0 auto; margin-left: auto; padding: 4px; background: var(--paper); box-sizing: content-box; color: var(--ink); }
 .pulse:hover, .pulse.is-active { background: var(--hatch), var(--hatch-x); border-color: var(--red); }
 .pulse:hover .arrow, .pulse.is-active .arrow { color: var(--red); }
 
@@ -247,7 +248,7 @@ p + p { margin-top: 16px; }
 
 .lanes { position: relative; }
 .cursor {
-  position: absolute; top: 0; bottom: 0; width: 1px;
+  position: absolute; top: 0; bottom: 0; width: 1px; z-index: 0;
   left: calc(var(--label-w) + (100% - var(--label-w)) * var(--u, 0));
   background: repeating-linear-gradient(to bottom, var(--red) 0 12px, transparent 12px 15px, var(--red) 15px 17px, transparent 17px 20px);
   pointer-events: none;
@@ -307,14 +308,14 @@ p + p { margin-top: 16px; }
 
 /* ---------- title block ---------- */
 .tblock {
-  margin: 16px 0 0 auto;
+  margin: 12px 0 0 auto;
   width: min(100%, 780px);
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   border: var(--lw-med) solid var(--line);
 }
 .tblock__cell {
-  padding: 6px 10px 8px;
+  padding: 4px 10px 6px;
   border-right: var(--lw-thin) solid var(--line);
   border-bottom: var(--lw-thin) solid var(--line);
   min-width: 0;
@@ -367,6 +368,9 @@ p + p { margin-top: 16px; }
   .tblock__cell:nth-last-child(-n+3) { border-bottom: var(--lw-thin) solid var(--line); }
   .tblock__cell:last-child { border-bottom: 0; }
   .tblock__cell--title, .tblock__cell--email, .tblock__cell--linkedin { grid-column: span 2; }
+}
+@media (max-width: 600px) {
+  .wp-frame text { font-size: 44px; }
 }
 @media (max-width: 480px) {
   .axis__ticks span:nth-child(2n) { display: none; }

@@ -59,13 +59,13 @@ export function mount(figure, host, clock) {
   const ringPos = new Float32Array(ringIdx.length * RING_SEG * 2 * 3);
   const ringGeo = new THREE.BufferGeometry();
   ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPos, 3));
-  scene.add(new THREE.LineSegments(ringGeo, thin(0.42)));
+  scene.add(new THREE.LineSegments(ringGeo, thin(0.7)));
 
   const nl = Math.floor((N - 1) / LONG_STEP);
   const longPos = new Float32Array(LONG_LINES * nl * 2 * 3);
   const longGeo = new THREE.BufferGeometry();
   longGeo.setAttribute('position', new THREE.BufferAttribute(longPos, 3));
-  scene.add(new THREE.LineSegments(longGeo, thin(0.28)));
+  scene.add(new THREE.LineSegments(longGeo, thin(0.5)));
 
   // axes: x as a dash-dot center line, Re and Im as thin solid lines
   const x0 = PARAMS.xMin - XC, x1 = PARAMS.xMax - XC;
