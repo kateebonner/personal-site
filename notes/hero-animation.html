@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How the hero animation works · Kate Bonner</title>
+  <meta name="description" content="The free-particle Schrödinger equation, its closed-form Gaussian solution, the parameters behind the figure on katebonner.ai, and how the browser draws it.">
+  <meta property="og:title" content="How the hero animation works">
+  <meta property="og:description" content="The free-particle Schrödinger equation, its closed-form Gaussian solution, and how the browser draws it.">
+  <meta property="og:url" content="https://katebonner.ai/notes/hero-animation.html">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://katebonner.ai/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://katebonner.ai/assets/og.png">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}, {left: '$', right: '$', display: false}], throwOnError: false});"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="topbar__mark" href="/">Kate Bonner</a>
+    <nav class="topbar__nav" aria-label="Site">
+      <a href="/about.html">About</a>
+      <a href="/projects.html">Projects</a>
+      <a href="/notes/" aria-current="page">Notes</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div class="page__label"><h1>How the hero animation works</h1></div>
+    <div class="page__body">
+      <article class="prose">
+        <p class="meta">2026-09-08 · <a href="/notes/">Notes</a></p>
+        <p>The figure on the home page is a free particle. Nothing pushes it, nothing confines it, and it still does something worth watching: it spreads, and the fast parts of it outrun the slow parts. This note is the math behind the figure, the numbers I chose, and how the browser draws it.</p>
+
+        <h2>The equation</h2>
+        <p>A free particle in one dimension obeys the time-dependent Schrödinger equation with no potential term:</p>
+        <p>$$ i\hbar\,\frac{\partial \psi}{\partial t} = -\frac{\hbar^2}{2m}\,\frac{\partial^2 \psi}{\partial x^2}. $$</p>
+        <p>I work in units where $\hbar = m = 1$, so the equation is $i\,\partial_t \psi = -\tfrac{1}{2}\,\partial_x^2 \psi$. Time and position are then dimensionless, and the readout on the home page counts in those units.</p>
+
+        <h2>The closed-form solution</h2>
+        <p>The figure never integrates the equation numerically. For a Gaussian initial state there is an exact answer. Start with a packet of width $\sigma_0$ centred at $x_0$ with mean wavenumber $k_0$:</p>
+        <p>$$ \psi(x, 0) = (2\pi\sigma_0^2)^{-1/4} \exp\!\left[ -\frac{(x - x_0)^2}{4\sigma_0^2} + i k_0 (x - x_0) \right]. $$</p>
+        <p>Each plane wave $e^{ikx}$ in its Fourier decomposition evolves by the phase $e^{-ik^2 t/2}$, and a Gaussian integral over $k$ gives the state at any later time:</p>
+        <p>$$ \psi(x, t) = (2\pi\sigma_0^2)^{-1/4}\, c^{-1/2} \exp\!\left[ -\frac{(x - x_0 - k_0 t)^2}{4\sigma_0^2\, c} + i k_0 (x - x_0) - \frac{i k_0^2 t}{2} \right], \qquad c = 1 + \frac{i t}{2\sigma_0^2}. $$</p>
+        <p>Three things are inside that formula. The centre moves at the group velocity $k_0$. The width grows as</p>
+        <p>$$ \sigma(t) = \sigma_0 \sqrt{1 + \left(\frac{t}{2\sigma_0^2}\right)^2}, $$</p>
+        <p>which is dispersion: a narrow packet contains a wide spread of momenta, and they drift apart. And the complex $c$ in the exponent curves the phase, so the local wavenumber is no longer $k_0$ everywhere. Differentiating the phase with respect to $x$ gives</p>
+        <p>$$ k(x, t) = k_0 + \frac{(x - x_0 - k_0 t)\, t}{4\sigma_0^4 + t^2}. $$</p>
+        <p>Ahead of the centre the wavenumber is higher, behind it lower. The fast Fourier components have moved to the front. In the figure this shows up as the spiral tightening at the leading edge and loosening at the tail.</p>
+
+        <h2>What the figure shows</h2>
+        <p>$\psi$ is complex, so a plot of it against $x$ needs two transverse axes. I use Re&nbsp;ψ and Im&nbsp;ψ, which turns a plane wave into a helix and a wavepacket into a helix inside an envelope. The envelope is the surface of revolution $r = |\psi(x, t)|$ around the $x$ axis; the curve lives exactly on that surface, since at every $x$ the point $(\mathrm{Re}\,\psi, \mathrm{Im}\,\psi)$ sits at radius $|\psi|$. The rings drawn on the surface are cross sections, the same convention as the static frame on the Projects page.</p>
+        <p>The pitch of the helix is set by $k_0$. As the packet spreads, the peak of the envelope drops, because the state stays normalised: the area under $|\psi|^2$ is one at every time.</p>
+
+        <h2>The numbers</h2>
+        <ul>
+          <li>$\sigma_0 = 0.5$ and $k_0 = 8$. The product $k_0 \sigma_0 = 4$ puts about two and a half turns of the helix across the packet's full width at $t = 0$, enough to read as a wave without turning into noise.</li>
+          <li>$x_0 = 0$, with $x$ sampled at 600 points from $-3$ to $13$, so the packet has room to travel.</li>
+          <li>One loop is $T = 1.2$, played over 14 seconds. By the end of the loop the width has grown to $\sigma(T) = 1.3$, two and a half times its starting value, and the centre has moved to $x = 9.6$.</li>
+          <li>The last tenth of each loop cross-fades the curve back to its $t = 0$ shape rather than snapping, so the loop reads as one continuous motion.</li>
+          <li>The frame used everywhere a still is needed is $t = 0.45$: mid-dispersal, with the packet at $x = 3.6$ and width 0.67.</li>
+        </ul>
+
+        <h2>How the browser draws it</h2>
+        <p>One JavaScript module evaluates $\psi(x, t)$ on the fixed grid from the formula above, every frame. The same module runs in Node to render the static SVG frame you see when the live version cannot load, so the still and the animation come from one source.</p>
+        <p>The curve is a Three.js line through the 600 points $(x, \mathrm{Re}\,\psi, \mathrm{Im}\,\psi)$; the envelope is a mesh of revolution with fixed topology whose vertex positions are rewritten each frame; the rings are line segments on the same radii. A single clock drives everything on the home page, so the time cursor moving across the lanes, the readout in the top bar, and the packet always agree, and scrubbing the axis scrubs all three.</p>
+        <p>The figure is optional by design. It loads after the page has painted. If the CDN that serves Three.js is blocked, or the browser has no WebGL, the inline SVG frame stays in place and the sequence keeps running. If you prefer reduced motion, the page opens paused at $t = 0.45$ and the scrubber still works. With scripts off, you get the frame and the text, which is most of what matters.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__label"><span class="label">Contact</span></div>
+    <div class="foot__body">
+      <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
+      <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
+    </div>
+  </footer>
+</body>
+</html>

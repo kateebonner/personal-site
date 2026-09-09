@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-08T00:00:00Z",
+  "title": "Design System: katebonner.ai",
+  "extensions": {
+    "colorMeta": {
+      "paper":       { "role": "neutral",   "displayName": "Paper",           "canonical": "#FFFFFF", "tonalRamp": ["oklch(15% 0 0)", "oklch(27% 0 0)", "oklch(39% 0 0)", "oklch(51% 0 0)", "oklch(63% 0 0)", "oklch(75% 0 0)", "oklch(87% 0 0)", "oklch(100% 0 0)"] },
+      "ink":         { "role": "neutral",   "displayName": "Ink",             "canonical": "#14161A", "tonalRamp": ["oklch(15% 0.008 260)", "oklch(20% 0.008 260)", "oklch(32% 0.008 260)", "oklch(44% 0.008 260)", "oklch(56% 0.008 260)", "oklch(68% 0.008 260)", "oklch(80% 0.008 260)", "oklch(95% 0.008 260)"] },
+      "ink-2":       { "role": "neutral",   "displayName": "Ink 2",           "canonical": "#4A4F57", "tonalRamp": ["oklch(15% 0.012 260)", "oklch(27% 0.012 260)", "oklch(42% 0.012 260)", "oklch(51% 0.012 260)", "oklch(63% 0.012 260)", "oklch(75% 0.012 260)", "oklch(87% 0.012 260)", "oklch(95% 0.012 260)"] },
+      "rule":        { "role": "neutral",   "displayName": "Rule",            "canonical": "#D8DBE0", "tonalRamp": ["oklch(15% 0.006 260)", "oklch(27% 0.006 260)", "oklch(39% 0.006 260)", "oklch(51% 0.006 260)", "oklch(63% 0.006 260)", "oklch(75% 0.006 260)", "oklch(88% 0.006 260)", "oklch(95% 0.006 260)"] },
+      "rule-2":      { "role": "neutral",   "displayName": "Rule 2",          "canonical": "#EEF0F3", "tonalRamp": ["oklch(15% 0.004 260)", "oklch(27% 0.004 260)", "oklch(39% 0.004 260)", "oklch(51% 0.004 260)", "oklch(63% 0.004 260)", "oklch(75% 0.004 260)", "oklch(87% 0.004 260)", "oklch(95% 0.004 260)"] },
+      "ch-i":        { "role": "primary",   "displayName": "Channel I Blue",  "canonical": "#1F77B4", "tonalRamp": ["oklch(15% 0.06 245)", "oklch(27% 0.09 245)", "oklch(39% 0.11 245)", "oklch(45% 0.11 245)", "oklch(56% 0.13 245)", "oklch(75% 0.09 245)", "oklch(86% 0.04 240)", "oklch(94% 0.02 240)"] },
+      "ch-i-ink":    { "role": "primary",   "displayName": "Channel I Ink",   "canonical": "#175C8C", "tonalRamp": ["oklch(15% 0.06 245)", "oklch(27% 0.09 245)", "oklch(39% 0.11 245)", "oklch(45% 0.11 245)", "oklch(56% 0.13 245)", "oklch(75% 0.09 245)", "oklch(86% 0.04 240)", "oklch(94% 0.02 240)"] },
+      "ch-i-tint":   { "role": "primary",   "displayName": "Channel I Tint",  "canonical": "#E0ECF4", "tonalRamp": ["oklch(15% 0.06 245)", "oklch(27% 0.09 245)", "oklch(39% 0.11 245)", "oklch(45% 0.11 245)", "oklch(56% 0.13 245)", "oklch(75% 0.09 245)", "oklch(86% 0.04 240)", "oklch(94% 0.02 240)"] },
+      "ch-i-tint-2": { "role": "primary",   "displayName": "Channel I Tint 2","canonical": "#BCD6E8", "tonalRamp": ["oklch(15% 0.06 245)", "oklch(27% 0.09 245)", "oklch(39% 0.11 245)", "oklch(45% 0.11 245)", "oklch(56% 0.13 245)", "oklch(75% 0.09 245)", "oklch(86% 0.04 240)", "oklch(94% 0.02 240)"] },
+      "ch-q":        { "role": "secondary", "displayName": "Channel Q Orange","canonical": "#FF7F0E", "tonalRamp": ["oklch(15% 0.05 55)", "oklch(27% 0.08 55)", "oklch(39% 0.11 55)", "oklch(45% 0.12 55)", "oklch(60% 0.16 55)", "oklch(72% 0.18 55)", "oklch(89% 0.06 65)", "oklch(95% 0.03 60)"] },
+      "ch-q-ink":    { "role": "secondary", "displayName": "Channel Q Ink",   "canonical": "#9A4A00", "tonalRamp": ["oklch(15% 0.05 55)", "oklch(27% 0.08 55)", "oklch(39% 0.11 55)", "oklch(45% 0.12 55)", "oklch(60% 0.16 55)", "oklch(72% 0.18 55)", "oklch(89% 0.06 65)", "oklch(95% 0.03 60)"] },
+      "ch-q-tint":   { "role": "secondary", "displayName": "Channel Q Tint",  "canonical": "#FFEBD8", "tonalRamp": ["oklch(15% 0.05 55)", "oklch(27% 0.08 55)", "oklch(39% 0.11 55)", "oklch(45% 0.12 55)", "oklch(60% 0.16 55)", "oklch(72% 0.18 55)", "oklch(89% 0.06 65)", "oklch(95% 0.03 60)"] },
+      "ch-q-tint-2": { "role": "secondary", "displayName": "Channel Q Tint 2","canonical": "#FFD3AD", "tonalRamp": ["oklch(15% 0.05 55)", "oklch(27% 0.08 55)", "oklch(39% 0.11 55)", "oklch(45% 0.12 55)", "oklch(60% 0.16 55)", "oklch(72% 0.18 55)", "oklch(89% 0.06 65)", "oklch(95% 0.03 60)"] }
+    },
+    "typographyMeta": {
+      "display":  { "displayName": "Display",  "purpose": "The h1 in the label cell: the state-lane headline on Home (12ch cap), the sticky page title on content pages." },
+      "headline": { "displayName": "Headline", "purpose": "h2 section titles inside prose." },
+      "title":    { "displayName": "Title",    "purpose": "h3 timeline entry names; Barlow 500 at this size for note-list titles and the wordmark." },
+      "body":     { "displayName": "Body",     "purpose": "All prose at a 66ch measure; the state-lane subline in ink-2." },
+      "label":    { "displayName": "Label",    "purpose": "Uppercase 0.06em: lane labels, nav, button, axis and footer labels. Sentence case at 0.01em inside pulses; untracked for figcaptions and teasers." },
+      "mono":     { "displayName": "Mono",     "purpose": "Every number: the t readout, axis ticks, years, entry and channel indices, meta lines, contact links, inline code." }
+    },
+    "shadows": [
+      { "name": "pulse-active-ring", "value": "inset 0 0 0 1px var(--hue)", "purpose": "Inset hairline ring on a pulse under the cursor or pointer. The system has no drop shadows." },
+      { "name": "target-halo", "value": "0 0 0 8px var(--rule-2)", "purpose": "Zero-blur bleed of the rule-2 highlight around a :target timeline entry. A highlight, not elevation." }
+    ],
+    "motion": [
+      { "name": "ease-pulse", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Tint and ring change on a pulse, 200ms. Disabled under prefers-reduced-motion." },
+      { "name": "duration-pulse", "value": "200ms", "purpose": "The only CSS transition duration in the system." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "1100px", "purpose": "Gutters step from 40px to 24px." },
+      { "name": "stack", "value": "860px", "purpose": "Label column collapses to 0; every grid becomes one column; gutters 16px; clock drops to a second 40px bar row." },
+      { "name": "phone", "value": "480px", "purpose": "Every other axis tick hidden; display math shrinks with a right-edge fade." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "The single button: an uppercase Barlow label in a 1px ink box, inverting on hover. Used as the pause control beside the clock readout.",
+      "html": "<button class=\"ds-btn\">Pause</button>",
+      "css": ".ds-btn { font-family: var(--font-label, Barlow, sans-serif); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink, #14161A); background: var(--paper, #FFFFFF); border: 1px solid var(--ink, #14161A); border-radius: 2px; padding: 5px 10px; cursor: pointer; min-width: 6.5em; } .ds-btn:hover { background: var(--ink, #14161A); color: var(--paper, #FFFFFF); } .ds-btn:focus-visible { outline: 2px solid var(--ch-i, #1F77B4); outline-offset: 2px; } .ds-btn:disabled { opacity: 0.45; cursor: default; }"
+    },
+    {
+      "name": "Pulse (Channel I)",
+      "kind": "custom",
+      "refersTo": "pulse-i",
+      "description": "A blue pulse envelope in a Home lane: tint fill, 1px hue border, ink text, arrow at the right edge. Steps to tint-2 with an inset ring when hovered or under the cursor.",
+      "html": "<a class=\"ds-pulse ds-pulse--i\" href=\"#\">Physics at Georgetown, five years of software, now quantum control.<svg class=\"ds-pulse__arrow\" width=\"16\" height=\"12\" viewBox=\"0 0 16 12\" aria-hidden=\"true\"><path d=\"M1 6h13M9 1l5 5-5 5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-pulse { display: flex; align-items: center; width: 320px; min-height: 54px; padding: 6px 12px; color: var(--ink, #14161A); text-decoration: none; font-family: var(--font-label, Barlow, sans-serif); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3; background: var(--tint); border: 1px solid var(--hue); border-radius: 2px; transition: background 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-pulse--i { --hue: var(--ch-i, #1F77B4); --tint: var(--ch-i-tint, #E0ECF4); --tint-2: var(--ch-i-tint-2, #BCD6E8); } .ds-pulse__arrow { flex: 0 0 auto; margin-left: auto; padding-left: 12px; box-sizing: content-box; color: var(--ink-2, #4A4F57); } .ds-pulse:hover, .ds-pulse.is-active { background: var(--tint-2); box-shadow: inset 0 0 0 1px var(--hue); } .ds-pulse:hover .ds-pulse__arrow { color: var(--ink, #14161A); } .ds-pulse:focus-visible { outline: 2px solid var(--ch-i, #1F77B4); outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .ds-pulse { transition: none; } }"
+    },
+    {
+      "name": "Pulse (Channel Q)",
+      "kind": "custom",
+      "refersTo": "pulse-q",
+      "description": "The orange pulse envelope, identical in shape to channel I with the Q tint and hue.",
+      "html": "<a class=\"ds-pulse ds-pulse--q\" href=\"#\">The Schrödinger figure: a free wavepacket, computed live.<svg class=\"ds-pulse__arrow\" width=\"16\" height=\"12\" viewBox=\"0 0 16 12\" aria-hidden=\"true\"><path d=\"M1 6h13M9 1l5 5-5 5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-pulse { display: flex; align-items: center; width: 320px; min-height: 54px; padding: 6px 12px; color: var(--ink, #14161A); text-decoration: none; font-family: var(--font-label, Barlow, sans-serif); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.01em; line-height: 1.3; background: var(--tint); border: 1px solid var(--hue); border-radius: 2px; transition: background 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-pulse--q { --hue: var(--ch-q, #FF7F0E); --tint: var(--ch-q-tint, #FFEBD8); --tint-2: var(--ch-q-tint-2, #FFD3AD); } .ds-pulse__arrow { flex: 0 0 auto; margin-left: auto; padding-left: 12px; box-sizing: content-box; color: var(--ink-2, #4A4F57); } .ds-pulse:hover, .ds-pulse.is-active { background: var(--tint-2); box-shadow: inset 0 0 0 1px var(--hue); } .ds-pulse:hover .ds-pulse__arrow { color: var(--ink, #14161A); } .ds-pulse:focus-visible { outline: 2px solid var(--ch-i, #1F77B4); outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .ds-pulse { transition: none; } }"
+    },
+    {
+      "name": "Top Bar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "The 56px bar: Barlow 600 wordmark, uppercase label links in ink-2 with an ink underline on the current page, and the mono clock readout with its pause button.",
+      "html": "<header class=\"ds-topbar\"><a class=\"ds-topbar__mark\" href=\"#\">Kate Bonner</a><nav class=\"ds-topbar__nav\"><a href=\"#\" aria-current=\"page\">About</a><a href=\"#\">Projects</a><a href=\"#\">Notes</a></nav><div class=\"ds-topbar__clock\"><span class=\"ds-readout\">t = 0.00</span><button class=\"ds-btn\">Pause</button></div></header>",
+      "css": ".ds-topbar { height: 56px; display: grid; grid-template-columns: 200px 1fr auto; align-items: center; border-bottom: 1px solid var(--rule, #D8DBE0); padding: 0 24px; background: var(--paper, #FFFFFF); } .ds-topbar__mark { font-family: var(--font-label, Barlow, sans-serif); font-weight: 600; font-size: 1.0625rem; color: var(--ink, #14161A); text-decoration: none; letter-spacing: 0.01em; } .ds-topbar__nav { display: flex; gap: 24px; } .ds-topbar__nav a { font-family: var(--font-label, Barlow, sans-serif); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2, #4A4F57); text-decoration: none; padding: 6px 0; border-bottom: 1px solid transparent; } .ds-topbar__nav a:hover { color: var(--ink, #14161A); } .ds-topbar__nav a[aria-current=\"page\"] { color: var(--ink, #14161A); border-bottom-color: var(--ink, #14161A); } .ds-topbar__nav a:focus-visible { outline: 2px solid var(--ch-i, #1F77B4); outline-offset: 2px; } .ds-topbar__clock { display: flex; align-items: center; gap: 16px; justify-self: end; } .ds-readout { font-family: var(--font-mono, 'B612 Mono', monospace); font-size: 0.8125rem; font-variant-numeric: tabular-nums; color: var(--ink, #14161A); min-width: 12ch; text-align: right; } .ds-btn { font-family: var(--font-label, Barlow, sans-serif); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink, #14161A); background: var(--paper, #FFFFFF); border: 1px solid var(--ink, #14161A); border-radius: 2px; padding: 5px 10px; cursor: pointer; min-width: 6.5em; } .ds-btn:hover { background: var(--ink, #14161A); color: var(--paper, #FFFFFF); }"
+    },
+    {
+      "name": "Lane Label",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "The label cell of a Home lane: a mono channel index (the order the cursor visits the lane) beside an uppercase Barlow name, divided from the lane by a rule hairline.",
+      "html": "<div class=\"ds-lane\"><div class=\"ds-lane__label\"><a href=\"#\"><span class=\"ds-lane__ch\">1</span>About</a></div><div class=\"ds-lane__body\"></div></div>",
+      "css": ".ds-lane { display: grid; grid-template-columns: 200px 1fr; border-bottom: 1px solid var(--rule, #D8DBE0); min-height: 72px; } .ds-lane__label { padding: 16px 24px; border-right: 1px solid var(--rule, #D8DBE0); display: flex; flex-direction: column; justify-content: center; } .ds-lane__label a { font-family: var(--font-label, Barlow, sans-serif); font-weight: 500; font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2, #4A4F57); text-decoration: none; display: flex; gap: 12px; align-items: baseline; } .ds-lane__label a:hover { color: var(--ink, #14161A); } .ds-lane__label a:focus-visible { outline: 2px solid var(--ch-i, #1F77B4); outline-offset: 2px; } .ds-lane__ch { font-family: var(--font-mono, 'B612 Mono', monospace); text-transform: none; letter-spacing: 0; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Time Axis and Cursor",
+      "kind": "custom",
+      "refersTo": "readout",
+      "description": "The 32px ruled axis: rule-hairline ticks with mono numerals, ink ticks at each end, and the 1px ink cursor with its 5px dot positioned by --u.",
+      "html": "<div class=\"ds-axis\"><div class=\"ds-axis__label\"><span class=\"ds-label\">Time</span></div><div class=\"ds-axis__body\"><div class=\"ds-axis__ticks\"><span style=\"left:0%\">0</span><span style=\"left:25%\">0.2</span><span style=\"left:50%\">0.4</span><span style=\"left:75%\">0.6</span><span class=\"ds-axis__end\">0.8</span></div><div class=\"ds-cursor\" style=\"--u:0.38\"></div></div></div>",
+      "css": ".ds-axis { display: grid; grid-template-columns: 200px 1fr; min-height: 32px; border-bottom: 1px solid var(--rule, #D8DBE0); } .ds-axis__label { padding: 0 24px; border-right: 1px solid var(--rule, #D8DBE0); display: flex; align-items: center; } .ds-label { font-family: var(--font-label, Barlow, sans-serif); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2, #4A4F57); } .ds-axis__body { position: relative; min-height: 32px; } .ds-axis__ticks { position: absolute; inset: 0; } .ds-axis__ticks span { position: absolute; top: 0; height: 100%; border-left: 1px solid var(--rule, #D8DBE0); padding-left: 4px; font-family: var(--font-mono, 'B612 Mono', monospace); font-size: 0.8125rem; color: var(--ink-2, #4A4F57); line-height: 32px; font-variant-numeric: tabular-nums; } .ds-axis__ticks span:first-child { border-left-color: var(--ink, #14161A); } .ds-axis__ticks .ds-axis__end { left: auto; right: 0; border-left: 0; border-right: 1px solid var(--ink, #14161A); padding: 0 4px 0 0; } .ds-cursor { position: absolute; top: -12px; bottom: 0; width: 0; left: calc(100% * var(--u, 0)); border-left: 1px solid var(--ink, #14161A); } .ds-cursor::after { content: \"\"; position: absolute; left: -3px; bottom: -1px; width: 5px; height: 5px; background: var(--ink, #14161A); border-radius: 50%; }"
+    },
+    {
+      "name": "Notes List Row",
+      "kind": "card",
+      "refersTo": "nav-link",
+      "description": "Grouped content without a card: a mono date column and a Barlow 500 title with a label-type teaser, ruled above and below by rule hairlines.",
+      "html": "<ul class=\"ds-notes\"><li><span class=\"ds-meta\">2026-08-30</span><div><a href=\"#\">How the hero animation works</a><p>The free-particle Schrödinger solution behind the state lane.</p></div></li></ul>",
+      "css": ".ds-notes { list-style: none; margin: 0; padding: 0; max-width: 760px; } .ds-notes li { display: grid; grid-template-columns: 11ch 1fr; gap: 16px; padding: 16px 0; border-top: 1px solid var(--rule, #D8DBE0); border-bottom: 1px solid var(--rule, #D8DBE0); align-items: baseline; } .ds-meta { font-family: var(--font-mono, 'B612 Mono', monospace); font-size: 0.8125rem; color: var(--ink-2, #4A4F57); font-variant-numeric: tabular-nums; } .ds-notes a { font-family: var(--font-label, Barlow, sans-serif); font-weight: 500; font-size: 1.0625rem; text-decoration: none; color: var(--ink, #14161A); } .ds-notes a:hover { color: var(--ch-i-ink, #175C8C); } .ds-notes a:focus-visible { outline: 2px solid var(--ch-i, #1F77B4); outline-offset: 2px; } .ds-notes p { font-size: 0.8125rem; font-family: var(--font-label, Barlow, sans-serif); color: var(--ink-2, #4A4F57); margin: 2px 0 0; }"
+    },
+    {
+      "name": "Prose Link and Code",
+      "kind": "custom",
+      "refersTo": "code-block",
+      "description": "Body prose in STIX Two Text at 66ch with ch-i-ink links and a rule-2 code block in B612 Mono.",
+      "html": "<div class=\"ds-prose\"><p>The state lane renders a <a href=\"#\">free Gaussian wavepacket</a> whose dispersion is computed live.</p><pre>psi(x, t) = A(t) · exp(-(x - v t)^2 / (4 σ(t)^2))</pre></div>",
+      "css": ".ds-prose { max-width: 66ch; font-family: var(--font-prose, 'STIX Two Text', serif); font-size: 1.0625rem; line-height: 1.55; color: var(--ink, #14161A); } .ds-prose p { margin: 0 0 16px; } .ds-prose a { color: var(--ch-i-ink, #175C8C); text-decoration-thickness: 1px; text-underline-offset: 0.16em; } .ds-prose a:hover { color: var(--ink, #14161A); } .ds-prose a:focus-visible { outline: 2px solid var(--ch-i, #1F77B4); outline-offset: 2px; } .ds-prose pre { font-family: var(--font-mono, 'B612 Mono', monospace); font-size: 0.92em; background: var(--rule-2, #EEF0F3); padding: 16px; overflow-x: auto; border-radius: 2px; margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Pulse-Sequence Diagram",
+    "overview": "Every page is drawn the way quantum-control people sketch an experiment: a label column on the left, ruled channel lanes stacked to the right, one time axis with ticks along the bottom, and shaped pulses placed in time. The Home page is literally that diagram, with a clock driving a hairline cursor across three lanes while a free-particle wavepacket evolves in the state lane. Content pages keep the same skeleton (label column, hairline divider, body) and simply put a title in the label cell and prose in the lane. Nothing is decorated; every line on the page is a rule, an axis, a divider, or the border of a pulse.\n\nThe material is white paper and near-black ink. Structure is carried by 1px hairlines at two strengths (a light grey for lane rules and dividers, full ink for the time axis ends and the cursor). Colour appears only as the two channel hues from the audience's own matplotlib figures, blue for channel I and orange for channel Q, and only as filled pulse envelopes: a pale opaque tint with a saturated 1px border. Text never takes the raw hue; it takes the darker ink variant of the channel. Three type sizes plus one display size cover the whole site, and hierarchy comes from weight, case, and rules rather than from scale.\n\nDensity is instrument-like: 56px bar, 72px lanes, 32px axis, 8px grid. Motion is confined to the sequence itself (the cursor, the wavepacket, a 200ms tint change on the pulse under the cursor) and is removed under prefers-reduced-motion. The site refuses the portfolio arrangement (name, tagline, avatar, three cards) and the full-bleed hero with text over motion.",
+    "keyCharacteristics": [
+      "Label column plus ruled lanes on every page; the divider hairline is the site's spine.",
+      "Two channel hues, used only as tinted, bordered pulse envelopes; darker ink variants for links and channel text.",
+      "Three text sizes (13 / 17 / 22px) plus one clamped display size; rank by weight, case, and rules.",
+      "Three faces with fixed jobs: Barlow labels and headlines, STIX Two Text prose, B612 Mono readouts and ticks.",
+      "Flat. No drop shadows; depth is a hairline or a tint.",
+      "Corners are almost square (2px) everywhere a box appears."
+    ],
+    "rules": [
+      { "name": "The Two Channels Rule", "body": "Only two hues exist, channel I blue and channel Q orange, and they appear only as a pulse envelope: tint fill plus 1px hue border. Text in a channel colour uses the -ink variant, never the raw hue. A third hue is not a third channel; it is a mistake.", "section": "colors" },
+      { "name": "The Hairline Rule", "body": "All structure is a 1px line. Grey (rule) for lane rules and dividers; ink for the axis start and end ticks, the cursor, and the timeline \"now\" line. Nothing thicker than 1px draws structure; the 2px focus ring is the sole exception and it is state, not structure.", "section": "colors" },
+      { "name": "The Three Sizes Rule", "body": "13, 17, and 22px plus one display clamp. Hierarchy is made with weight (500 vs 600), case (uppercase labels), colour (ink vs ink-2), and rules, not with new sizes.", "section": "typography" },
+      { "name": "The Number Is Mono Rule", "body": "Anything that reads as a measurement (time, year, index, tick) is set in B612 Mono with tabular numerals, even when it sits inside a Barlow label.", "section": "typography" },
+      { "name": "The No Lift Rule", "body": "Nothing casts a shadow. State is shown by a tint step, an inset hairline, an underline, or an ink swap, never by elevation.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do start every page from the label column + hairline divider + body grid; the divider is what makes a page belong to the site.",
+      "Do put colour only in a pulse envelope: tint fill, 1px hue border, ink text. Use ch-i-ink for links.",
+      "Do set every number (time, year, index, tick) in B612 Mono with tabular numerals.",
+      "Do use 1px rule hairlines to separate grouped content instead of cards or backgrounds.",
+      "Do keep to 13 / 17 / 22px plus the display clamp and rank with weight, case, and ink vs ink-2.",
+      "Do keep the light theme, AA contrast, keyboard focus (2px ch-i outline), and a reduced-motion / no-WebGL static fallback for anything animated."
+    ],
+    "donts": [
+      "Don't add drop shadows, gradients, or grey panels; the only grey surface is rule-2 behind code and a targeted entry.",
+      "Don't use raw ch-i or ch-q as text colour, and don't introduce a third hue.",
+      "Don't use a radius larger than 2px on any box.",
+      "Don't add a fourth typeface or let the faces swap jobs (no serif labels, no grotesk prose, no mono headlines).",
+      "Don't place a photo, avatar, logo strip, or card grid; the site refuses the portfolio arrangement.",
+      "Don't draw structure heavier than 1px; a 2px line means focus, nothing else."
+    ]
+  }
+}

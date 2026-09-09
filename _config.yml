@@ -1,0 +1,9 @@
+# GitHub Pages runs Jekyll by default. Keep it on: dot-directories and
+# underscore-prefixed paths (.impeccable, _tools, notes/_template.html) are
+# then never served. The records below are excluded explicitly.
+exclude:
+  - PRODUCT.md
+  - DESIGN.md
+  - README.md
+  - package.json
+  - _tools
