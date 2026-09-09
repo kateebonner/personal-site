@@ -33,10 +33,9 @@ Viewed on desktop and mobile, usually from a LinkedIn profile or an email thread
 ## Capabilities and Constraints
 
 Pages (confirmed):
-- Home: the confirmed headline, subline, contact line, and the signature animation. Nav links to About, Projects, Notes in the header. Kate removed the section lanes, the time axis, the T dimension row, and the cursor (2026-09-09).
+- Home: the confirmed headline, subline, contact line, and the signature animation. Nav links to About in the header. Kate removed the section lanes, the time axis, the T dimension row, and the cursor (2026-09-09).
 - About: first-person bio only. Kate rejected the visual timeline figure and then the chronological experience list as well (2026-09-09); the bio carries the career summary and LinkedIn carries the detail. No separate résumé PDF.
-- Projects: one entry at launch, the Schrödinger animation, linking to its write-up. More added over time.
-- Notes: writing index. One seeded note at launch: how the hero animation works (math, numerics, rendering).
+- Projects and Notes: removed on 2026-09-09 (nothing to add yet); the pages and the note template are deleted.
 - Footer on every page: one line with kate@katebonner.ai and LinkedIn (linkedin.com/in/kate-bonner). Kate removed the title block and the sheet zone marks (2026-09-09). No GitHub, Scholar, or other links.
 
 Confirmed headline (Home):
@@ -54,11 +53,11 @@ Confirmed timeline content (newest first):
 
 Degree wording is Kate's: "Bachelor's Degree, Physics" and "Master's Degree, Quantum Science & Technology", not B.A./M.S. abbreviations.
 
-Signature element (binding): a 3D animation of the 1D free-particle time-dependent Schrödinger equation. A Gaussian wavepacket plotted as x versus Re(ψ) versus Im(ψ), a spiraling ribbon that travels and disperses, with the |ψ|² envelope faintly drawn, looping by resetting smoothly. Home hero only; other pages are calm and text-first. The previous site's Bloch sphere is retired and is an anti-reference, not a component to reuse.
+Signature element (binding): a 3D animation of the 1D free-particle time-dependent Schrödinger equation. A Gaussian wavepacket plotted as x versus Re(ψ) versus Im(ψ), a spiraling ribbon that travels and disperses, with no envelope, dimension, or axis lettering (Kate removed the extra details on 2026-09-09), looping by resetting smoothly. Home only; About is text-first. The previous site's Bloch sphere is retired and is an anti-reference, not a component to reuse.
 
 Technical constraints: must respect `prefers-reduced-motion` (static frame or gentle idle), must degrade to a static image when WebGL is unavailable, must not block first paint or text rendering. No analytics or tracking unless Kate asks for it later. Every claim on the site must be traceable to Kate's résumé or public work and must not contradict her LinkedIn.
 
-Terminology: the writing section is "Notes", not "Blog" or "Writing". Pages are "About", "Projects", "Notes".
+Terminology: the writing section is "Notes", not "Blog" or "Writing". Pages are Home and About; Projects and Notes were removed on 2026-09-09 because there is nothing to show yet.
 
 Undecided: how notes are authored once there are several (template copy versus a small Markdown script); whether Projects grows with Harmoniqs work, the qLDPC challenge, the Georgetown junction research, or the VR physics paper (all declined for launch); social preview image content beyond a frame of the animation.
 
@@ -67,7 +66,7 @@ Undecided: how notes are authored once there are several (template copy versus a
 - Name: Kate Bonner. Domain: katebonner.ai. Site title: "Kate Bonner".
 - Voice: first person, plain and direct. Short sentences, concrete nouns, no hype. Reads like a competent colleague.
 - No photo of Kate anywhere on the site.
-- The whole site looks like a mechanical technical drawing (Kate's direction, 2026-09-09, keeping the pulse-sequence layout): black ink on white paper, ISO-style line-weight hierarchy, drafting red as the only accent, hatched fills, dimension lines, and a plain sheet border. The zone marks, title block, lane blocks, and time axis were removed on 2026-09-09 at Kate's direction. Lettering: upright engineering lettering (Share Tech) with Share Tech Mono for readouts and Atkinson Hyperlegible for long prose. The prior olive palette, the matplotlib channel hues, and Barlow/STIX/B612 are all rejected.
+- Off-white tan paper (#F2ECE1) with burgundy ink (#7A1E2C) for every line and letter, vermilion only on hover and focus (Kate's direction, 2026-09-09). No sheet border, no hatching, no title block. Lettering stays Share Tech, with Share Tech Mono for the contact line and Atkinson Hyperlegible for prose.
 - The Schrödinger animation is the single spectacle; everything else recedes.
 
 ## Evidence on Hand
