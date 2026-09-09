@@ -17,6 +17,13 @@
   <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
+  <div class="sheet" aria-hidden="true">
+    <div class="sheet__frame"></div>
+    <div class="sheet__zones sheet__zones--top"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+    <div class="sheet__zones sheet__zones--bottom"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+    <div class="sheet__zones sheet__zones--left"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+    <div class="sheet__zones sheet__zones--right"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+  </div>
   <header class="topbar">
     <a class="topbar__mark" href="/">Kate Bonner</a>
     <nav class="topbar__nav" aria-label="Site">
@@ -36,43 +43,11 @@
         <p>I write occasionally in <a href="/notes/">Notes</a>. The best way to reach me is <a href="mailto:kate@katebonner.ai">email</a>.</p>
       </div>
 
-      <figure class="tl" aria-labelledby="tl-title">
-        <h2 id="tl-title">Timeline</h2>
-        <p class="figcaption">Education, research, and industry as one sequence, 2016 to 2027. Each block is numbered by its entry below and links to it; open blocks run to now.</p>
-        <div class="tl__scroll">
-          <div class="tl__grid" role="presentation">
-            <div class="tl__lane label" style="grid-row:2">Education</div>
-            <div class="tl__row-rule" style="grid-row:2"></div>
-            <div class="tl__lane label" style="grid-row:3">Research</div>
-            <div class="tl__row-rule" style="grid-row:3"></div>
-            <div class="tl__lane label" style="grid-row:4">Industry</div>
-            <div class="tl__row-rule" style="grid-row:4"></div>
 
-            <a class="tl__block tl__block--i" style="--row:2;--c0:9;--c1:55" href="#tl-8" title="Georgetown University, Bachelor's Degree, Physics, 2016 to 2020"><span class="n">8</span><span class="name">Georgetown</span><span class="mono">2016–2020</span></a>
-            <a class="tl__tag" style="--row:2;--c0:96;--c1:118" href="#tl-2" aria-hidden="true" tabindex="-1">Columbia</a>
-            <a class="tl__block tl__block--i tl__block--open" style="--row:2;--c0:118;--c1:130" href="#tl-2" title="Columbia University, Master's Degree, Quantum Science &amp; Technology, 2025 to present"><span class="n">2</span><span class="name">Columbia</span><span class="mono">2025–</span></a>
-
-            <a class="tl__block tl__block--q" style="--row:3;--c0:39;--c1:42" href="#tl-8" title="Georgetown Physics, Research Assistant, February to April 2019"><span class="n">8</span><span class="name">Research assistant</span></a>
-            <a class="tl__block tl__block--q" style="--row:3;--c0:50;--c1:55" href="#tl-7" title="Georgetown Physics, Undergraduate Researcher, January to May 2020"><span class="n">7</span><span class="name">Undergraduate researcher</span><span class="mono">2020</span></a>
-
-            <a class="tl__block tl__block--i" style="--row:4;--c0:68;--c1:83" href="#tl-6" title="Darktrace, Cyber Security Technologist, July 2021 to October 2022"><span class="n">6</span><span class="name">Darktrace</span><span class="mono">2021–22</span></a>
-            <a class="tl__block tl__block--q" style="--row:4;--c0:83;--c1:94" href="#tl-5" title="Comun, Software Engineer, October 2022 to August 2023"><span class="n">5</span><span class="name">Comun</span><span class="mono">2022–23</span></a>
-            <a class="tl__block tl__block--i" style="--row:4;--c0:96;--c1:110" href="#tl-4" title="NBCUniversal, Associate Product Manager, November 2023 to January 2025"><span class="n">4</span><span class="name">NBCU</span><span class="mono">2023–25</span></a>
-            <a class="tl__block tl__block--q" style="--row:4;--c0:110;--c1:115" href="#tl-3" title="Coast, Technical Solutions Engineer, January to May 2025"><span class="n">3</span><span class="name">Coast</span><span class="mono">2025</span></a>
-            <a class="tl__tag" style="--row:4;--c0:116;--c1:127" href="#tl-1" aria-hidden="true" tabindex="-1">Harmoniqs</a>
-            <a class="tl__block tl__block--i tl__block--open" style="--row:4;--c0:127;--c1:130" href="#tl-1" title="Harmoniqs, founding team, 2026 to present"><span class="n">1</span><span class="name">Harmoniqs</span><span class="mono">2026–</span></a>
-            <div class="tl__now" style="--c0:130" aria-hidden="true"><span>now</span></div>
-
-            <div class="tl__years-label" style="grid-row:5"></div>
-            <div class="tl__years" style="grid-row:5" aria-hidden="true">
-              <span>2016</span><span>2017</span><span>2018</span><span>2019</span><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span><span class="tl__years-end" aria-hidden="true"></span>
-            </div>
-          </div>
-        </div>
-      </figure>
-
-      <ol class="tl__list">
+      <h2 id="xp-title">Experience</h2>
+      <ol class="xp" aria-labelledby="xp-title">
         <li id="tl-1">
+          <span class="balloon" aria-hidden="true">1</span>
           <div>
             <h3>Harmoniqs · Founding team</h3>
             <span class="meta">New York · 2026 to present</span>
@@ -80,6 +55,7 @@
           </div>
         </li>
         <li id="tl-2">
+          <span class="balloon" aria-hidden="true">2</span>
           <div>
             <h3>Columbia University · Master's Degree, Quantum Science &amp; Technology</h3>
             <span class="meta">New York · September 2025 to present, expected December 2026</span>
@@ -87,6 +63,7 @@
           </div>
         </li>
         <li id="tl-3">
+          <span class="balloon" aria-hidden="true">3</span>
           <div>
             <h3>Coast (YC S21) · Technical Solutions Engineer</h3>
             <span class="meta">New York · January to May 2025</span>
@@ -94,6 +71,7 @@
           </div>
         </li>
         <li id="tl-4">
+          <span class="balloon" aria-hidden="true">4</span>
           <div>
             <h3>NBCUniversal · Associate Product Manager</h3>
             <span class="meta">New York · November 2023 to January 2025</span>
@@ -101,6 +79,7 @@
           </div>
         </li>
         <li id="tl-5">
+          <span class="balloon" aria-hidden="true">5</span>
           <div>
             <h3>Comun · Software Engineer</h3>
             <span class="meta">New York · October 2022 to August 2023</span>
@@ -108,6 +87,7 @@
           </div>
         </li>
         <li id="tl-6">
+          <span class="balloon" aria-hidden="true">6</span>
           <div>
             <h3>Darktrace · Cyber Security Technologist</h3>
             <span class="meta">New York · July 2021 to October 2022</span>
@@ -115,6 +95,7 @@
           </div>
         </li>
         <li id="tl-7">
+          <span class="balloon" aria-hidden="true">7</span>
           <div>
             <h3>Georgetown University Department of Physics · Undergraduate Researcher</h3>
             <span class="meta">Washington, D.C. · January to May 2020</span>
@@ -122,6 +103,7 @@
           </div>
         </li>
         <li id="tl-8">
+          <span class="balloon" aria-hidden="true">8</span>
           <div>
             <h3>Georgetown University · Bachelor's Degree, Physics</h3>
             <span class="meta">Washington, D.C. · August 2016 to May 2020</span>
@@ -131,17 +113,15 @@
       </ol>
     </div>
   </main>
-  <script>
-    // Open the timeline at the present on narrow screens; earlier years scroll into view.
-    (function () { var el = document.querySelector(".tl__scroll"); if (el && el.scrollWidth > el.clientWidth) el.scrollLeft = el.scrollWidth; })();
-  </script>
 
-  <footer class="foot">
-    <div class="foot__label"><span class="label">Contact</span></div>
-    <div class="foot__body">
-      <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
-      <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
-    </div>
+  <footer class="tblock" aria-label="Title block">
+    <div class="tblock__cell tblock__cell--title"><span class="k">Title</span><span class="v">Kate Bonner · About</span></div>
+    <div class="tblock__cell"><span class="k">Sheet</span><span class="v">2 of 4</span></div>
+    <div class="tblock__cell"><span class="k">Rev</span><span class="v">A</span></div>
+    <div class="tblock__cell"><span class="k">Date</span><span class="v">2026-09-09</span></div>
+    <div class="tblock__cell"><span class="k">Scale</span><span class="v">NTS</span></div>
+    <div class="tblock__cell tblock__cell--email"><span class="k">Email</span><a class="v" href="mailto:kate@katebonner.ai">kate@katebonner.ai</a></div>
+    <div class="tblock__cell tblock__cell--linkedin"><span class="k">LinkedIn</span><a class="v" href="https://www.linkedin.com/in/kate-bonner" rel="me">linkedin.com/in/kate-bonner</a></div>
   </footer>
 </body>
 </html>
