@@ -33,11 +33,11 @@ Viewed on desktop and mobile, usually from a LinkedIn profile or an email thread
 ## Capabilities and Constraints
 
 Pages (confirmed):
-- Home: short intro with the confirmed headline and the signature animation. Nav links to About, Projects, Notes.
+- Home: the confirmed headline, subline, contact line, and the signature animation. Nav links to About, Projects, Notes in the header. Kate removed the section lanes, the time axis, the T dimension row, and the cursor (2026-09-09).
 - About: first-person bio only. Kate rejected the visual timeline figure and then the chronological experience list as well (2026-09-09); the bio carries the career summary and LinkedIn carries the detail. No separate résumé PDF.
 - Projects: one entry at launch, the Schrödinger animation, linking to its write-up. More added over time.
 - Notes: writing index. One seeded note at launch: how the hero animation works (math, numerics, rendering).
-- Footer on every page: kate@katebonner.ai (lightly obfuscated) and LinkedIn (linkedin.com/in/kate-bonner). No GitHub, Scholar, or other links at launch.
+- Footer on every page: one line with kate@katebonner.ai and LinkedIn (linkedin.com/in/kate-bonner). Kate removed the title block and the sheet zone marks (2026-09-09). No GitHub, Scholar, or other links.
 
 Confirmed headline (Home):
 "Physicist building the software that steers qubits." Subline: "Quantum optimal control at Harmoniqs. M.S. in Quantum Science & Technology at Columbia, expected December 2026. Five years shipping software before physics pulled me back."
@@ -67,7 +67,7 @@ Undecided: how notes are authored once there are several (template copy versus a
 - Name: Kate Bonner. Domain: katebonner.ai. Site title: "Kate Bonner".
 - Voice: first person, plain and direct. Short sentences, concrete nouns, no hype. Reads like a competent colleague.
 - No photo of Kate anywhere on the site.
-- The whole site looks like a mechanical technical drawing (Kate's direction, 2026-09-09, keeping the pulse-sequence layout): black ink on white paper, ISO-style line-weight hierarchy, drafting red as the only accent, hatched fills, dimension lines, a sheet border with zone marks, and a title block on every page. Lettering: upright engineering lettering (Share Tech) with Share Tech Mono for readouts and Atkinson Hyperlegible for long prose. The prior olive palette, the matplotlib channel hues, and Barlow/STIX/B612 are all rejected.
+- The whole site looks like a mechanical technical drawing (Kate's direction, 2026-09-09, keeping the pulse-sequence layout): black ink on white paper, ISO-style line-weight hierarchy, drafting red as the only accent, hatched fills, dimension lines, and a plain sheet border. The zone marks, title block, lane blocks, and time axis were removed on 2026-09-09 at Kate's direction. Lettering: upright engineering lettering (Share Tech) with Share Tech Mono for readouts and Atkinson Hyperlegible for long prose. The prior olive palette, the matplotlib channel hues, and Barlow/STIX/B612 are all rejected.
 - The Schrödinger animation is the single spectacle; everything else recedes.
 
 ## Evidence on Hand

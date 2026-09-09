@@ -27,10 +27,6 @@
 <body>
   <div class="sheet" aria-hidden="true">
     <div class="sheet__frame"></div>
-    <div class="sheet__zones sheet__zones--top"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
-    <div class="sheet__zones sheet__zones--bottom"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
-    <div class="sheet__zones sheet__zones--left"><span>A</span><span>B</span><span>C</span><span>D</span></div>
-    <div class="sheet__zones sheet__zones--right"><span>A</span><span>B</span><span>C</span><span>D</span></div>
   </div>
   <header class="topbar">
     <a class="topbar__mark" href="/" aria-current="page">Kate Bonner</a>
@@ -63,65 +59,11 @@
       </div>
     </section>
 
-    <div class="lanes">
-      <div class="dim" aria-hidden="true">
-        <div class="dim__label"></div>
-        <div class="dim__body"><span class="dim__ext dim__ext--start"></span><span class="dim__line"></span><span class="dim__ext dim__ext--end"></span><span class="dim__text">T = 1.20 · 14 s</span></div>
-      </div>
-      <section class="lane lane--block" aria-label="About">
-        <div class="lane__label"><a href="/about.html"><span class="ch">1</span>About</a></div>
-        <div class="lane__body">
-          <a class="pulse" href="/about.html" style="--t0:0.05;--t1:0.30" data-t0="0.05" data-t1="0.30">
-            <span class="pulse__text">Physics at Georgetown, five years of software, now quantum control.</span>
-            <svg class="arrow" width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M1 6h13M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-      </section>
-      <section class="lane lane--block" aria-label="Projects">
-        <div class="lane__label"><a href="/projects.html"><span class="ch">2</span>Projects</a></div>
-        <div class="lane__body">
-          <a class="pulse" href="/projects.html" style="--t0:0.38;--t1:0.62" data-t0="0.38" data-t1="0.62">
-            <span class="pulse__text">The Schrödinger figure: a free wavepacket, computed live.</span>
-            <svg class="arrow" width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M1 6h13M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-      </section>
-      <section class="lane lane--block" aria-label="Notes">
-        <div class="lane__label"><a href="/notes/"><span class="ch">3</span>Notes</a></div>
-        <div class="lane__body">
-          <a class="pulse" href="/notes/hero-animation.html" style="--t0:0.70;--t1:0.95" data-t0="0.70" data-t1="0.95">
-            <span class="pulse__text">How the hero animation works.</span>
-            <svg class="arrow" width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M1 6h13M9 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-      </section>
-      <div class="axis">
-        <div class="axis__label"><span class="label">Time</span></div>
-        <div class="axis__body">
-          <div class="axis__ticks" aria-hidden="true">
-            <span style="left:0%">0</span>
-            <span style="left:16.667%">0.2</span>
-            <span style="left:33.333%">0.4</span>
-            <span style="left:50%">0.6</span>
-            <span style="left:66.667%">0.8</span>
-            <span style="left:83.333%">1.0</span>
-            <span class="axis__end">1.2</span>
-          </div>
-          <input class="scrub" id="scrub" type="range" min="0" max="1000" value="0" step="1" aria-label="Time in the loop" hidden>
-        </div>
-      </div>
-      <div class="cursor" id="cursor" hidden aria-hidden="true"></div>
-    </div>
   </main>
 
-  <footer class="tblock" aria-label="Title block">
-    <div class="tblock__cell tblock__cell--title"><span class="k">Title</span><span class="v">Kate Bonner · Home</span></div>
-    <div class="tblock__cell"><span class="k">Sheet</span><span class="v">1 of 4</span></div>
-    <div class="tblock__cell"><span class="k">Rev</span><span class="v">A</span></div>
-    <div class="tblock__cell"><span class="k">Date</span><span class="v">2026-09-09</span></div>
-    <div class="tblock__cell"><span class="k">Scale</span><span class="v">NTS</span></div>
-    <div class="tblock__cell tblock__cell--email"><span class="k">Email</span><a class="v" href="mailto:kate@katebonner.ai">kate@katebonner.ai</a></div>
-    <div class="tblock__cell tblock__cell--linkedin"><span class="k">LinkedIn</span><a class="v" href="https://www.linkedin.com/in/kate-bonner" rel="me">linkedin.com/in/kate-bonner</a></div>
+  <footer class="foot">
+    <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
+    <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
   </footer>
 
   <script type="module" src="/js/sequence.js"></script>
