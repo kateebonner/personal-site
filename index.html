@@ -26,10 +26,6 @@
       <div class="lane__label">
         <h1>Lorem ipsum dolor sit amet consectetur.</h1>
         <p class="sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-        <p class="contact">
-          <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
-          <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
-        </p>
       </div>
       <div class="lane__body">
         <figure class="state" id="state">
@@ -38,7 +34,6 @@
         </figure>
       </div>
     </section>
-
   </main>
 
   <footer class="foot">
@@ -48,8 +43,6 @@
 
   <script type="module" src="/js/sequence.js"></script>
   <script type="module">
-    // The figure is optional: it loads after first paint, and any failure
-    // leaves the inline frame in place.
     const start = () => import('/js/sequence.js')
       .then(({ clock }) => import('/js/wavepacket.js').then((m) => m.mount(
         document.getElementById('state'), document.getElementById('wp-mount'), clock)))
