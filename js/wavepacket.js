@@ -4,10 +4,11 @@
 // the canvas that the strokes pick up, the way pencil takes the texture of the sheet.
 // Oblique projection: x runs across, Re psi up, Im psi toward the viewer. No third-party
 // code; if scripts are off the static frame image stays in place.
-import { PARAMS, psi, makeBuffers } from './psi.js';
+import { PARAMS, psi, makeBuffers, peak } from './psi.js';
 
 const DRAW = Object.freeze({ ...PARAMS, samples: 1500 });
 const N = DRAW.samples;
+const UNIT = 1 / peak(0);   // draw psi relative to its t = 0 peak
 const FPS = 10;            // drawn frames per second
 const TAKES = 4;           // hand-traced takes, cycled frame to frame
 const CHUNK = 25;          // points per width-chunk along the curve
@@ -125,7 +126,7 @@ export function mount(figure, host, clock) {
     psi(t, DRAW, now);
     let peak = 1e-9;
     for (let i = 0; i < N; i++) {
-      cur.re[i] = now.re[i]; cur.im[i] = now.im[i];
+      cur.re[i] = now.re[i] * UNIT; cur.im[i] = now.im[i] * UNIT;
       peak = Math.max(peak, Math.hypot(cur.re[i], cur.im[i]));
     }
     const damp = new Float32Array(N);
