@@ -1,17 +1,14 @@
-/* katebonner.ai — a physics figure on a mechanical drawing sheet:
-   black ink on white paper, three line weights, hatched fills, one drafting-red accent. */
+/* katebonner.ai — a physics figure drawn in burgundy ink on tan paper. */
 
 :root {
-  --paper: #FFFFFF;
-  --ink: #111111;
-  --ink-2: #4E4E4E;
-  --line: #111111;              /* drawn lines */
-  --red: #D0202A;               /* drafting red: focus and hover */
+  --paper: #F2ECE1;             /* off-white tan paper */
+  --ink: #7A1E2C;               /* burgundy ink: every line and letter */
+  --ink-2: #9A4A55;             /* lighter burgundy for secondary text */
+  --line: #7A1E2C;
+  --red: #C43A2E;               /* vermilion: hover and focus only */
   --lw-thin: 1px;
   --lw-med: 1.5px;
   --lw-thick: 2.5px;
-  --hatch: repeating-linear-gradient(45deg, var(--ink) 0 1px, transparent 1px 8px);
-  --hatch-x: repeating-linear-gradient(-45deg, var(--ink) 0 1px, transparent 1px 8px);
 
   --font-letter: "Share Tech", "Saira", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Share Tech Mono", "SFMono-Regular", Menlo, Consolas, monospace;
@@ -25,8 +22,7 @@
 
   --label-w: 360px;
   --bar-h: 56px;
-  --frame: 14px;             /* sheet border inset from the viewport edge */
-  --sheet-pad: 24px;         /* content inset from the viewport edge */
+  --sheet-pad: 24px;         /* page margin */
   --measure: 66ch;
 }
 
@@ -66,9 +62,6 @@ p + p { margin-top: 16px; }
 }
 .mono { font-family: var(--font-mono); font-size: var(--fs-1); font-variant-numeric: tabular-nums; }
 
-/* ---------- sheet border and zones ---------- */
-.sheet { position: absolute; inset: 0; pointer-events: none; z-index: 40; }
-.sheet__frame { position: absolute; inset: var(--frame); border: var(--lw-thick) solid var(--line); }
 /* ---------- header strip ---------- */
 .topbar {
   height: var(--bar-h);
@@ -99,25 +92,6 @@ p + p { margin-top: 16px; }
 }
 .topbar__nav a:hover { color: var(--red); }
 .topbar__nav a[aria-current="page"] { border-bottom-color: var(--line); }
-.topbar__clock { display: flex; align-items: center; gap: 16px; justify-self: end; }
-.topbar__clock[hidden] { display: none; }
-.readout { color: var(--ink); min-width: 10ch; text-align: right; }
-.btn {
-  font-family: var(--font-letter);
-  font-size: var(--fs-1);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: var(--paper);
-  border: var(--lw-med) solid var(--line);
-  border-radius: 0;
-  padding: 5px 12px;
-  cursor: pointer;
-  min-width: 6.5em;
-}
-.btn:hover { background: var(--ink); color: var(--paper); }
-.btn:disabled { opacity: 0.45; cursor: default; }
-
 /* ---------- sequence (home) ---------- */
 .seq { position: relative; flex: 1; display: flex; flex-direction: column; }
 .lane {
@@ -146,8 +120,6 @@ p + p { margin-top: 16px; }
 .state .wp-frame { width: 100%; height: 100%; display: block; padding: 16px 24px; }
 .state .wp-mount { width: 100%; height: 100%; position: relative; overflow: hidden; }
 .state .wp-mount canvas { display: block; }
-.state .wp-mount .wp-axis-label { font-family: var(--font-letter); font-size: var(--fs-1); color: var(--ink); letter-spacing: 0.04em; user-select: none; white-space: nowrap; }
-.state .wp-mount .wp-dim-label { font-family: var(--font-mono); font-size: var(--fs-1); color: var(--ink); background: var(--paper); padding: 0 4px; user-select: none; white-space: nowrap; }
 .state.is-live .wp-frame { visibility: hidden; }
 .state:not(.is-live) .wp-mount { display: none; }
 
@@ -169,49 +141,25 @@ p + p { margin-top: 16px; }
 .prose li + li { margin-top: 6px; }
 .prose code, .prose pre { font-family: var(--font-mono); font-size: 0.92em; }
 .prose pre { border: var(--lw-thin) solid var(--line); padding: 16px; overflow-x: auto; }
-.prose .katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
 .prose figure { margin: 24px 0; }
 .prose figcaption, .figcaption { font-family: var(--font-letter); font-size: var(--fs-1); letter-spacing: 0.04em; color: var(--ink-2); margin-top: 8px; line-height: 1.45; }
 .meta { font-family: var(--font-mono); font-size: var(--fs-1); color: var(--ink-2); font-variant-numeric: tabular-nums; }
-
-/* figure (projects) */
-.figure { border: var(--lw-med) solid var(--line); padding: 16px 16px 0; margin: 24px 0; max-width: 960px; }
-.figure .wp-frame { width: 100%; height: auto; display: block; }
-.figure figcaption { border-top: var(--lw-thin) solid var(--line); margin: 12px -16px 0; padding: 10px 16px; font-family: var(--font-letter); font-size: var(--fs-1); letter-spacing: 0.04em; color: var(--ink); }
-.figure figcaption .fig { font-family: var(--font-mono); margin-right: 12px; }
-
-/* notes list */
-.notes { list-style: none; margin: 0; padding: 0; max-width: 760px; }
-.notes li { display: grid; grid-template-columns: 11ch 1fr; gap: 16px; padding: 16px 0; border-bottom: var(--lw-thin) solid var(--line); align-items: baseline; }
-.notes li:first-child { border-top: var(--lw-thin) solid var(--line); }
-.notes a { font-family: var(--font-letter); font-size: var(--fs-2); letter-spacing: 0.02em; text-decoration: none; color: var(--ink); }
-.notes a:hover { color: var(--red); }
-.notes p { font-size: var(--fs-1); font-family: var(--font-prose); color: var(--ink-2); margin-top: 4px; }
 
 /* ---------- narrow ---------- */
 @media (max-width: 1100px) {
   .topbar, .lane__label, .state .wp-frame, .page__label, .page__body, .foot { padding-left: 20px; padding-right: 20px; }
 }
 @media (max-width: 860px) {
-  :root { --label-w: 0px; --frame: 8px; --sheet-pad: 16px; }
+  :root { --label-w: 0px; --sheet-pad: 16px; }
   .lane, .page { grid-template-columns: 1fr; }
   .lane__label, .page__label { border-right: 0; }
   .lane__label, .page__label, .page__body, .state .wp-frame, .foot { padding-left: 16px; padding-right: 16px; }
   .topbar { grid-template-columns: 1fr auto; gap: 12px; padding-left: 16px; padding-right: 16px; }
   .topbar__nav { justify-self: end; gap: 14px; }
-  .topbar__clock { grid-column: 1 / -1; justify-self: stretch; justify-content: space-between; border-top: var(--lw-thin) solid var(--line); height: 40px; }
-  .topbar__clock .readout { text-align: left; min-width: 0; }
-  .topbar:has(.topbar__clock:not([hidden])) { height: auto; grid-template-rows: var(--bar-h) 40px; }
   .lane--state { min-height: 0; flex: 1 0 auto; }
   .lane--state .lane__label { border-bottom: var(--lw-thin) solid var(--line); padding-block: 32px; }
   .lane--state .lane__label h1 { max-width: none; }
   .lane--state .lane__body { aspect-ratio: 16 / 10; min-height: 0; }
   .page__label { padding-bottom: 0; }
   .page__label h1 { position: static; }
-}
-@media (max-width: 600px) {
-  .wp-frame text { font-size: 44px; }
-}
-@media (max-width: 480px) {
-  .prose .katex-display { font-size: 0.84em; padding-right: 28px; mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
 }
