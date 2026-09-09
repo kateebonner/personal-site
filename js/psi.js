@@ -1,12 +1,15 @@
-// Free-particle Gaussian wavepacket, closed form, in units where hbar = m = 1.
+// Free-particle Gaussian wavepacket in units where hbar = m = 1, in the form Kate's 2023
+// animation used (her momentum-space derivation with a constant prefactor and without the
+// p0^2 term), reproduced literally at her request:
 //
-//   psi(x, 0) = (2 pi s0^2)^(-1/4) exp( -(x - x0)^2 / (4 s0^2) + i k0 (x - x0) )
-//   psi(x, t) = (2 pi s0^2)^(-1/4) c^(-1/2)
-//               exp( -(x - x0 - k0 t)^2 / (4 s0^2 c) + i k0 (x - x0) - i k0^2 t / 2 )
-//   c = 1 + i t / (2 s0^2),   width  s(t) = s0 sqrt(1 + (t / (2 s0^2))^2)
+//   psi(x, t) = C exp( -(x - x0)^2 / (4 s0^2 c) + i k0 (x - x0) / c ),   c = 1 + i t / (2 s0^2)
+//   C = sqrt(pi) / s0  (the t = 0 value of the exact prefactor)
+//
+// Shape, motion (centre at x0 + k0 t), spreading (width s(t) = s0 sqrt(1 + (t / 2 s0^2)^2)),
+// and phase are those of the exact solution. The amplitude is not: the exact prefactor falls
+// as (1 + (t / 2 s0^2)^2)^(-1/4), so this psi's norm grows as the packet spreads.
 //
 // The same module runs in the browser (the live figure) and in node (the static frame).
-// The normalisation is exact: the peak falls as (1 + (t / 2 s0^2)^2)^(-1/4) while the packet spreads.
 
 export const PARAMS = Object.freeze({
   x0: 0,
@@ -26,7 +29,8 @@ export function width(t, p = PARAMS) {
 }
 
 export function peak(t, p = PARAMS) {
-  return Math.pow(2 * Math.PI * width(t, p) ** 2, -0.25);
+  const tau = t / (2 * p.sigma0 * p.sigma0);
+  return (Math.sqrt(Math.PI) / p.sigma0) * Math.exp((p.k0 * p.k0 * t * t) / (4 * p.sigma0 * p.sigma0 * (1 + tau * tau)));
 }
 
 export function makeBuffers(p = PARAMS) {
@@ -38,28 +42,20 @@ export function psi(t, p = PARAMS, out = makeBuffers(p)) {
   const N = p.samples;
   const { xs, re, im } = out;
   const s2 = p.sigma0 * p.sigma0;
-  const cr = 1;
-  const ci = t / (2 * s2);
-  const cmod2 = cr * cr + ci * ci;
-  const cmod = Math.sqrt(cmod2);
-  const carg = Math.atan2(ci, cr);
-  const pref = Math.pow(2 * Math.PI * s2, -0.25) / Math.sqrt(cmod);
-  const prefArg = -carg / 2;
-  const invR = cr / cmod2;
-  const invI = -ci / cmod2;
+  const tau = t / (2 * s2);
+  const inv = 1 / (1 + tau * tau);        // 1 / c = (1 - i tau) / (1 + tau^2)
+  const C = Math.sqrt(Math.PI) / p.sigma0;
   const dx = (p.xMax - p.xMin) / (N - 1);
-  const phaseT = 0.5 * p.k0 * p.k0 * t;
   for (let i = 0; i < N; i++) {
     const x = p.xMin + i * dx;
     xs[i] = x;
-    const d = x - p.x0 - p.k0 * t;
-    const g = -(d * d) / (4 * s2);
-    const er = g * invR;
-    const ei = g * invI + p.k0 * (x - p.x0) - phaseT;
-    const mag = pref * Math.exp(er);
-    const ph = ei + prefArg;
-    re[i] = mag * Math.cos(ph);
-    im[i] = mag * Math.sin(ph);
+    const d = x - p.x0;
+    const g = (d * d) / (4 * s2);
+    const er = (-g + p.k0 * d * tau) * inv;
+    const ei = (g * tau + p.k0 * d) * inv;
+    const mag = C * Math.exp(er);
+    re[i] = mag * Math.cos(ei);
+    im[i] = mag * Math.sin(ei);
   }
   return out;
 }

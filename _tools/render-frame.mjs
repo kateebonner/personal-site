@@ -3,11 +3,13 @@
 // grained by a noise mask, plus lightly sketched envelope lines and one axis.
 // Output: assets/wavepacket-frame.svg (referenced from index.html as an image). Run: node _tools/render-frame.mjs
 import { writeFileSync } from 'node:fs';
-import { PARAMS, psi } from '../js/psi.js';
+import { PARAMS, psi, peak as peak0 } from '../js/psi.js';
 
 const t = PARAMS.tFallback;
 const DRAW = { ...PARAMS, samples: 900 };
-const { xs, re, im } = psi(t, DRAW);
+const raw = psi(t, DRAW);
+const UNIT = 1 / peak0(0);
+const xs = raw.xs, re = raw.re.map(v => v * UNIT), im = raw.im.map(v => v * UNIT);
 const N = xs.length;
 const W = 1200, H = 560;
 const left = 72, right = 1164, cy = 280;
