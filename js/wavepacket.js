@@ -105,7 +105,7 @@ export function mount(figure, host, clock) {
     }
     ctx.strokeStyle = grain;
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.globalAlpha = alpha;
+    ctx.globalAlpha = alpha * ink;
     if (!pressure) { ctx.lineWidth = width * dpr; curve(X, Y, 0, n - 1); return; }
     for (let from = 0; from < n - 1; from += CHUNK) {
       const to = Math.min(from + CHUNK, n - 1);
@@ -115,13 +115,17 @@ export function mount(figure, host, clock) {
     }
   }
 
-  let frameIdx = -1, lastT = 0;
+  let frameIdx = -1, lastT = 0, lastU = 0, ink = 1;
   function drawFrame(force) {
     const idx = reduceMotion ? 0 : Math.floor(performance.now() / (1000 / FPS));
     if (!force && idx === frameIdx) return;
     frameIdx = idx;
     const take = idx % TAKES;
     const t = lastT;
+    // ink fades out and back in across the cut, so every drawn frame is a true forward state
+    const f = PARAMS.fade, edge = Math.min(lastU, 1 - lastU);
+    const fade = reduceMotion ? 1 : Math.min(1, edge / f);
+    ink = fade * fade * (3 - 2 * fade);
 
     psi(t, DRAW, now);
     let peak = 1e-9;
@@ -161,7 +165,7 @@ export function mount(figure, host, clock) {
     ctx.globalAlpha = 1;
   }
 
-  clock.subscribe((t) => { lastT = t; drawFrame(false); });
+  clock.subscribe((t, u) => { lastT = t; lastU = u; drawFrame(false); });
   new ResizeObserver(fit).observe(host);
   figure.classList.add('is-live');
   fit();
