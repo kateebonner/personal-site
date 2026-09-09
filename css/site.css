@@ -32,7 +32,7 @@ body {
   margin: 0;
   position: relative;
   padding: var(--sheet-pad);
-  background: var(--paper);
+  background: var(--paper) url('/assets/paper.jpg') center top / cover no-repeat;
   color: var(--ink);
   font-family: var(--font-prose);
   font-size: var(--fs-2);
@@ -119,7 +119,7 @@ p + p { margin-top: 16px; }
 .state > * { grid-area: 1 / 1; }
 .state .wp-frame { width: 100%; height: 100%; display: block; padding: 16px 24px; }
 .state .wp-mount { width: 100%; height: 100%; position: relative; overflow: hidden; }
-.state .wp-mount canvas { display: block; }
+.state .wp-mount canvas { display: block; width: 100%; height: 100%; }
 .state.is-live .wp-frame { visibility: hidden; }
 .state:not(.is-live) .wp-mount { display: none; }
 
