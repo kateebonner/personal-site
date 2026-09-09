@@ -45,7 +45,7 @@ body {
 .paper {
   position: fixed; inset: -6%; z-index: -1;
   background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat;
-  will-change: transform, filter;
+  will-change: transform;
   pointer-events: none;
 }
 ::selection { background: var(--ink); color: var(--paper); }
