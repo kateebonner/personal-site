@@ -99,8 +99,8 @@ out += `<text x="${f((xa + xb) / 2)}" y="${f(yd - 8)}" font-family="${MONO}" fon
 // axis labels
 const lab = (x, y, text, anchor = 'start') =>
   `<text x="${f(x)}" y="${f(y)}" font-family="${LETTER}" font-size="18" letter-spacing="0.5" fill="${INK}" text-anchor="${anchor}" paint-order="stroke" stroke="var(--paper, #FFFFFF)" stroke-width="8" stroke-linejoin="round">${text}</text>`;
-out += lab(ax1x + 10, ax1y + 6, 'x');
-out += lab(reTip[0] - 8, reTip[1] - 10, 'Re ψ', 'end');
+out += lab(ax1x - 6, ax1y - 10, 'x', 'end');
+out += lab(reTip[0] + 10, reTip[1] + 6, 'Re ψ');
 out += lab(imTip[0] + 12, imTip[1] + 18, 'Im ψ');
 out += `</svg>`;
 
