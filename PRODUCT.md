@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static HTML/CSS/JS with no build step, chosen explicitly by Kate over Astro and Eleventy. Deployed by GitHub Pages from the root of `main` to the custom domain katebonner.ai (CNAME present). Third-party libraries load from a CDN via an import map; Three.js is already in use this way. Posts are authored by copying an HTML template; a Markdown-to-HTML script was deliberately deferred until there are two or three notes.
+Static HTML/CSS/JS with no build step, chosen explicitly by Kate over Astro and Eleventy. Deployed by GitHub Pages from the root of `main` to the custom domain katebonner.ai (CNAME present). No third-party code at runtime: the figure is drawn on a 2D canvas with a pencil brush (2026-09-09); Three.js and the import map are gone. Posts are authored by copying an HTML template; a Markdown-to-HTML script was deliberately deferred until there are two or three notes.
 
 ## Users
 
@@ -55,7 +55,7 @@ Degree wording is Kate's: "Bachelor's Degree, Physics" and "Master's Degree, Qua
 
 Signature element (binding): a 3D animation of the 1D free-particle time-dependent Schrödinger equation. A Gaussian wavepacket plotted as x versus Re(ψ) versus Im(ψ), a spiraling ribbon that travels and disperses, with no envelope, dimension, or axis lettering (Kate removed the extra details on 2026-09-09), looping by resetting smoothly. Home only; About is text-first. The previous site's Bloch sphere is retired and is an anti-reference, not a component to reuse.
 
-Technical constraints: must respect `prefers-reduced-motion` (static frame or gentle idle), must degrade to a static image when WebGL is unavailable, must not block first paint or text rendering. No analytics or tracking unless Kate asks for it later. Every claim on the site must be traceable to Kate's résumé or public work and must not contradict her LinkedIn.
+Technical constraints: must respect `prefers-reduced-motion` (a single held frame), must degrade to the inline SVG frame when scripts are off, must not block first paint or text rendering. The figure is meant to look like a pencil sketch animated frame by frame (Kate, 2026-09-09). No analytics or tracking unless Kate asks for it later. Every claim on the site must be traceable to Kate's résumé or public work and must not contradict her LinkedIn.
 
 Terminology: the writing section is "Notes", not "Blog" or "Writing". Pages are Home and About; Projects and Notes were removed on 2026-09-09 because there is nothing to show yet.
 
