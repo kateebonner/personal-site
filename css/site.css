@@ -218,7 +218,7 @@ p + p { margin-top: 16px; }
   .topbar__clock { grid-column: 1 / -1; justify-self: stretch; justify-content: space-between; border-top: var(--lw-thin) solid var(--line); height: 40px; }
   .topbar__clock .readout { text-align: left; min-width: 0; }
   .topbar:has(.topbar__clock:not([hidden])) { height: auto; grid-template-rows: var(--bar-h) 40px; }
-  .lane--state { min-height: 0; flex: 0 0 auto; }
+  .lane--state { min-height: 0; flex: 1 0 auto; }
   .lane--state .lane__label { border-bottom: var(--lw-thin) solid var(--line); padding-block: 32px; }
   .lane--state .lane__label h1 { max-width: none; }
   .lane--state .lane__body { aspect-ratio: 16 / 10; min-height: 0; }
