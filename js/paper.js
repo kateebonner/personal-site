@@ -1,6 +1,7 @@
 // The paper as a stack of photographs: on every drawn frame, in step with the figure, the
-// background layer takes a small seeded change of rotation, position, brightness, and warmth,
-// the way frames of a stop-motion film differ from one another. Holds still under reduced motion.
+// background layer takes a small seeded change of rotation and position, the way frames of a
+// stop-motion film sit slightly differently under the camera. Tint stays constant. Holds still
+// under reduced motion.
 import { PARAMS } from './psi.js';
 
 const layer = document.getElementById('paper');
@@ -24,11 +25,7 @@ function frame() {
     const rnd = mulberry32(4242 + idx);
     const rot = centred(rnd) * 0.35;            // degrees
     const dx = centred(rnd) * 4, dy = centred(rnd) * 4;   // px
-    const bright = 1 + centred(rnd) * 0.035;
-    const warm = Math.max(0, 0.03 + centred(rnd) * 0.03);  // sepia
-    const hue = centred(rnd) * 4;               // degrees
     layer.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) rotate(${rot.toFixed(3)}deg)`;
-    layer.style.filter = `brightness(${bright.toFixed(3)}) sepia(${warm.toFixed(3)}) hue-rotate(${hue.toFixed(1)}deg)`;
   }
   requestAnimationFrame(frame);
 }
