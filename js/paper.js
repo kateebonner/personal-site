@@ -33,9 +33,9 @@ function frame() {
   if (idx !== last) {
     last = idx;
     const rnd = mulberry32(4242 + idx);
-    root.style.setProperty('--sheet-rot', `${(centred(rnd) * 0.35).toFixed(3)}deg`);
-    root.style.setProperty('--sheet-dx', `${(centred(rnd) * 4).toFixed(1)}px`);
-    root.style.setProperty('--sheet-dy', `${(centred(rnd) * 4).toFixed(1)}px`);
+    root.style.setProperty('--sheet-rot', `${(centred(rnd) * 0.15).toFixed(3)}deg`);   // gentle: no one's eyes should work
+    root.style.setProperty('--sheet-dx', `${(centred(rnd) * 1.5).toFixed(1)}px`);
+    root.style.setProperty('--sheet-dy', `${(centred(rnd) * 1.5).toFixed(1)}px`);
   }
   requestAnimationFrame(frame);
 }

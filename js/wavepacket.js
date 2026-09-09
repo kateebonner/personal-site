@@ -81,7 +81,7 @@ export function mount(figure, host, clock) {
     view.left = 0.06 * w; view.ex = (0.97 * w - 0.06 * w) / (PARAMS.xMax - PARAMS.xMin); view.cy = 0.5 * h;
     const v = Math.min(0.36 * h, 0.2 * w);
     view.eRe = [0, -v]; view.eIm = [0.058 * w, 0.26 * v];
-    view.shake = Math.max(1.2, 0.0045 * w);
+    view.shake = Math.max(1, 0.003 * w);          // hand shake, kept gentle
     drawFrame(true);
   }
   const proj = (x, r, i) => [view.left + (x - PARAMS.xMin) * view.ex + r * view.eRe[0] + i * view.eIm[0], view.cy + r * view.eRe[1] + i * view.eIm[1]];
