@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
+  <div class="paper" id="paper" aria-hidden="true"></div>
   <header class="topbar">
     <a class="topbar__mark" href="/" aria-current="page">Kate Bonner</a>
   </header>
@@ -36,11 +37,7 @@
     </section>
   </main>
 
-  <footer class="foot">
-    <a href="mailto:kate@katebonner.ai">kate@katebonner.ai</a>
-    <a href="https://www.linkedin.com/in/kate-bonner" rel="me">LinkedIn</a>
-  </footer>
-
+  <script type="module" src="/js/paper.js"></script>
   <script type="module" src="/js/sequence.js"></script>
   <script type="module">
     const start = () => import('/js/sequence.js')
