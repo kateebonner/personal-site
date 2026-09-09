@@ -33,7 +33,8 @@ Viewed on desktop and mobile, usually from a LinkedIn profile or an email thread
 ## Capabilities and Constraints
 
 Pages (confirmed):
-- Home: the confirmed headline, subline, contact line, and the signature animation. No nav: About was removed on 2026-09-09 (Kate: "for now"). Kate removed the section lanes, the time axis, the T dimension row, and the cursor (2026-09-09).
+- Home: placeholder headline and subline (lorem ipsum until Kate writes copy), contact line, and the signature animation. Nav links to Derivation.
+- Derivation: the corrected momentum-space derivation of the free-particle Gaussian wavepacket behind the figure, typeset with KaTeX (added 2026-09-09 at Kate's request, from her own hand-written derivation with three slips fixed: a stray sigma-squared in the p0 x term, the prefactor's time term, and the dropped p0-squared piece that keeps the norm). Kate removed the section lanes, the time axis, the T dimension row, and the cursor (2026-09-09).
 - About: removed for now (2026-09-09). The bio text stays on record in git history.
 - Projects and Notes: removed on 2026-09-09 (nothing to add yet); the pages and the note template are deleted.
 - Footer on every page: one line with kate@katebonner.ai and LinkedIn (linkedin.com/in/kate-bonner). Kate removed the title block and the sheet zone marks (2026-09-09). No GitHub, Scholar, or other links.
@@ -53,11 +54,11 @@ Confirmed timeline content (newest first):
 
 Degree wording is Kate's: "Bachelor's Degree, Physics" and "Master's Degree, Quantum Science & Technology", not B.A./M.S. abbreviations.
 
-Signature element (binding): a 3D animation of the 1D free-particle time-dependent Schrödinger equation. A Gaussian wavepacket plotted as x versus Re(ψ) versus Im(ψ), a spiraling ribbon that travels and disperses, with no envelope, dimension, or axis lettering (Kate removed the extra details on 2026-09-09), looping by resetting smoothly. Home only. The previous site's Bloch sphere is retired and is an anti-reference, not a component to reuse.
+Signature element (binding): a 3D animation of the 1D free-particle time-dependent Schrödinger equation. Parameters since 2026-09-09, matching Kate's own 2023 animation data: hbar = m = 1, momentum width sigma = 2 (position width 0.354 at t = 0), p0 = 1, t from 0 to 5 and back (ping-pong, 16 s round trip), x from -18 to 28; the spreading dominates (width grows twenty-fold while the centre moves five units) and the amplitude decays as (1 + tau^2)^(-1/4). A Gaussian wavepacket plotted as x versus Re(ψ) versus Im(ψ), a spiraling ribbon that travels and disperses, with no envelope, dimension, or axis lettering (Kate removed the extra details on 2026-09-09), looping by resetting smoothly. Home only. The previous site's Bloch sphere is retired and is an anti-reference, not a component to reuse.
 
 Technical constraints: must respect `prefers-reduced-motion` (a single held frame), must degrade to the inline SVG frame when scripts are off, must not block first paint or text rendering. The figure is meant to look like a pencil sketch animated frame by frame (Kate, 2026-09-09). No analytics or tracking unless Kate asks for it later. Every claim on the site must be traceable to Kate's résumé or public work and must not contradict her LinkedIn.
 
-Terminology: the writing section is "Notes", not "Blog" or "Writing". The site is Home only for now; Projects and Notes were removed on 2026-09-09 because there is nothing to show yet.
+Terminology: the writing section is "Notes", not "Blog" or "Writing". The site is Home and Derivation for now; Projects and Notes were removed on 2026-09-09 because there is nothing to show yet.
 
 Undecided: how notes are authored once there are several (template copy versus a small Markdown script); whether Projects grows with Harmoniqs work, the qLDPC challenge, the Georgetown junction research, or the VR physics paper (all declined for launch); social preview image content beyond a frame of the animation.
 

@@ -6,18 +6,18 @@
 //   c = 1 + i t / (2 s0^2),   width  s(t) = s0 sqrt(1 + (t / (2 s0^2))^2)
 //
 // The same module runs in the browser (the live figure) and in node (the static frame).
+// The normalisation is exact: the peak falls as (1 + (t / 2 s0^2)^2)^(-1/4) while the packet spreads.
 
 export const PARAMS = Object.freeze({
   x0: 0,
-  sigma0: 0.5,
-  k0: 8,
-  xMin: -3,
-  xMax: 13,
+  sigma0: 0.35355339,   // position width at t = 0: hbar / (sqrt 2 * sigma_p) with sigma_p = 2
+  k0: 1,                // mean momentum p0 (hbar = m = 1), so the centre moves at speed 1
+  xMin: -18,
+  xMax: 28,
   samples: 600,
-  T: 1.2,            // loop period in the equation's time units
-  loopSeconds: 14,   // wall-clock seconds per loop
-  blendStart: 0.9,   // fraction of the loop where the cross-fade to t = 0 begins
-  tFallback: 0.45,   // the frame used for reduced motion, no WebGL, Projects, and the preview image
+  T: 5,                 // the loop runs t from 0 to T and back
+  loopSeconds: 16,      // wall-clock seconds for the full there-and-back
+  tFallback: 1.5,       // the frame used for the static image and the preview
 });
 
 export function width(t, p = PARAMS) {
