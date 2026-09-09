@@ -165,7 +165,6 @@ p + p { margin-top: 16px; }
 .prose p { margin: 0 0 16px; }
 .prose h2 { margin: 40px 0 12px; }
 .prose h2:first-child { margin-top: 0; }
-.page__body > h2 { margin: 32px 0 0; }
 .prose ul, .prose ol { padding-left: 1.4em; margin: 0 0 16px; }
 .prose li + li { margin-top: 6px; }
 .prose code, .prose pre { font-family: var(--font-mono); font-size: 0.92em; }
@@ -180,21 +179,6 @@ p + p { margin-top: 16px; }
 .figure .wp-frame { width: 100%; height: auto; display: block; }
 .figure figcaption { border-top: var(--lw-thin) solid var(--line); margin: 12px -16px 0; padding: 10px 16px; font-family: var(--font-letter); font-size: var(--fs-1); letter-spacing: 0.04em; color: var(--ink); }
 .figure figcaption .fig { font-family: var(--font-mono); margin-right: 12px; }
-
-/* balloon callouts */
-.balloon {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; border: var(--lw-med) solid var(--line); border-radius: 50%;
-  font-family: var(--font-mono); font-size: var(--fs-1); color: var(--ink); flex: 0 0 auto;
-}
-
-/* experience list (about) */
-.xp { list-style: none; margin: 16px 0 0; padding: 0; max-width: var(--measure); }
-.xp li { display: grid; grid-template-columns: 26px 1fr; gap: 0 16px; padding: 16px 0; border-top: var(--lw-thin) solid var(--line); }
-.xp li:last-child { border-bottom: var(--lw-thin) solid var(--line); }
-.xp h3 { font-size: var(--fs-2); }
-.xp .meta { display: block; margin: 4px 0 8px; }
-.xp p { font-size: var(--fs-2); }
 
 /* notes list */
 .notes { list-style: none; margin: 0; padding: 0; max-width: 760px; }
