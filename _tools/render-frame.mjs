@@ -1,19 +1,20 @@
 // Renders the static figure of psi(x, t) at PARAMS.tFallback as an SVG pencil sketch:
 // graphite passes (halo, two side strokes, core) roughened by a displacement filter and
 // grained by a noise mask, plus lightly sketched envelope lines and one axis.
-// Output: assets/wavepacket-frame.svg (inlined into index.html). Run: node _tools/render-frame.mjs
+// Output: assets/wavepacket-frame.svg (referenced from index.html as an image). Run: node _tools/render-frame.mjs
 import { writeFileSync } from 'node:fs';
 import { PARAMS, psi } from '../js/psi.js';
 
 const t = PARAMS.tFallback;
-const { xs, re, im } = psi(t);
+const DRAW = { ...PARAMS, samples: 900 };
+const { xs, re, im } = psi(t, DRAW);
 const N = xs.length;
 const W = 1200, H = 560;
 const left = 72, right = 1164, cy = 280;
 const ex = (right - left) / (PARAMS.xMax - PARAMS.xMin);
 const eRe = [0, -210], eIm = [70, 55];
 const proj = (x, r, i) => [left + (x - PARAMS.xMin) * ex + r * eRe[0] + i * eIm[0], cy + r * eRe[1] + i * eIm[1]];
-const f = (v) => v.toFixed(1);
+const f = (v) => v.toFixed(0);
 
 function mulberry32(a) {
   return function () {
@@ -27,7 +28,8 @@ function makeTake(seed, n) {
   const rnd = mulberry32(seed);
   const terms = 3, dx = new Float64Array(n), dy = new Float64Array(n);
   const k = [], ph = [], a = [];
-  for (let j = 0; j < terms * 2; j++) { k.push(0.015 + rnd() * 0.09); ph.push(rnd() * Math.PI * 2); a.push(0.4 + rnd() * 0.8); }
+  const sc = 600 / n;
+  for (let j = 0; j < terms * 2; j++) { k.push((0.015 + rnd() * 0.09) * sc); ph.push(rnd() * Math.PI * 2); a.push(0.4 + rnd() * 0.8); }
   for (let i = 0; i < n; i++) {
     let sx = 0, sy = 0;
     for (let j = 0; j < terms; j++) { sx += a[j] * Math.sin(k[j] * i + ph[j]); sy += a[j + terms] * Math.sin(k[j + terms] * i + ph[j + terms]); }
@@ -39,7 +41,15 @@ const SHAKE = 5.4;   // px at unit amplitude, matching the live figure at 1200 w
 let peak = 1e-9;
 for (let i = 0; i < N; i++) peak = Math.max(peak, Math.hypot(re[i], im[i]));
 const damp = (i) => 0.2 + 0.8 * Math.hypot(re[i], im[i]) / peak;
-const poly = (pts, tk, wob, dampFn) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${f(x + tk.dx[i % N] * SHAKE * wob * (dampFn ? dampFn(i) : 1))} ${f(y + tk.dy[i % N] * SHAKE * wob * (dampFn ? dampFn(i) : 1))}`).join('');
+const poly = (pts, tk, wob, dampFn) => {
+  const P = pts.map(([x, y], i) => { const d = dampFn ? dampFn(i) : 1; return [x + tk.dx[i % tk.dx.length] * SHAKE * wob * d, y + tk.dy[i % tk.dy.length] * SHAKE * wob * d]; });
+  let d = `M${f(P[0][0])} ${f(P[0][1])}`;
+  for (let i = 0; i + 1 < P.length; i++) {
+    const p0 = P[Math.max(i - 1, 0)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(i + 2, P.length - 1)];
+    d += `C${f(p1[0] + (p2[0] - p0[0]) / 6)} ${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(p2[0] - (p3[0] - p1[0]) / 6)} ${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])} ${f(p2[1])}`;
+  }
+  return d;
+};
 
 let out = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="wp-title wp-desc" class="wp-frame">`;
 out += `<title id="wp-title">Free Gaussian wavepacket at t = ${t.toFixed(2)}</title>`;
@@ -55,17 +65,17 @@ out += `<g filter="url(#wp-pencil)" fill="none" stroke-linecap="round" stroke-li
 
 // envelope: lightly sketched
 let rings = '';
-for (let i = 0; i < N; i += 12) {
+for (let i = 0; i < N; i += 30) {
   const r = Math.hypot(re[i], im[i]); if (r < 0.03) continue;
-  const pts = []; for (let k = 0; k <= 36; k++) { const a = (k / 36) * Math.PI * 2; pts.push(proj(xs[i], r * Math.cos(a), r * Math.sin(a))); }
-  rings += poly(pts, makeTake(300 + i, 40), 0.8) + 'Z';
+  const pts = []; for (let k = 0; k <= 48; k++) { const a = (k / 48) * Math.PI * 2; pts.push(proj(xs[i], r * Math.cos(a), r * Math.sin(a))); }
+  rings += poly(pts, makeTake(300 + i, 49), 0.8) + 'Z';
 }
 out += `<path d="${rings}" stroke="var(--line, #7A1E2C)" stroke-opacity="0.22" stroke-width="0.9"/>`;
 let longs = '';
 for (let j = 0; j < 8; j++) {
   const a = (j / 8) * Math.PI * 2;
-  const pts = []; for (let i = 0; i < N; i += 3) { const r = Math.hypot(re[i], im[i]); pts.push(proj(xs[i], r * Math.cos(a), r * Math.sin(a))); }
-  longs += poly(pts, makeTake(400 + j, N), 0.8);
+  const pts = []; for (let i = 0; i < N; i += 5) { const r = Math.hypot(re[i], im[i]); pts.push(proj(xs[i], r * Math.cos(a), r * Math.sin(a))); }
+  longs += poly(pts, makeTake(400 + j, pts.length), 0.8);
 }
 out += `<path d="${longs}" stroke="var(--line, #7A1E2C)" stroke-opacity="0.16" stroke-width="0.85"/>`;
 // axis
@@ -75,10 +85,10 @@ out += `<path d="${poly(axisPts, makeTake(208, 64), 0.5)}" stroke="var(--line, #
 // the wavefunction: halo, side strokes, core
 const pts = []; for (let i = 0; i < N; i++) pts.push(proj(xs[i], re[i], im[i]));
 const passes = [
-  { seed: 41, wob: 1.4, color: 'rgb(122,30,44)', op: 0.09, w: 3.4 },
-  { seed: 25, wob: 2.6, color: 'rgb(138,48,64)', op: 0.3,  w: 1.05 },
-  { seed: 18, wob: 1.9, color: 'rgb(122,30,44)', op: 0.38, w: 1.1 },
-  { seed: 11, wob: 1.0, color: 'rgb(106,20,36)', op: 0.8,  w: 1.35 },
+  { seed: 41, wob: 1.4, color: 'var(--line, #7A1E2C)', op: 0.09, w: 3.4 },
+  { seed: 25, wob: 2.6, color: 'var(--line, #7A1E2C)', op: 0.3,  w: 1.05 },
+  { seed: 18, wob: 1.9, color: 'var(--line, #7A1E2C)', op: 0.38, w: 1.1 },
+  { seed: 11, wob: 1.0, color: 'var(--line, #7A1E2C)', op: 0.8,  w: 1.35 },
 ];
 for (const p of passes) out += `<path d="${poly(pts, makeTake(p.seed, N), p.wob, damp)}" stroke="${p.color}" stroke-opacity="${p.op}" stroke-width="${p.w}"/>`;
 out += `</g></svg>`;
