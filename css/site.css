@@ -119,6 +119,7 @@ p + p { margin-top: 16px; }
 .lane__body { position: relative; min-height: 240px; }
 
 .lane--state { min-height: min(40vh, 620px); flex: 1 0 auto; }
+.lane--state + .tiles { border-top: 0; }
 .lane--state .lane__label { justify-content: center; gap: 12px; padding-block: 20px; }
 .lane--state .lane__label h1 { max-width: 12ch; }
 .lane--state .lane__label .sub { font-family: var(--font-prose); font-size: var(--fs-2); color: var(--ink-2); max-width: 34ch; }
@@ -142,6 +143,28 @@ p + p { margin-top: 16px; }
 .foot a { color: var(--ink); }
 .foot a:hover { text-decoration-thickness: 2px; }
 
+/* ---------- tiles: a row of square links under the figure ---------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 176px);
+  gap: 16px;
+  padding: 24px 24px 28px;
+}
+.tile {
+  aspect-ratio: 1;
+  display: flex; align-items: flex-end;
+  padding: 14px 16px;
+  border: var(--lw-thin) solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--font-letter);
+  font-size: var(--fs-1);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 140ms ease-out, color 140ms ease-out;
+}
+.tile:hover, .tile:focus-visible { background: var(--ink); color: var(--paper); }
+
 /* ---------- content pages ---------- */
 .page { flex: 1; display: grid; grid-template-columns: var(--label-w) 1fr; }
 .page__label { border-right: var(--lw-thin) solid var(--line); padding: 40px 24px; }
@@ -164,6 +187,8 @@ p + p { margin-top: 16px; }
   .topbar, .lane__label, .state .wp-frame, .page__label, .page__body, .foot { padding-left: 20px; padding-right: 20px; }
 }
 @media (max-width: 860px) {
+  .tiles { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px 16px 24px; }
+  .tile { padding: 10px 12px; font-size: 0.75rem; letter-spacing: 0.1em; }
   :root { --label-w: 0px; --sheet-pad: 16px; }
   .lane, .page { grid-template-columns: 1fr; }
   .lane__label, .page__label { border-right: 0; }
