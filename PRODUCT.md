@@ -33,9 +33,9 @@ Viewed on desktop and mobile, usually from a LinkedIn profile or an email thread
 ## Capabilities and Constraints
 
 Pages (confirmed):
-- Home: placeholder headline and subline (lorem ipsum until Kate writes copy), contact line, and the signature animation. No nav.
+- Home: the wordmark, a single "Notes" link in the header (2026-09-14), and the signature animation. Kate removed the story band (headline, subline, tiles) on 2026-09-14; the page is the drawing.
 - About: removed for now (2026-09-09). The bio text stays on record in git history.
-- Projects and Notes: stub pages with placeholder text (restored 2026-09-10 as tile targets); Contact: a page carrying the email and LinkedIn links.
+- Notes: an index (one dated entry per note) and the first note, "Bits as group representations" (2026-09-14), Kate's notebook pages on classical versus quantum bits via group representation: S₂ on the classical bit, the Pauli group, the Clifford group, SU(2). The nine figures are her own pencil drawings lifted from photos of the notebook by `_tools/ink-notebook.py` (frame found, perspective removed, paper lighting flattened, graphite turned into alpha over the site ink) and saved as one-colour palette PNGs in `assets/notes/`; the photos stay out of the repo. Math in the text is plain Unicode with sub/superscripts, no KaTeX; the matrices live in the drawings and in the images' alt text. Projects: stub page with placeholder text, not linked from anywhere. Contact: a page carrying the email and LinkedIn links, not linked from anywhere.
 - Footer on every page: one line with kate@katebonner.ai and LinkedIn (linkedin.com/in/kate-bonner). Kate removed the title block and the sheet zone marks (2026-09-09). No GitHub, Scholar, or other links.
 
 Confirmed headline (Home), currently replaced on the page by lorem ipsum placeholder text at Kate's request (2026-09-09) until she writes new copy:
@@ -57,7 +57,7 @@ Signature element (binding): a 3D animation of the 1D free-particle time-depende
 
 Technical constraints: must respect `prefers-reduced-motion` (a single held frame), must degrade to the inline SVG frame when scripts are off, must not block first paint or text rendering. The figure is meant to look like a pencil sketch animated frame by frame (Kate, 2026-09-09). No analytics or tracking unless Kate asks for it later. Every claim on the site must be traceable to Kate's résumé or public work and must not contradict her LinkedIn.
 
-Terminology: the writing section is "Notes", not "Blog" or "Writing". The site is Home, Projects, Notes, and Contact; Projects and Notes were removed on 2026-09-09 because there is nothing to show yet.
+Terminology: the writing section is "Notes", not "Blog" or "Writing". The site is Home, Notes, and (unlinked) Projects and Contact. Notes went live with its first entry on 2026-09-14; the only navigation on the site is the "Notes" link in the header.
 
 Undecided: how notes are authored once there are several (template copy versus a small Markdown script); whether Projects grows with Harmoniqs work, the qLDPC challenge, the Georgetown junction research, or the VR physics paper (all declined for launch); social preview image content beyond a frame of the animation.
 
