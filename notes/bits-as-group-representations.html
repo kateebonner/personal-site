@@ -35,38 +35,44 @@
 
         <h2>Classical information</h2>
         <div class="panels">
-          <figure class="ink-figure"><img src="/assets/notes/s2-generator.png" width="900" height="1415" alt="Hand-drawn panel, S2 generator: the identity matrix and the matrix X with rows 0 1 and 1 0, labelled a cyclic group of order 2." loading="lazy"></figure>
-          <figure class="ink-figure"><img src="/assets/notes/s2-state-space.png" width="900" height="1503" alt="Hand-drawn panel, S2 state space: a sphere with only its two poles marked 0 and 1, and an arrow between them." loading="lazy"></figure>
+          <figure class="ink-figure"><img src="/assets/notes/s2-generator.png" width="900" height="1415" alt="Hand-drawn panel, S2 generator: the identity matrix and the matrix X with rows 0 1 and 1 0, labelled a cyclic group of order 2." loading="lazy" data-sheet></figure>
+          <figure class="ink-figure ink-figure--live" data-figure="s2"><img class="ink-figure__fallback" src="/assets/notes/s2-state-space.png" width="900" height="1503" alt="Hand-drawn panel, S2 state space: a sphere with only its two poles marked 0 and 1, and an arrow between them." loading="lazy"><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a sphere with only its two poles, 0 and 1, joined by a double arrow. A ring marks the state, hopping between the poles." data-sheet><span class="ink-figure__title">S₂ · state space</span></div></figure>
         </div>
         <p>The symmetry group of a classical bit is S<sub>2</sub> = ⟨x | x<sup>2</sup> = I⟩, a cyclic group of order 2. It acts on the set {0, 1}. The action is free and transitive, so the orbit of 0 is {0, 1} with trivial stabilizer. Choosing the outcomes as a basis of ℂ<sup>2</sup> turns this action into a faithful representation ρ: S<sub>2</sub> → U(2), which is how the classical group sits inside the quantum one.</p>
 
         <h2>Quantum information</h2>
         <div class="panels">
-          <figure class="ink-figure"><img src="/assets/notes/p1-generators.png" width="900" height="1393" alt="Hand-drawn panel, P1 generators: the Pauli matrices X, Y, and Z." loading="lazy"></figure>
-          <figure class="ink-figure"><img src="/assets/notes/p1-state-space.png" width="900" height="1433" alt="Hand-drawn panel, P1 state space: an octahedron inscribed in the sphere, its six vertices labelled 0, 1, plus, minus, plus i, minus i." loading="lazy"></figure>
+          <figure class="ink-figure"><img src="/assets/notes/p1-generators.png" width="900" height="1393" alt="Hand-drawn panel, P1 generators: the Pauli matrices X, Y, and Z." loading="lazy" data-sheet></figure>
+          <figure class="ink-figure ink-figure--live" data-figure="p1"><img class="ink-figure__fallback" src="/assets/notes/p1-state-space.png" width="900" height="1433" alt="Hand-drawn panel, P1 state space: an octahedron inscribed in the sphere, its six vertices labelled 0, 1, plus, minus, plus i, minus i." loading="lazy"><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: an octahedron inscribed in the sphere, vertices 0, 1, plus, minus, plus i, minus i, turned by a half turn about the x, then y, then z axis; each turn swaps two pairs of vertices and fixes one." data-sheet><span class="ink-figure__title">P₁ · state space</span></div></figure>
         </div>
         <p>The Pauli group is P<sub>1</sub> = ⟨X, Y, Z⟩ ⊂ U(2), of order 16, with X<sup>2</sup> = Y<sup>2</sup> = Z<sup>2</sup> = I. The six axis states 0, 1, +, −, +i, −i are the eigenstates of Z, X, and Y, and the vertices of an octahedron inscribed in the sphere. Under the Pauli group they form three orbits, the antipodal pairs {0, 1}, {+, −}, and {+i, −i}. Each pair is an eigenbasis of one generator, which fixes it, and the other two generators swap it.</p>
 
         <h2>The Clifford group</h2>
         <div class="panels">
-          <figure class="ink-figure"><img src="/assets/notes/c1-generators.png" width="900" height="1375" alt="Hand-drawn panel, C1 generators: the Hadamard matrix H and the phase matrix S." loading="lazy"></figure>
-          <figure class="ink-figure"><img src="/assets/notes/c1-state-space.png" width="900" height="1343" alt="Hand-drawn panel, C1 state space: the sphere with its six axis states and arrows carrying one state to the next around a single orbit." loading="lazy"></figure>
+          <figure class="ink-figure"><img src="/assets/notes/c1-generators.png" width="900" height="1375" alt="Hand-drawn panel, C1 generators: the Hadamard matrix H and the phase matrix S." loading="lazy" data-sheet></figure>
+          <figure class="ink-figure ink-figure--live" data-figure="c1"><img class="ink-figure__fallback" src="/assets/notes/c1-state-space.png" width="900" height="1343" alt="Hand-drawn panel, C1 state space: the sphere with its six axis states and arrows carrying one state to the next around a single orbit." loading="lazy"><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: the sphere with its six axis states; a marked state walks from 0 through all six by H and S, each step an arc with an arrowhead, until the whole orbit is drawn." data-sheet><span class="ink-figure__title">C₁ · state space</span></div></figure>
         </div>
         <p>The Clifford group is C<sub>1</sub> = ⟨H, S⟩ ⊂ U(2). It contains the Pauli group (S<sup>2</sup> = Z, HZH = X) and is its normalizer: the unitaries that map Paulis to Paulis by conjugation. The three Pauli pairs merge into one orbit of six, with stabilizer {I, S, S<sup>2</sup>, S<sup>3</sup>}. It is the first layer to carry a classical state off the poles, and the last finite one.</p>
 
         <h2>A Lie group</h2>
         <div class="panels">
-          <figure class="ink-figure"><img src="/assets/notes/su2-generators.png" width="900" height="1359" alt="Hand-drawn panel, SU(2) generators: the rotations R x of theta, R y of theta, and R z of theta." loading="lazy"></figure>
-          <figure class="ink-figure"><img src="/assets/notes/su2-state-space.png" width="900" height="1484" alt="Hand-drawn panel, SU(2) state space: a fully shaded sphere with a short arc of rotation drawn on its surface." loading="lazy"></figure>
+          <figure class="ink-figure"><img src="/assets/notes/su2-generators.png" width="900" height="1359" alt="Hand-drawn panel, SU(2) generators: the rotations R x of theta, R y of theta, and R z of theta." loading="lazy" data-sheet></figure>
+          <figure class="ink-figure ink-figure--live" data-figure="su2"><img class="ink-figure__fallback" src="/assets/notes/su2-state-space.png" width="900" height="1484" alt="Hand-drawn panel, SU(2) state space: a fully shaded sphere with a short arc of rotation drawn on its surface." loading="lazy"><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a densely lined sphere turning continuously, carrying a marked state along a smooth arc." data-sheet><span class="ink-figure__title">SU(2) · state space</span></div></figure>
         </div>
         <p>SU(2) is a Lie group: a group that is also a smooth manifold. Its rotations R<sub>x</sub>(θ), R<sub>y</sub>(θ), R<sub>z</sub>(θ) reach every point of the sphere. Here the group has dimension 3. Every group before it had dimension 0.</p>
 
         <div class="panels panels--wide">
-          <figure class="ink-figure"><img src="/assets/notes/three-spheres.png" width="1400" height="644" alt="Hand-drawn row of three spheres. Clifford: six points. Clifford plus T: a dense scatter of points. SU(2): a continuous, fully shaded sphere." loading="lazy"></figure>
+          <div class="trio"><img class="ink-figure__fallback" src="/assets/notes/three-spheres.png" width="1400" height="644" alt="Hand-drawn row of three spheres. Clifford: six points. Clifford plus T: a dense scatter of points. SU(2): a continuous, fully shaded sphere." loading="lazy" data-sheet><div class="trio__live"><figure class="ink-figure ink-figure--live" data-figure="clifford"><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a sphere with six points." data-sheet></div><figcaption>Clifford · 6 points</figcaption></figure><figure class="ink-figure ink-figure--live" data-figure="cliffordT"><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a sphere on which points keep appearing until the surface is a scatter." data-sheet></div><figcaption>Clifford + T · scatter</figcaption></figure><figure class="ink-figure ink-figure--live" data-figure="su2small"><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a densely lined sphere turning continuously." data-sheet></div><figcaption>SU(2) · continuous</figcaption></figure></div></div>
         </div>
         <p>Six points, then a scatter that fills in, then the whole surface.</p>
       </article>
     </div>
   </main>
+  <script type="module" src="/js/paper.js"></script>
+  <script type="module">
+    const start = () => import('/js/state-spaces.js').then((m) => m.mountAll());
+    const go = () => ('fonts' in document ? document.fonts.load('500 13px "Be Vietnam Pro"').catch(() => {}) : Promise.resolve()).then(start);
+    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 150);
+  </script>
 </body>
 </html>

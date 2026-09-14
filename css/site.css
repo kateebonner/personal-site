@@ -163,6 +163,23 @@ p + p { margin-top: 16px; }
 .panels--wide { grid-template-columns: 1fr; }
 .prose .ink-figure { margin: 0; }
 .ink-figure img { display: block; width: 100%; height: auto; }
+/* live panels: the brush draws into the mount; the lifted drawing stays as the no-script fallback */
+.ink-figure--live { position: relative; }
+.ink-figure--live .ink-figure__fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center top; }
+.ink-figure__mount { position: absolute; inset: 0; display: none; }
+.ink-figure--live.is-live .ink-figure__mount { display: block; }
+.ink-figure--live.is-live .ink-figure__fallback { display: none; }
+.ink-figure__title { position: absolute; top: 12px; left: 14px; z-index: 1; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; pointer-events: none; }
+[data-sheet] { transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot)); will-change: transform; }
+.trio { position: relative; }
+.trio:not(.is-live) { aspect-ratio: 1400 / 644; }
+.trio > .ink-figure__fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.trio__live { display: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.trio.is-live .trio__live { display: grid; }
+.trio.is-live > .ink-figure__fallback { display: none; }
+.trio .ink-figure--live { display: flex; flex-direction: column; min-width: 0; }
+.trio .ink-figure--live .ink-figure__mount { position: relative; inset: auto; aspect-ratio: 1; }
+.trio figcaption { text-align: center; margin-top: 6px; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
 .notes { list-style: none; margin: 0; padding: 0; max-width: 760px; }
 .notes li { display: grid; grid-template-columns: 11ch 1fr; gap: 16px; padding: 18px 0; border-bottom: var(--lw-thin) solid var(--line); align-items: baseline; }
 .notes li:first-child { border-top: var(--lw-thin) solid var(--line); }
@@ -201,6 +218,9 @@ p + p { margin-top: 16px; }
   .page { grid-template-columns: 1fr; }
   .page__label { border-right: 0; }
   .panels { gap: 12px; }
+  .ink-figure__title { top: 8px; left: 10px; font-size: 0.5625rem; letter-spacing: 0.1em; }
+  .trio__live { gap: 8px; }
+  .trio figcaption { font-size: 0.5rem; letter-spacing: 0.08em; }
   .notes li { grid-template-columns: 1fr; gap: 2px; }
   .page__label, .page__body, .state .wp-frame { padding-left: 16px; padding-right: 16px; }
   .topbar { grid-template-columns: 1fr auto; gap: 12px; padding-left: 16px; padding-right: 16px; }
