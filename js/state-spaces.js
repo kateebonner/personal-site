@@ -15,10 +15,12 @@ const FONT = '"Be Vietnam Pro", system-ui, sans-serif';
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ---------- vectors on the Bloch sphere ----------
-// Bloch coordinates: |0> = +z, |1> = -z, |+> = +x, |-> = -x, |+i> = +y, |-i> = -y. The camera sits on
-// the +x side, raised by EL above the equator, so y runs to the right, z up, and |+> faces the viewer.
-const EL = 0.36;
-const CE = Math.cos(EL), SE = Math.sin(EL);
+// Bloch coordinates: |0> = +z, |1> = -z, |+> = +x, |-> = -x, |+i> = +y, |-i> = -y. The camera sits
+// near the +x side, turned by AZ toward +y and raised by EL above the equator, as in the notebook:
+// |+> front and a little left, |-> behind and right, |+i> right, |-i> left, |0> up.
+const EL = 0.5, AZ = 0.38;
+const CE = Math.cos(EL), SE = Math.sin(EL), CA = Math.cos(AZ), SA = Math.sin(AZ);
+const RIGHT = [-SA, CA, 0], UP = [-SE * CA, -SE * SA, CE], TOWARD = [CE * CA, CE * SA, SE];
 const norm = (v) => { const l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; };
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
@@ -26,7 +28,7 @@ function rot(v, n, th) {   // Rodrigues: v turned by th about the unit axis n
   const c = Math.cos(th), s = Math.sin(th), d = dot(n, v) * (1 - c), x = cross(n, v);
   return [v[0] * c + x[0] * s + n[0] * d, v[1] * c + x[1] * s + n[1] * d, v[2] * c + x[2] * s + n[2] * d];
 }
-const depth = (v) => v[0] * CE + v[2] * SE;   // > 0 faces the viewer
+const depth = (v) => v[0] * TOWARD[0] + v[1] * TOWARD[1] + v[2] * TOWARD[2];   // > 0 faces the viewer
 const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
 const norm2 = (d) => { const l = Math.hypot(d[0], d[1]) || 1; return [d[0] / l, d[1] / l]; };
 
@@ -37,7 +39,7 @@ const GATE = { H: { n: AX.h, th: Math.PI }, S: { n: AX.z, th: Math.PI / 2 }, T: 
 // ---------- the view: sphere centre and radius in CSS px ----------
 function view(w, h, o = {}) {
   const R = o.R ?? Math.min(0.36 * w, 0.27 * h), cx = w / 2, cy = o.cy ?? h * 0.55;
-  const P = (v) => [cx + v[1] * R, cy - (v[2] * CE - v[0] * SE) * R];
+  const P = (v) => [cx + (v[0] * RIGHT[0] + v[1] * RIGHT[1]) * R, cy - (v[0] * UP[0] + v[1] * UP[1] + v[2] * UP[2]) * R];
   return { R, cx, cy, P, fs: Math.max(10, Math.min(14, 0.04 * w)) };
 }
 
@@ -60,13 +62,14 @@ function frameS(w, h) {   // the hand-drawn frame around the panel, like the not
 }
 
 // k points of the circle of radius r about centre c (3D) with normal n
-function circleOn(n, r, c, k = 96) {
+function circleOn(n, r, c, k = 144) {
   const u = norm(Math.abs(n[2]) < 0.9 ? cross(n, [0, 0, 1]) : cross(n, [1, 0, 0])), w = cross(n, u), pts = [];
   for (let i = 0; i < k; i++) { const a = i / k * Math.PI * 2, ca = Math.cos(a), sa = Math.sin(a); pts.push([c[0] + r * (u[0] * ca + w[0] * sa), c[1] + r * (u[1] * ca + w[1] * sa), c[2] + r * (u[2] * ca + w[2] * sa)]); }
   return pts;
 }
 
 // a closed loop of 3D points -> strokes: front runs solid, back runs lighter and dashed
+function dashed2d(pts, alpha, width) { const out = []; for (let i = 0; i + 3 < pts.length; i += 18) out.push({ pts: pts.slice(i, i + 12), weight: 'light', alpha, width }); return out; }
 function loopStrokes(V, pts3, o) {
   const n = pts3.length, d = pts3.map(depth), out = [];
   let start = 0;
@@ -74,8 +77,9 @@ function loopStrokes(V, pts3, o) {
   let run = [], front = d[start] > 0;
   const flush = () => {
     if (run.length >= 2) {
-      if (front || o.dashed === false) out.push({ pts: run.map(V.P), weight: 'light', alpha: front ? o.front : o.back, width: o.width ?? 1.3 });
-      else for (let i = 0; i + 1 < run.length; i += 7) out.push({ pts: run.slice(i, i + 4).map(V.P), weight: 'light', alpha: o.back, width: o.width ?? 1.3 });
+      if (o.ghost) out.push(...dashed2d(run.map(V.P), front ? o.front : o.back, o.width ?? 1.3));   // a ghost: dashed all round, front heavier
+      else if (front || o.dashed === false) out.push({ pts: run.map(V.P), weight: 'light', alpha: front ? o.front : o.back, width: o.width ?? 1.3 });
+      else out.push(...dashed2d(run.map(V.P), o.back, o.width ?? 1.3));
     }
     run = [];
   };
@@ -98,7 +102,7 @@ function pathStrokes(V, pts3, backAlpha = 0.3) {
 
 function sphereWire(V, o, R3 = null) {
   const S = [];
-  if (o.outline) S.push({ pts: circle2d([V.cx, V.cy], V.R, 96), weight: 'graphite', scale: 1.6 });
+  if (o.outline) S.push(...(o.ghost ? dashed2d(circle2d([V.cx, V.cy], V.R, 144), 0.75, 1.4) : [{ pts: circle2d([V.cx, V.cy], V.R, 96), weight: 'graphite', scale: 1.6 }]));
   const loops = [];
   for (const z of o.lats ?? []) loops.push(circleOn(AX.z, Math.sqrt(1 - z * z), [0, 0, z]));
   const m = o.mers ?? 0;
@@ -131,12 +135,14 @@ const CT_POINTS = (() => {
 })();
 
 const FIGURES = {
+  // just the hand-drawn frame, for the typeset generator panels beside the drawings
+  frame: { L: 1, tFallback: 0, frame(t, w, h) { return frameS(w, h); } },
   // the classical bit: two outcomes, and X exchanging them
   s2: {
     L: 4, tFallback: 0.5,
     frame(t, w, h) {
       const V = view(w, h), S = frameS(w, h);
-      S.push(...sphereWire(V, { lats: [-0.66, -0.33, 0, 0.33, 0.66], mers: 4, merOffset: 0.2, front: 0.5, back: 0.3, outline: 1 }));
+      S.push(...sphereWire(V, { lats: [-0.5, 0, 0.5], mers: 3, merOffset: 0.25, ghost: true, front: 0.65, back: 0.35, outline: 1 }));
       const top = V.P(STATES['0']), bot = V.P(STATES['1']);
       S.push({ pts: lineS([V.cx, top[1] + 14], [V.cx, bot[1] - 14], 30).pts, weight: 'graphite', scale: 1.3 });
       S.push(...headS([V.cx, top[1] + 11], [0, -1]), ...headS([V.cx, bot[1] - 11], [0, 1]));
@@ -153,18 +159,22 @@ const FIGURES = {
       const V = view(w, h), S = frameS(w, h);
       const axes = [AX.x, AX.y, AX.z], names = ['X', 'Y', 'Z'];
       const g = Math.min(2, Math.floor(t / 3)), s = t - 3 * g, th = Math.PI * ease((s - 1.4) / 1.2);
+      // where the octahedron's vertex that started at v is now: the half turns so far, then this one
       const place = (v) => { for (let k = 0; k < g; k++) v = rot(v, axes[k], Math.PI); return rot(v, axes[g], th); };
-      S.push(...sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.4, back: 0.25, outline: 1 }));
+      S.push(...sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, ghost: true, front: 0.6, back: 0.32, outline: 1 }));
       const ax = axes[g];
       S.push(lineS(V.P(ax.map((c) => -1.18 * c)), V.P(ax.map((c) => 1.18 * c)), 40, { alpha: 0.5, width: 1.0 }));
-      S.push(textS(names[g], [18, h - 22], { size: V.fs + 2, align: 'left' }));   // the generator acting now, in the corner: its axis ends collide with the vertex labels
+      S.push(textS(names[g], [18, h - 22], { size: V.fs + 2, align: 'left' }));   // the generator acting now
       const pos = {}; for (const k in STATES) pos[k] = place(STATES[k]);
       const edges = OCT_EDGES.map(([a, b]) => ({ a, b, d: depth(pos[a]) + depth(pos[b]) })).sort((p, q) => p.d - q.d);
       for (const e of edges) {
         const l = lineS(V.P(pos[e.a]), V.P(pos[e.b]), 24, { alpha: 0.45, width: 1.1 });
         S.push(e.d > 0 ? { pts: l.pts, weight: 'graphite', scale: 1.4 } : l);
       }
-      for (const k in STATES) { const v = pos[k], p = V.P(v), f = depth(v) > 0; S.push(dotS(p, 1.7, f ? 0.95 : 0.55)); S.push(textS(k, labelAt(V, p), { size: V.fs, alpha: f ? 0.9 : 0.6 })); }
+      // the six states are fixed points of the sphere and keep their names; the group only permutes them
+      S.push(...stateDots(V));
+      // one marked state from each orbit rides the turn: {0,1}, {+,-}, {+i,-i}
+      for (const k of ['0', '+', '+i']) { const v = pos[k]; S.push(depth(v) > 0 ? ringS(V.P(v), 9) : { pts: circle2d(V.P(v), 9, 28), weight: 'light', alpha: 0.5, width: 1.3 }); }
       return S;
     },
   },
@@ -179,11 +189,15 @@ const FIGURES = {
         const V = view(w, h), S = frameS(w, h);
         S.push(...sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 }));
         const step = Math.min(7, Math.floor(t)), s = t - step, u = ease((s - 0.45) / 0.55);
-        const arc3 = (i, uu, k = 36) => { const [from, gn] = WALK[i], g = GATE[gn], a = STATES[from], pts = []; for (let j = 0; j <= k; j++) pts.push(rot(a, g.n, g.th * uu * j / k)); return pts; };
+        // each step is a map between two axis states; draw it as the great-circle arc between them
+        // (a quarter turn, all eight pairs being neighbours on the octahedron), not as one particular rotation path
+        const target = (i) => { const [from, gn] = WALK[i], g = GATE[gn]; return rot(STATES[from], g.n, g.th); };
+        const slerp = (a, b, u) => { const O = Math.acos(Math.max(-1, Math.min(1, dot(a, b)))), sO = Math.sin(O) || 1; const p = Math.sin((1 - u) * O) / sO, q = Math.sin(u * O) / sO; return [a[0] * p + b[0] * q, a[1] * p + b[1] * q, a[2] * p + b[2] * q]; };
+        const arc3 = (i, uu, k = 36) => { const a = STATES[WALK[i][0]], b = target(i), pts = []; for (let j = 0; j <= k; j++) pts.push(slerp(a, b, uu * j / k)); return pts; };
         const walked = loops > 0 ? 8 : step;
-        for (let i = 0; i < walked; i++) if (i !== step || loops > 0) S.push({ pts: arc3(i, 1).map(V.P), weight: 'light', alpha: 0.5, width: 1.3 });
+        for (let i = 0; i < walked; i++) if (i !== step || loops > 0) S.push({ pts: arc3(i, 1).map(V.P), weight: 'light', alpha: 0.4, width: 1.3 });
         S.push(...stateDots(V));
-        const [from, gn] = WALK[step], g = GATE[gn], here = rot(STATES[from], g.n, g.th * u);
+        const here = slerp(STATES[WALK[step][0]], target(step), u);
         if (u > 0.02) {
           const p3 = arc3(step, u); S.push(...pathStrokes(V, p3));
           const p = p3.map(V.P), n = p.length; S.push(...headS(p[n - 1], norm2([p[n - 1][0] - p[n - 3][0], p[n - 1][1] - p[n - 3][1]])));
@@ -199,11 +213,12 @@ const FIGURES = {
   su2: {
     L: 12, tFallback: 3,
     frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h), n = norm([0.35, 0.25, 0.9]), om = Math.PI * 2 / 12;
-      const R3 = (v) => rot(v, n, om * t);
+      const V = view(w, h), S = frameS(w, h), om = Math.PI * 2 / 12;
+      // a path in the group: a turn about z composed with a slower turn about x, both closing after one loop
+      const R3t = (v, tt) => rot(rot(v, AX.x, om * tt), AX.z, 2 * om * tt), R3 = (v) => R3t(v, t);
       S.push(...sphereWire(V, { lats: [-0.85, -0.7, -0.55, -0.4, -0.25, -0.1, 0.05, 0.2, 0.35, 0.5, 0.65, 0.8], mers: 8, front: 0.4, back: 0.18, width: 1.0, dashed: false, outline: 1 }, R3));
       const q0 = norm([0.2, 0.75, 0.62]), trail = [];
-      for (let j = 0; j <= 40; j++) trail.push(rot(q0, n, om * (t - 2.5 + 2.5 * j / 40)));
+      for (let j = 0; j <= 40; j++) trail.push(R3t(q0, t - 2.5 + 2.5 * j / 40));
       S.push(...pathStrokes(V, trail));
       const p = trail.map(V.P), k = p.length;
       S.push(...headS(p[k - 1], norm2([p[k - 1][0] - p[k - 3][0], p[k - 1][1] - p[k - 3][1]])));
@@ -233,8 +248,8 @@ const FIGURES = {
   su2small: {
     L: 12, tFallback: 3,
     frame(t, w, h) {
-      const V = view(w, h, { R: 0.42 * Math.min(w, h), cy: h / 2 }), n = norm([0.35, 0.25, 0.9]);
-      const R3 = (v) => rot(v, n, (Math.PI * 2 / 12) * t);
+      const V = view(w, h, { R: 0.42 * Math.min(w, h), cy: h / 2 }), om = Math.PI * 2 / 12;
+      const R3 = (v) => rot(rot(v, AX.x, om * t), AX.z, 2 * om * t);
       return sphereWire(V, { lats: [-0.85, -0.7, -0.55, -0.4, -0.25, -0.1, 0.05, 0.2, 0.35, 0.5, 0.65, 0.8], mers: 8, front: 0.4, back: 0.18, width: 1.0, dashed: false, outline: 1 }, R3);
     },
   },
@@ -267,7 +282,6 @@ export function mountAll() {
     clocks.set(host, clock);
     io?.observe(host);
     sketch(host, { ink: INK, fps: FPS, takes: 4, font: FONT, clock: () => clock.now(), frame: (t) => def.frame(t, host.clientWidth, host.clientHeight) });
-    if (!bound.includes(host)) bound.push(host);
   }
   if (!reduceMotion) {
     origins();
