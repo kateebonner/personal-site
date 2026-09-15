@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static HTML/CSS/JS with no build step, chosen explicitly by Kate over Astro and Eleventy. Deployed by GitHub Pages from the root of `main` to the custom domain katebonner.ai (CNAME present). No third-party code at runtime except KaTeX, self-hosted in `assets/katex/` (stylesheet, renderer, auto-render, woff2 fonts; added 2026-09-14 for the notes' math): the figures are drawn on 2D canvases with a pencil brush (2026-09-09); Three.js and the import map are gone. Posts are authored by copying an HTML template; a Markdown-to-HTML script was deliberately deferred until there are two or three notes.
+URLs carry no .html (GitHub Pages serves /contact from contact.html; links, canonical and og:url use the bare path, 2026-09-15; `_tools/serve.py` previews locally with the same rule). Static HTML/CSS/JS with no build step, chosen explicitly by Kate over Astro and Eleventy. Deployed by GitHub Pages from the root of `main` to the custom domain katebonner.ai (CNAME present). No third-party code at runtime except KaTeX, self-hosted in `assets/katex/` (stylesheet, renderer, auto-render, woff2 fonts; added 2026-09-14 for the notes' math): the figures are drawn on 2D canvases with a pencil brush (2026-09-09); Three.js and the import map are gone. Posts are authored by copying an HTML template; a Markdown-to-HTML script was deliberately deferred until there are two or three notes.
 
 ## Users
 
