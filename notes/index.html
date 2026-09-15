@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Notes · Kate Bonner</title>
   <meta name="description" content="Notes by Kate Bonner.">
-  <link rel="icon" href="/assets/favicon.svg?v=3" type="image/svg+xml">
   <meta property="og:title" content="Notes · Kate Bonner">
   <meta property="og:description" content="Notes by Kate Bonner.">
   <meta property="og:url" content="https://katebonner.ai/notes/">
   <meta property="og:type" content="website">
+  <link rel="icon" href="/assets/favicon.svg?v=3" type="image/svg+xml">
   <meta property="og:image" content="https://katebonner.ai/assets/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://katebonner.ai/assets/og.png">
@@ -20,17 +20,25 @@
   <div class="paper" id="paper" aria-hidden="true"></div>
   <header class="topbar">
     <a class="topbar__mark" href="/">Kate Bonner</a>
+    <nav class="topbar__nav" aria-label="Site">
+      <a href="/notes/" aria-current="page">Notes</a>
+    </nav>
   </header>
 
   <main class="page">
     <div class="page__label"><h1>Notes</h1></div>
     <div class="page__body">
-      <div class="prose">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-      </div>
+      <ul class="notes">
+        <li>
+          <span class="meta">2026-09-14</span>
+          <div>
+            <a href="/notes/what-is-a-qubit.html">What is a qubit?</a>
+            <p>A classical bit is a boolean; a quantum bit is a point on a sphere. The difference, told through the symmetry groups that act on each: S₂, the Pauli group, the Clifford group, SU(2).</p>
+          </div>
+        </li>
+      </ul>
     </div>
   </main>
-
   <script type="module" src="/js/paper.js"></script>
 </body>
 </html>

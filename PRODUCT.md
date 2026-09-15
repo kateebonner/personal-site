@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static HTML/CSS/JS with no build step, chosen explicitly by Kate over Astro and Eleventy. Deployed by GitHub Pages from the root of `main` to the custom domain katebonner.ai (CNAME present). No third-party code at runtime: the figure is drawn on a 2D canvas with a pencil brush (2026-09-09); Three.js and the import map are gone. Posts are authored by copying an HTML template; a Markdown-to-HTML script was deliberately deferred until there are two or three notes.
+Static HTML/CSS/JS with no build step, chosen explicitly by Kate over Astro and Eleventy. Deployed by GitHub Pages from the root of `main` to the custom domain katebonner.ai (CNAME present). No third-party code at runtime except KaTeX, self-hosted in `assets/katex/` (stylesheet, renderer, auto-render, woff2 fonts; added 2026-09-14 for the notes' math): the figures are drawn on 2D canvases with a pencil brush (2026-09-09); Three.js and the import map are gone. Posts are authored by copying an HTML template; a Markdown-to-HTML script was deliberately deferred until there are two or three notes.
 
 ## Users
 
@@ -33,9 +33,9 @@ Viewed on desktop and mobile, usually from a LinkedIn profile or an email thread
 ## Capabilities and Constraints
 
 Pages (confirmed):
-- Home: placeholder headline and subline (lorem ipsum until Kate writes copy), contact line, and the signature animation. No nav.
+- Home: the wordmark, a single "Notes" link in the header (2026-09-14), and the signature animation. Kate removed the story band (headline, subline, tiles) on 2026-09-14; the page is the drawing.
 - About: removed for now (2026-09-09). The bio text stays on record in git history.
-- Projects and Notes: stub pages with placeholder text (restored 2026-09-10 as tile targets); Contact: a page carrying the email and LinkedIn links.
+- Notes: an index (one dated entry per note) and the first note, "What is a qubit?" (2026-09-14; retitled from "Bits as group representations" on 2026-09-15), Kate's notebook pages on classical versus quantum bits via group representation: S₂ on the classical bit, the Pauli group, the Clifford group, SU(2). Her generator drawings were lifted from photos of the notebook by `_tools/ink-notebook.py` (frame found, perspective removed, paper lighting flattened, graphite turned into alpha over the site ink) and saved as one-colour palette PNGs in `assets/notes/`; the photos stay out of the repo. Since 2026-09-14 the generator panels are typeset (KaTeX) and only the state-space PNGs remain in use, as no-script fallbacks. The four state spaces and the closing row of three spheres are redrawn live in the home figure's pencil stop-motion style (`js/state-spaces.js` on `js/brush.js`, Kate's request 2026-09-14): S₂ with the state hopping between the poles, the Pauli octahedron making its half turns about x, y, z, the Clifford walk drawing its orbit of six, SU(2) turning continuously, and Clifford / Clifford + T (points filling in) / SU(2). Her lifted state-space drawings remain in the markup as the no-script fallback; reduced motion holds one frame per figure. Every drawing on the page, lifted or live, moves with the paper as one sheet; type stays put. Math is typeset with KaTeX (self-hosted): the four generator panels are LaTeX (I and X; X, Y, Z; H and S; R_x, R_y, R_z as exponentials) inside the same hand-drawn frame as the live panels (Kate: "the generator section should be remade with latex", 2026-09-14), and inline math in the text uses \( \) delimiters. Notes are authored with LaTeX in the HTML; auto-render runs on load. Projects: stub page with placeholder text, not linked from anywhere. Contact: a page carrying the email and LinkedIn links, not linked from anywhere.
 - Footer on every page: one line with kate@katebonner.ai and LinkedIn (linkedin.com/in/kate-bonner). Kate removed the title block and the sheet zone marks (2026-09-09). No GitHub, Scholar, or other links.
 
 Confirmed headline (Home), currently replaced on the page by lorem ipsum placeholder text at Kate's request (2026-09-09) until she writes new copy:
@@ -57,7 +57,7 @@ Signature element (binding): a 3D animation of the 1D free-particle time-depende
 
 Technical constraints: must respect `prefers-reduced-motion` (a single held frame), must degrade to the inline SVG frame when scripts are off, must not block first paint or text rendering. The figure is meant to look like a pencil sketch animated frame by frame (Kate, 2026-09-09). No analytics or tracking unless Kate asks for it later. Every claim on the site must be traceable to Kate's résumé or public work and must not contradict her LinkedIn.
 
-Terminology: the writing section is "Notes", not "Blog" or "Writing". The site is Home, Projects, Notes, and Contact; Projects and Notes were removed on 2026-09-09 because there is nothing to show yet.
+Terminology: the writing section is "Notes", not "Blog" or "Writing". The site is Home, Notes, and (unlinked) Projects and Contact. Notes went live with its first entry on 2026-09-14; the only navigation on the site is the "Notes" link in the header.
 
 Undecided: how notes are authored once there are several (template copy versus a small Markdown script); whether Projects grows with Harmoniqs work, the qLDPC challenge, the Georgetown junction research, or the VR physics paper (all declined for launch); social preview image content beyond a frame of the animation.
 
