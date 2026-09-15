@@ -176,7 +176,8 @@ p + p { margin-top: 16px; }
 [data-sheet] { transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot)); will-change: transform; }
 /* typeset generators inside the frame */
 .gen { position: absolute; inset: 40px 14px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; text-align: center; }
-.gen .katex-display { margin: 0; }
+.gen .katex { font-size: 1.5em; }
+.gen .katex-display { margin: 0; max-width: 100%; overflow: hidden; }
 .gen .katex-display > .katex { white-space: normal; }
 .gen__note { margin: 6px 0 0; font-size: var(--fs-1); color: var(--ink); line-height: 1.4; }
 .trio { position: relative; }
@@ -229,6 +230,8 @@ p + p { margin-top: 16px; }
   .panels { gap: 12px; }
   .ink-figure__title { top: 8px; left: 10px; font-size: 0.5625rem; letter-spacing: 0.1em; }
   .gen { inset: 26px 8px 10px; gap: 10px; font-size: 0.78rem; }
+  .gen .katex { font-size: 1.25em; }
+  .gen--wide .katex { font-size: 0.68rem; }
   .gen__note { font-size: 0.625rem; }
   .trio__live { gap: 8px; }
   .trio figcaption { font-size: 0.5rem; letter-spacing: 0.08em; }
