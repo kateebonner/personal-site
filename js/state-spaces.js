@@ -277,6 +277,8 @@ export function mountAll() {
   for (const fig of document.querySelectorAll('.ink-figure--live[data-figure]')) {
     const host = fig.querySelector('.ink-figure__mount'), def = FIGURES[fig.dataset.figure];
     if (!host || !def) continue;
+    // only with the stylesheet that positions the mount; a stale or missing one leaves the still drawings in place
+    if (getComputedStyle(host).position !== 'absolute') continue;
     fig.classList.add('is-live');
     const clock = makeClock(def.L, def.tFallback);
     clocks.set(host, clock);
