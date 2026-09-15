@@ -71,6 +71,7 @@ export function sketch(host, options) {
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+  if (getComputedStyle(host).position === 'static') host.style.position = 'relative';   // the canvas must never escape its host
   host.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   const grain = ctx.createPattern(makeGrain(o.ink), 'repeat');
@@ -120,6 +121,7 @@ export function sketch(host, options) {
 
   let frameIdx = -1, strokeSeq = 0, inkLevel = 1;
   function draw(force) {
+    if (!W || !H) return;   // a host with no size (stylesheet missing or stale) gets nothing drawn
     const idx = reduceMotion ? 0 : Math.floor(o.clock() * o.fps);
     if (!force && idx === frameIdx) return;
     frameIdx = idx;
