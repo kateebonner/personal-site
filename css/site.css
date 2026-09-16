@@ -211,19 +211,15 @@ p + p { margin-top: 16px; }
 .trio .ink-figure--live .ink-figure__sheet { position: relative; inset: auto; aspect-ratio: 1; }
 .trio .ink-figure--live .ink-figure__mount { position: absolute; inset: 0; }
 .trio figcaption { text-align: center; margin-top: 6px; padding: 0 4px; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.1em; line-height: 1.35; text-transform: uppercase; color: var(--ink); }
-.notes { list-style: none; margin: 0; padding: 0; max-width: 760px; }
-.notes li { padding: 18px 0; border-bottom: var(--lw-thin) solid var(--line); }
+.notes { list-style: none; margin: 0 -14px; padding: 0; max-width: 788px; }
+/* each entry is one link: an underlined title at rest, and the whole row inverts under the pointer */
+.notes li { border-bottom: var(--lw-thin) solid var(--line); }
 .notes li:first-child { border-top: var(--lw-thin) solid var(--line); }
-.notes a { font-family: var(--font-letter); font-size: var(--fs-2); font-weight: 500; text-decoration: none; color: var(--ink); }
-.notes a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.notes p { font-size: var(--fs-1); color: var(--ink-2); margin: 6px 0 0; line-height: 1.5; }
-.notes .cta {
-  display: block; width: max-content; margin: 16px 0 0 auto; padding: 9px 14px;   /* sits at the right edge of the entry */
-  border: var(--lw-thin) solid var(--line);
-  font-size: var(--fs-0); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1;
-  transition: background 140ms ease-out, color 140ms ease-out;
-}
-.notes .cta:hover, .notes .cta:focus-visible { background: var(--ink); color: var(--paper); text-decoration: none; }
+.notes .entry { display: block; padding: 18px 14px 20px; color: var(--ink); text-decoration: none; transition: background 140ms ease-out, color 140ms ease-out; }
+.notes .entry__title { display: block; font-family: var(--font-letter); font-size: var(--fs-2); font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.notes .entry__blurb { display: block; margin-top: 8px; font-size: var(--fs-1); line-height: 1.5; color: var(--ink-2); }
+.notes .entry:hover, .notes .entry:focus-visible { background: var(--ink); color: var(--paper); outline: none; }
+.notes .entry:hover .entry__blurb, .notes .entry:focus-visible .entry__blurb { color: var(--paper); }
 
 /* ---------- content pages ---------- */
 .page { flex: 1; display: grid; grid-template-columns: var(--label-w) 1fr; }
