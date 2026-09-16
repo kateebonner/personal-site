@@ -153,7 +153,7 @@ function stagger(S, u) {
 const faded = (S, f) => (f <= 0.01 ? [] : S.map((s) => (s.text != null ? { ...s, alpha: (s.alpha ?? 0.9) * f } : { ...s, fade: (s.fade ?? 1) * f })));
 const poleMarks = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [hollowS(top), textS('0', [top[0], top[1] - 19], { size: V.fs }), hollowS(bot), textS('1', [bot[0], bot[1] + 19], { size: V.fs })]; };
 const equatorMarks = (V) => { const S = []; for (const k of ['+', '+i', '−', '−i']) { const v = STATES[k], p = V.P(v), f = depth(v) > 0; S.push(hollowS(p, 3.6, f ? 0.9 : 0.5)); S.push(textS(k, labelAt(V, p, 17), { size: V.fs, alpha: f ? 0.9 : 0.6 })); } return S; };
-const xArrow = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [{ pts: lineS([V.cx, top[1] + 14], [V.cx, bot[1] - 14], 30).pts, weight: 'graphite', scale: 1.3 }, ...headS([V.cx, top[1] + 11], [0, -1]), ...headS([V.cx, bot[1] - 11], [0, 1])]; };
+const hopArrow = (V, from, to) => { const a = V.P(STATES[from]), b = V.P(STATES[to]), d = norm2([b[0] - a[0], b[1] - a[1]]); const A = [a[0] + d[0] * 14, a[1] + d[1] * 14], B = [b[0] - d[0] * 13, b[1] - d[1] * 13]; return [{ pts: lineS(A, B, 30).pts, weight: 'graphite', scale: 1.3 }, ...headS(B, d, 8)]; };
 const GHOST = { lats: [-0.5, 0, 0.5], mers: 3, merOffset: 0.25, ghost: true, front: 0.65, back: 0.35, outline: 1 };
 const GHOST_LIGHT = { ...GHOST, front: 0.42, back: 0.22, outlineAlpha: 0.5, dash: [7, 6] };   // before quantum: fainter, more broken
 const SOLID = { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 };
@@ -178,15 +178,22 @@ const turn = (v, tt) => rot(rot(v, AX.x, OM * tt), AX.z, 2 * OM * tt);
 const FIGURES = {
   // the classical bit: a boolean is two points; the sphere around them is only a ghost; X exchanges them
   s2: {
-    B: 5, A: 4, get tFallback() { return this.B; },
-    active(t) { return t >= 5 && ((t - 5) % 2) < 0.6 ? ['X'] : []; },   // X fires at each hop
+    // one lap: at 0, then at tau = 1 X fires and the state hops to 1, at tau = 3 it fires again and the state hops back;
+    // the lap boundary is a quiet moment, so hand-offs are clean
+    B: 4.5, A: 4, HOPS: [1, 3], get tFallback() { return this.B + 1.05; },
+    active(t) { if (t < 4.5) return []; const tau = (t - 4.5) % 4; return this.HOPS.some((h) => tau >= h - 0.3 && tau < h + 0.4) ? ['X'] : []; },
     frame(t, w, h) {
       const V = stageView(w, h), S = [];
       S.push(...stagger(poleMarks(V), ramp(t, 0.3, 1.8)));
       if (t > 2) S.push(...stagger(sphereWire(V, GHOST_LIGHT), ramp(t, 2, 4.2)));
-      if (t > 4.2) S.push(...stagger(xArrow(V), ramp(t, 4.2, 5)));
-      const tau = t < 5 ? 0 : (t - 5) % 4;   // the hop: 0 for two seconds, 1 for two
-      S.push(fullS(tau < 2 ? V.P(STATES['0']) : V.P(STATES['1'])));
+      const tau = t < 4.5 ? 0 : (t - 4.5) % 4;
+      const state = tau >= 1 && tau < 3 ? '1' : '0';
+      for (const [i, hop] of this.HOPS.entries()) {   // the arrow: drawn just before the hop, gone just after
+        if (tau < hop - 0.3 || tau >= hop + 0.4) continue;
+        const from = i === 0 ? '0' : '1', to = i === 0 ? '1' : '0';
+        S.push(...faded(stagger(hopArrow(V, from, to), ramp(tau, hop - 0.3, hop - 0.1)), 1 - ramp(tau, hop + 0.2, hop + 0.4)));
+      }
+      S.push(fullS(V.P(STATES[state])));
       return S;
     },
   },
@@ -198,7 +205,6 @@ const FIGURES = {
     frame(t, w, h) {
       const V = stageView(w, h), S = [], firm = ramp(t, 0.3, 1.5);
       S.push(...faded(sphereWire(V, GHOST_LIGHT), 1 - firm), ...faded(sphereWire(V, GHOST), firm), ...poleMarks(V));
-      S.push(...faded(xArrow(V), 1 - ramp(t, 0.3, 1.3)));   // the classical arrow leaves: X is about to become a turn
       if (t > 1.5) S.push(...stagger(equatorMarks(V), ramp(t, 1.5, 3.5)));
       const axes = [AX.x, AX.y, AX.z], names = ['X', 'Y', 'Z'];
       const tau = t < 5.2 ? -1 : (t - 5.2) % 6.9, g = tau < 0 ? -1 : Math.min(2, Math.floor(tau / 2.3)), s = tau - 2.3 * g;
