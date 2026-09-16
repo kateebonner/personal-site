@@ -407,3 +407,5 @@ export function mountAll() {
     requestAnimationFrame(tick);
   }
 }
+
+export { FIGURES, stageView };   // for _tools/og-note.html, which draws one held frame for the link preview

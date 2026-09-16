@@ -59,7 +59,7 @@ Technical constraints: must respect `prefers-reduced-motion` (a single held fram
 
 Terminology: the writing section is "Notes", not "Blog" or "Writing". The site is Home, Notes, and (unlinked) Projects and Contact. Notes went live with its first entry on 2026-09-14; the only navigation on the site is the "Notes" link in the header.
 
-Undecided: how notes are authored once there are several (template copy versus a small Markdown script); whether Projects grows with Harmoniqs work, the qLDPC challenge, the Georgetown junction research, or the VR physics paper (all declined for launch); social preview image content beyond a frame of the animation.
+Undecided: how notes are authored once there are several (template copy versus a small Markdown script); whether Projects grows with Harmoniqs work, the qLDPC challenge, the Georgetown junction research, or the VR physics paper (all declined for launch); social preview image content beyond a frame of the animation (settled 2026-09-16: the site image is the wordmark, katebonner.ai, and the wavepacket frame on the paper, from `_tools/og.html`; each note gets its own 1200×630 image from `_tools/og-note.html`, the wordmark, a Notes kicker, the title, and one held frame of the note's figure drawn by the brush, rendered by the scratchpad's og.mjs; saved as 1200×630 JPEGs under 300 KB, since link previews reject heavy images; the note's og:image points at `assets/notes/og-<slug>.jpg`).
 
 ## Brand Commitments
 
