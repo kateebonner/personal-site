@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- _tools/og-note.html: the link-preview image for a note, 1200x630. Serve the site root locally
+     (python3 _tools/serve.py) and open /_tools/og-note.html?title=What%20is%20a%20qubit%3F&fig=p1&t=5.2
+     then screenshot the viewport at 1200x630 and save as a JPEG around 80 quality, under 300 KB, as assets/notes/og-<slug>.jpg. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>og note</title>
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat; display: block; min-height: 0; }
+    .og { position: relative; width: 1200px; height: 630px; padding: 22px; display: grid; grid-template-columns: 430px 1fr; }
+    .og__label { padding: 32px 24px 28px 40px; border-right: 1.5px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
+    .og__mark { font-family: var(--font-letter); font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; }
+    .og__kicker { font-family: var(--font-letter); font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 14px; }
+    .og__h { font-family: var(--font-letter); font-size: 56px; line-height: 1.05; letter-spacing: -0.005em; font-weight: 600; max-width: 360px; }
+    .og__fig { position: relative; margin: 8px 24px 8px 24px; }
+    .og__cap { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font-family: var(--font-letter); font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="og">
+    <div class="og__label">
+      <div class="og__mark">Kate Bonner</div>
+      <div><div class="og__kicker">Notes</div><div class="og__h" id="title"></div></div>
+    </div>
+    <div class="og__fig" id="fig"><div class="og__cap" id="cap"></div></div>
+  </div>
+  <script type="module">
+    import { sketch } from '/js/brush.js';
+    import { FIGURES, stageView } from '/js/state-spaces.js';
+    const q = new URLSearchParams(location.search);
+    const title = q.get('title') || 'What is a qubit?', key = q.get('fig') || 'p1', t = +(q.get('t') || FIGURES[key].tFallback);
+    document.getElementById('title').textContent = title;
+    document.getElementById('cap').textContent = q.get('cap') || '';
+    const host = document.getElementById('fig');
+    await document.fonts.load('500 16px "Be Vietnam Pro"').catch(() => {});
+    sketch(host, { ink: [122, 30, 44], fps: 10, takes: 4, font: '"Be Vietnam Pro", system-ui, sans-serif', clock: () => t, frame: (tt) => FIGURES[key].frame(tt, host.clientWidth, host.clientHeight) });
+    document.title = 'ready';
+  </script>
+</body>
+</html>
