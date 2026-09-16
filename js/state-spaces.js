@@ -308,6 +308,42 @@ function makeClock(L, tFallback) {
   };
 }
 
+// ---------- the stage: one figure that follows the layer being read ----------
+const STAGE_KEYS = ['s2', 'p1', 'c1', 'su2'];
+const STAGE_TITLES = { s2: 'S\u2082 \u00b7 state space', p1: 'P\u2081 \u00b7 state space', c1: 'C\u2081 \u00b7 state space', su2: 'SU(2) \u00b7 state space' };
+const SWITCH = 0.45;   // seconds to fade the ink out, then back in, when the layer changes
+function mountStage(fig, host) {
+  const sections = [...document.querySelectorAll('[data-stage]')];
+  const title = document.getElementById('stage-title');
+  let cur = 0, target = 0, acc = 0, last = performance.now(), out = 0, inn = 1, redraw = null;
+  const apply = () => { if (title) title.textContent = STAGE_TITLES[STAGE_KEYS[cur]]; if (FIXED_T != null || reduceMotion) redraw?.(); };
+  const choose = () => {   // the last section whose top has passed the middle of the viewport
+    let k = 0; const line = window.innerHeight * 0.55;
+    sections.forEach((el, i) => { if (el.getBoundingClientRect().top < line) k = Math.min(i, STAGE_KEYS.length - 1); });
+    if (k !== target) { target = k; if (FIXED_T != null || reduceMotion) { cur = target; acc = 0; apply(); } }
+  };
+  const clock = () => {
+    const n = performance.now(), dt = (n - last) / 1000; last = n;
+    if (FIXED_T != null) return Math.min(L - 0.001, +FIXED_T);
+    if (reduceMotion) return FIGURES[STAGE_KEYS[cur]].tFallback;
+    if (target !== cur) { out = Math.min(1, out + dt / SWITCH); if (out >= 1) { cur = target; acc = 0; out = 0; inn = 0; apply(); } }
+    else if (inn < 1) inn = Math.min(1, inn + dt / SWITCH);
+    acc += dt;
+    return acc % L;
+  };
+  const frame = (t) => {
+    const o = FIGURES[STAGE_KEYS[cur]].frame(t, host.clientWidth, host.clientHeight);
+    const strokes = Array.isArray(o) ? o : o.strokes, ink = (Array.isArray(o) ? 1 : (o.ink ?? 1)) * (target !== cur ? 1 - out : inn);
+    return { strokes, ink };
+  };
+  fig.classList.add('is-live');
+  const stop = sketch(host, { ink: INK, fps: FPS, takes: 4, font: FONT, clock, frame });
+  redraw = stop.redraw;
+  window.addEventListener('scroll', choose, { passive: true });
+  window.addEventListener('resize', choose);
+  choose(); apply();
+}
+
 export function mountAll() {
   // drawings move with the paper: each element turns about the viewport centre, in its own coordinates
   const bound = [...document.querySelectorAll('[data-sheet]')];
@@ -319,10 +355,13 @@ export function mountAll() {
   const clocks = new Map();
   const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => { for (const e of entries) clocks.get(e.target)?.setVisible(e.isIntersecting); }, { rootMargin: '120px' }) : null;
   for (const fig of document.querySelectorAll('.ink-figure--live[data-figure]')) {
-    const host = fig.querySelector('.ink-figure__mount'), def = FIGURES[fig.dataset.figure];
-    if (!host || !def) continue;
+    const host = fig.querySelector('.ink-figure__mount');
+    if (!host) continue;
     // only with the stylesheet that positions the mount; a stale or missing one leaves the still drawings in place
-    if (getComputedStyle(host).position !== 'absolute') continue;
+    if (getComputedStyle(host).position !== 'absolute') { if (fig.dataset.figure === 'stage') document.documentElement.classList.add('no-stage'); continue; }
+    if (fig.dataset.figure === 'stage') { mountStage(fig, host); continue; }
+    const def = FIGURES[fig.dataset.figure];
+    if (!def) continue;
     fig.classList.add('is-live');
     const clock = makeClock(def.L, def.tFallback);
     clocks.set(host, clock);

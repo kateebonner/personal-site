@@ -152,6 +152,7 @@ p + p { margin-top: 16px; }
 
 /* ---------- notes: hand-drawn figures lifted from the notebook ---------- */
 .note { max-width: var(--measure); }
+.note-layout { max-width: none; }
 .note .katex { font-size: 1.02em; }
 .note .katex-display { margin: 0; }
 .note .meta { display: block; margin-bottom: 28px; }
@@ -174,6 +175,14 @@ p + p { margin-top: 16px; }
 .ink-figure--gen:not(.is-live) .ink-figure__sheet { outline: var(--lw-thin) solid var(--line); outline-offset: -3px; }
 .ink-figure__title { position: absolute; top: 12px; left: 14px; z-index: 1; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; pointer-events: none; }
 [data-sheet] { transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot)); will-change: transform; }
+/* the stage: one state-space figure that sides with the text and follows the layer being read */
+.note-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; align-items: start; }
+.note-layout > .prose { grid-column: 1; grid-row: 1; }
+.stage { grid-column: 2; grid-row: 1; position: sticky; top: 40px; aspect-ratio: 9 / 14; margin: 0; align-self: start; }
+.gen-panel { width: min(100%, 360px); aspect-ratio: 9 / 11; margin: 16px 0 20px; }
+.prose .still { margin: 16px 0 20px; max-width: 360px; }
+.js .still { display: none; }
+.js.no-stage .still { display: block; }
 /* typeset generators inside the frame */
 .gen { position: absolute; inset: 40px 14px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; text-align: center; }
 .gen .katex { font-size: 1.5em; }
@@ -229,9 +238,13 @@ p + p { margin-top: 16px; }
   .page__label { border-right: 0; }
   .panels { gap: 12px; }
   .ink-figure__title { top: 8px; left: 10px; font-size: 0.5625rem; letter-spacing: 0.1em; }
-  .gen { inset: 26px 8px 10px; gap: 10px; font-size: 0.78rem; }
-  .gen .katex { font-size: 1.25em; }
-  .gen--wide .katex { font-size: 0.68rem; }
+  .gen { inset: 30px 12px 12px; gap: 12px; font-size: 0.9rem; }
+  .gen .katex { font-size: 1.4em; }
+  .gen--wide .katex { font-size: 1.15em; }
+  .note-layout { display: block; }
+  .stage { position: sticky; top: 0; z-index: 2; aspect-ratio: auto; height: 42vh; min-height: 300px; margin: 0 -16px 20px; background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat; border-bottom: var(--lw-thin) solid var(--line); }
+  .stage .ink-figure__sheet { inset: 10px 16px; }
+  .gen-panel { width: 100%; aspect-ratio: 4 / 3; }
   .gen__note { font-size: 0.625rem; }
   .trio__live { gap: 8px; }
   .trio figcaption { font-size: 0.5rem; letter-spacing: 0.08em; }
