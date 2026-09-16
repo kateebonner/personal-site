@@ -212,13 +212,13 @@ p + p { margin-top: 16px; }
 .trio .ink-figure--live .ink-figure__mount { position: absolute; inset: 0; }
 .trio figcaption { text-align: center; margin-top: 6px; padding: 0 4px; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.1em; line-height: 1.35; text-transform: uppercase; color: var(--ink); }
 .notes { list-style: none; margin: 0; padding: 0; max-width: 760px; }
-.notes li { display: grid; grid-template-columns: 11ch 1fr; gap: 16px; padding: 18px 0; border-bottom: var(--lw-thin) solid var(--line); align-items: baseline; }
+.notes li { padding: 18px 0; border-bottom: var(--lw-thin) solid var(--line); }
 .notes li:first-child { border-top: var(--lw-thin) solid var(--line); }
 .notes a { font-family: var(--font-letter); font-size: var(--fs-2); font-weight: 500; text-decoration: none; color: var(--ink); }
 .notes a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .notes p { font-size: var(--fs-1); color: var(--ink-2); margin: 6px 0 0; line-height: 1.5; }
 .notes .cta {
-  display: inline-block; margin-top: 16px; padding: 9px 14px;
+  display: block; width: max-content; margin: 16px 0 0 auto; padding: 9px 14px;   /* sits at the right edge of the entry */
   border: var(--lw-thin) solid var(--line);
   font-size: var(--fs-0); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1;
   transition: background 140ms ease-out, color 140ms ease-out;
@@ -269,7 +269,6 @@ p + p { margin-top: 16px; }
   .gen__note { font-size: 0.625rem; }
   .trio__live { gap: 8px; }
   .trio figcaption { font-size: 0.5rem; letter-spacing: 0.08em; }
-  .notes li { grid-template-columns: 1fr; gap: 2px; }
   .page__label, .page__body, .state .wp-frame { padding-left: 16px; padding-right: 16px; }
   .topbar { grid-template-columns: 1fr auto; gap: 12px; padding-left: 16px; padding-right: 16px; }
   .topbar__nav { justify-self: end; gap: 14px; }
