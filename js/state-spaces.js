@@ -134,9 +134,10 @@ const CT_POINTS = (() => {
   return out;
 })();
 
-// ---------- time helpers: one 12 s story per layer, each starting from the previous layer's picture ----------
-const L = 12, FADE = 0.6;
-const cut = (t) => { const e = Math.min(t, L - t), f = Math.max(0, Math.min(1, e / FADE)); return f * f * (3 - 2 * f); };   // ink across the loop cut
+// ---------- time helpers ----------
+// Each layer is a story: a build (B seconds, once) that opens on the previous layer's finished picture,
+// then an action that repeats with period A and returns to that finished picture at every lap boundary.
+// So the stage can always play forward to a hand-off point, or rewind, without a cut.
 const ramp = (t, a, b) => ease((t - a) / (b - a));
 const partial = (pts, u) => pts.slice(0, Math.max(2, Math.round(pts.length * u)));
 // strokes appear one after another as u runs 0..1: each is drawn along its length, labels fade in
@@ -153,6 +154,7 @@ function stagger(S, u) {
 const faded = (S, f) => (f <= 0.01 ? [] : S.map((s) => (s.text != null ? { ...s, alpha: (s.alpha ?? 0.9) * f } : { ...s, fade: (s.fade ?? 1) * f })));
 const poleMarks = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [dotS(top), textS('0', [top[0], top[1] - 17], { size: V.fs }), dotS(bot), textS('1', [bot[0], bot[1] + 17], { size: V.fs })]; };
 const equatorMarks = (V) => { const S = []; for (const k of ['+', '+i', '−', '−i']) { const v = STATES[k], p = V.P(v), f = depth(v) > 0; S.push(dotS(p, 2.1, f ? 0.95 : 0.55)); S.push(textS(k, labelAt(V, p), { size: V.fs, alpha: f ? 0.9 : 0.6 })); } return S; };
+const xArrow = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [{ pts: lineS([V.cx, top[1] + 14], [V.cx, bot[1] - 14], 30).pts, weight: 'graphite', scale: 1.3 }, ...headS([V.cx, top[1] + 11], [0, -1]), ...headS([V.cx, bot[1] - 11], [0, 1])]; };
 const GHOST = { lats: [-0.5, 0, 0.5], mers: 3, merOffset: 0.25, ghost: true, front: 0.65, back: 0.35, outline: 1 };
 const SOLID = { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 };
 const DENSE = { lats: [-0.85, -0.7, -0.55, -0.4, -0.25, -0.1, 0.05, 0.2, 0.35, 0.5, 0.65, 0.8], mers: 8, front: 0.4, back: 0.18, width: 1.0, dashed: false, outline: 0 };
@@ -179,28 +181,28 @@ const FIGURES = {
 
   // the classical bit: a boolean is two points; the sphere around them is only a ghost; X exchanges them
   s2: {
-    L, tFallback: 8,
+    B: 5, A: 4, get tFallback() { return this.B; },
     frame(t, w, h) {
       const V = view(w, h), S = frameS(w, h);
       S.push(...stagger(poleMarks(V), ramp(t, 0.3, 1.8)));
       if (t > 2) S.push(...stagger(sphereWire(V, GHOST), ramp(t, 2, 4.2)));
-      const top = V.P(STATES['0']), bot = V.P(STATES['1']);
-      if (t > 4.2) S.push(...stagger([{ pts: lineS([V.cx, top[1] + 14], [V.cx, bot[1] - 14], 30).pts, weight: 'graphite', scale: 1.3 }, ...headS([V.cx, top[1] + 11], [0, -1]), ...headS([V.cx, bot[1] - 11], [0, 1])], ramp(t, 4.2, 5)));
-      const hops = t < 5 ? 0 : Math.floor((t - 5) / 2) + 1;   // at 5, 7, 9, 11: ends back at 0
-      S.push(ringS(hops % 2 ? bot : top, 8));
-      return { strokes: S, ink: cut(t) };
+      if (t > 4.2) S.push(...stagger(xArrow(V), ramp(t, 4.2, 5)));
+      const tau = t < 5 ? 0 : (t - 5) % 4;   // the hop: 0 for two seconds, 1 for two
+      S.push(ringS(tau < 2 ? V.P(STATES['0']) : V.P(STATES['1']), 8));
+      return S;
     },
   },
 
-  // the Pauli group: from the classical picture, four more states and the octahedron through all six; then three half turns
+  // the Pauli group: from the classical picture, four more states and the octahedron through all six; then half turns
   p1: {
-    L, tFallback: 11.8,
+    B: 5.2, A: 6.9, get tFallback() { return this.B; },
     frame(t, w, h) {
       const V = view(w, h), S = frameS(w, h);
       S.push(...sphereWire(V, GHOST), ...poleMarks(V));
+      S.push(...faded(xArrow(V), 1 - ramp(t, 0.3, 1.3)));   // the classical arrow leaves: X is about to become a turn
       if (t > 1.5) S.push(...stagger(equatorMarks(V), ramp(t, 1.5, 3.5)));
       const axes = [AX.x, AX.y, AX.z], names = ['X', 'Y', 'Z'];
-      const g = t < 5 ? -1 : Math.min(2, Math.floor((t - 5) / 2.3)), s = t - 5 - 2.3 * g;
+      const tau = t < 5.2 ? -1 : (t - 5.2) % 6.9, g = tau < 0 ? -1 : Math.min(2, Math.floor(tau / 2.3)), s = tau - 2.3 * g;
       const th = g < 0 ? 0 : Math.PI * ease((s - 0.9) / 1.2);
       const place = (v) => { for (let k = 0; k < g; k++) v = rot(v, axes[k], Math.PI); return g < 0 ? v : rot(v, axes[g], th); };
       const pos = {}; for (const k in STATES) pos[k] = place(STATES[k]);
@@ -214,13 +216,13 @@ const FIGURES = {
       S.push(ringAt(V, pos['0']));
       const f2 = ramp(t, 4.6, 5.2);
       if (f2 > 0) S.push(ringAt(V, pos['+'], f2), ringAt(V, pos['+i'], f2));
-      return { strokes: S, ink: cut(t) };
+      return S;
     },
   },
 
-  // the Clifford group: the sphere becomes real, the octahedron is no longer needed, and one state walks all six
+  // the Clifford group: the sphere becomes real, the octahedron is no longer needed, the orbit of six is drawn, and one state walks it
   c1: {
-    L, tFallback: 11.5,
+    B: 4.5, A: 8, get tFallback() { return this.B; },
     frame(t, w, h) {
       const V = view(w, h), S = frameS(w, h);
       const solid = ramp(t, 1.5, 3);
@@ -228,27 +230,26 @@ const FIGURES = {
       if (solid > 0) S.push(...stagger(sphereWire(V, SOLID), solid));
       S.push(...faded(octEdges(V, REST), 1 - solid));
       S.push(...poleMarks(V), ...equatorMarks(V));
-      const step = t < 3 ? -1 : Math.min(7, Math.floor(t - 3)), s = t - 3 - step, u = step < 0 ? 0 : ease((s - 0.45) / 0.55);
-      for (let i = 0; i < step; i++) S.push({ pts: walkArc(i, 1).map(V.P), weight: 'light', alpha: 0.4, width: 1.3 });
-      if (step === 7 && u >= 1) S.push({ pts: walkArc(7, 1).map(V.P), weight: 'light', alpha: 0.4, width: 1.3 });
+      if (t > 3) S.push(...stagger(orbitArcs(V), ramp(t, 3, 4.5)));   // the three pairs join into one orbit of six
+      const tau = t < 4.5 ? -1 : (t - 4.5) % 8, step = tau < 0 ? -1 : Math.min(7, Math.floor(tau)), s = tau - step, u = step < 0 ? 0 : ease((s - 0.45) / 0.55);
       let here = STATES['0'];
-      if (step >= 0 && u > 0.02 && !(step === 7 && u >= 1)) {
+      if (step >= 0 && u > 0.02) {
         const p3 = walkArc(step, u); S.push(...pathStrokes(V, p3));
         const p = p3.map(V.P), n = p.length; S.push(...headS(p[n - 1], norm2([p[n - 1][0] - p[n - 3][0], p[n - 1][1] - p[n - 3][1]])));
       }
       if (step >= 0) here = slerp(STATES[WALK[step][0]], walkTarget(step), u);
       S.push(ringAt(V, here));
-      // the other two orbit markers from the Pauli layer vanish as the walker reaches them: three orbits become one
-      if (t < 4) S.push(ringAt(V, STATES['+'], 1 - ramp(t, 3.7, 4)));
-      if (t < 5) S.push(ringAt(V, STATES['+i'], 1 - ramp(t, 4.7, 5)));
+      // the other two orbit markers from the Pauli layer leave as the orbit reaches their states
+      if (t < 3.6) S.push(ringAt(V, STATES['+'], 1 - ramp(t, 3.2, 3.6)));
+      if (t < 3.9) S.push(ringAt(V, STATES['+i'], 1 - ramp(t, 3.5, 3.9)));
       if (step >= 0) { const li = s >= 0.45 ? step : step - 1; if (li >= 0) S.push(textS(WALK[li][1], labelAt(V, V.P(walkArc(li, 1)[18]), 16), { size: V.fs })); }
-      return { strokes: S, ink: cut(t) };
+      return S;
     },
   },
 
   // a Lie group: from the walked sphere, the whole surface fills in, then it turns and carries the state anywhere
   su2: {
-    L, tFallback: 9,
+    B: 4, A: 8, get tFallback() { return this.B + 3; },
     frame(t, w, h) {
       const V = view(w, h), S = frameS(w, h);
       const fill = ramp(t, 1.5, 4), leave = 1 - ramp(t, 2, 3.5), tt = Math.max(0, t - 4);
@@ -259,13 +260,13 @@ const FIGURES = {
       for (const k in STATES) { const v = R3(STATES[k]), f = depth(v) > 0; S.push(dotS(V.P(v), 2.1, (f ? 0.95 : 0.55) * (0.45 + 0.55 * leave))); if (leave > 0) S.push(textS(k, labelAt(V, V.P(v)), { size: V.fs, alpha: (f ? 0.9 : 0.6) * leave })); }
       const q = R3(STATES['0']);
       if (tt > 0) {
-        const trail = []; for (let j = 0; j <= 40; j++) trail.push(turn(STATES['0'], Math.max(0, tt - 2.5 + 2.5 * j / 40)));
+        const trail = []; for (let j = 0; j <= 40; j++) trail.push(turn(STATES['0'], Math.max(0, tt - 2.5 + 2.5 * j / 40)));   // the turn is 8 s periodic, so the trail runs on across laps
         S.push(...pathStrokes(V, trail));
         const p = trail.map(V.P), k = p.length;
         if (tt > 0.1) S.push(...headS(p[k - 1], norm2([p[k - 1][0] - p[k - 3][0], p[k - 1][1] - p[k - 3][1]])));
       }
       S.push(ringAt(V, q));
-      return { strokes: S, ink: cut(t) };
+      return S;
     },
   },
 
@@ -304,38 +305,47 @@ function makeClock(L, tFallback) {
   let acc = 0, last = performance.now(), visible = true;
   return {
     setVisible(v) { visible = v; },
-    now() { if (FIXED_T != null) return Math.min(L - 0.001, +FIXED_T); if (reduceMotion) return tFallback; const n = performance.now(); if (visible) acc += (n - last) / 1000; last = n; return acc % L; },
+    now() { if (FIXED_T != null) return +FIXED_T % L; if (reduceMotion) return tFallback; const n = performance.now(); if (visible) acc += (n - last) / 1000; last = n; return acc % L; },
   };
 }
 
 // ---------- the stage: one figure that follows the layer being read ----------
 const STAGE_KEYS = ['s2', 'p1', 'c1', 'su2'];
-const STAGE_TITLES = { s2: 'S\u2082 \u00b7 state space', p1: 'P\u2081 \u00b7 state space', c1: 'C\u2081 \u00b7 state space', su2: 'SU(2) \u00b7 state space' };
-const SWITCH = 0.45;   // seconds to fade the ink out, then back in, when the layer changes
+const STAGE_TITLES = { s2: 'S₂ · state space', p1: 'P₁ · state space', c1: 'C₁ · state space', su2: 'SU(2) · state space' };
+const SPEED = 4;   // playing through to the next layer, or rewinding to the previous, runs this much faster
 function mountStage(fig, host) {
   const sections = [...document.querySelectorAll('[data-stage]')];
   const title = document.getElementById('stage-title');
-  let cur = 0, target = 0, acc = 0, last = performance.now(), out = 0, inn = 1, redraw = null;
+  let cur = 0, target = 0, t = 0, last = performance.now(), redraw = null;
+  const story = (k) => FIGURES[STAGE_KEYS[k]];
   const apply = () => { if (title) title.textContent = STAGE_TITLES[STAGE_KEYS[cur]]; if (FIXED_T != null || reduceMotion) redraw?.(); };
   const choose = () => {   // the last section whose top has passed the middle of the viewport
     let k = 0; const line = window.innerHeight * 0.55;
     sections.forEach((el, i) => { if (el.getBoundingClientRect().top < line) k = Math.min(i, STAGE_KEYS.length - 1); });
-    if (k !== target) { target = k; if (FIXED_T != null || reduceMotion) { cur = target; acc = 0; apply(); } }
+    if (k !== target) { target = k; if (FIXED_T != null || reduceMotion) { cur = target; t = story(cur).tFallback; apply(); } }
   };
   const clock = () => {
-    const n = performance.now(), dt = (n - last) / 1000; last = n;
-    if (FIXED_T != null) return Math.min(L - 0.001, +FIXED_T);
-    if (reduceMotion) return FIGURES[STAGE_KEYS[cur]].tFallback;
-    if (target !== cur) { out = Math.min(1, out + dt / SWITCH); if (out >= 1) { cur = target; acc = 0; out = 0; inn = 0; apply(); } }
-    else if (inn < 1) inn = Math.min(1, inn + dt / SWITCH);
-    acc += dt;
-    return acc % L;
+    const n = performance.now(), dt = Math.min(0.1, (n - last) / 1000); last = n;
+    if (FIXED_T != null) return +FIXED_T;
+    if (reduceMotion) return story(cur).tFallback;
+    let { B, A } = story(cur);
+    if (target > cur) {
+      // play on, faster, to the next hand-off point: the end of the build, or the end of the current lap
+      const hand = t < B ? B : B + Math.ceil((t - B) / A - 1e-6) * A;
+      t += SPEED * dt;
+      if (t >= hand) { cur++; t = 0; apply(); }
+    } else if (target < cur) {
+      // rewind, faster, to the opening picture, which is the previous layer's finished one; it then runs on from there
+      if (t >= B + 2 * A) t = B + A + ((t - B) % A);
+      t -= SPEED * dt;
+      if (t <= 0) { cur--; ({ B, A } = story(cur)); t = B; apply(); }
+    } else {
+      t += dt;
+      if (t >= B + 2 * A) t -= A;   // laps are identical: keep one full lap of history and no more
+    }
+    return t;
   };
-  const frame = (t) => {
-    const o = FIGURES[STAGE_KEYS[cur]].frame(t, host.clientWidth, host.clientHeight);
-    const strokes = Array.isArray(o) ? o : o.strokes, ink = (Array.isArray(o) ? 1 : (o.ink ?? 1)) * (target !== cur ? 1 - out : inn);
-    return { strokes, ink };
-  };
+  const frame = (tt) => story(cur).frame(tt, host.clientWidth, host.clientHeight);
   fig.classList.add('is-live');
   const stop = sketch(host, { ink: INK, fps: FPS, takes: 4, font: FONT, clock, frame });
   redraw = stop.redraw;

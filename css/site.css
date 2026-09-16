@@ -176,6 +176,13 @@ p + p { margin-top: 16px; }
 .ink-figure__title { position: absolute; top: 12px; left: 14px; z-index: 1; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; pointer-events: none; }
 [data-sheet] { transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot)); will-change: transform; }
 /* the stage: one state-space figure that sides with the text and follows the layer being read */
+@media (max-width: 1320px) {
+  /* with the stage beside the text there is no room for the title column: it folds above the text */
+  .page.page--note { grid-template-columns: 1fr; }
+  .page--note .page__label { border-right: 0; padding-bottom: 0; }
+  .page--note .page__label h1 { position: static; }
+  .page--note .page__body { padding-top: 16px; }
+}
 .note-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; align-items: start; }
 .note-layout > .prose { grid-column: 1; grid-row: 1; }
 .stage { grid-column: 2; grid-row: 1; position: sticky; top: 40px; aspect-ratio: 9 / 14; margin: 0; align-self: start; }
