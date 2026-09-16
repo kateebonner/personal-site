@@ -184,7 +184,7 @@ p + p { margin-top: 16px; }
 }
 .note-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; align-items: start; }
 .note-layout > .prose { grid-column: 1; grid-row: 1; }
-.stage { grid-column: 2; grid-row: 1; position: sticky; top: 40px; aspect-ratio: 5 / 6; margin: 0; align-self: start; }
+.stage { grid-column: 2; grid-row: 1; position: sticky; top: max(24px, calc(50vh - 192px)); aspect-ratio: 5 / 6; margin: 0; align-self: start; }   /* the sphere's centre (47% down a 408px box) sits at the middle of the viewport */
 .stage .ink-figure__title { top: auto; bottom: 5%; left: 0; right: 0; text-align: center; }
 /* generators rest light; the one firing on the state space goes dark, in step with the drawing */
 .gen__row { opacity: 0.5; transition: opacity 60ms linear; }
