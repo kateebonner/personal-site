@@ -211,12 +211,17 @@ p + p { margin-top: 16px; }
 .trio .ink-figure--live .ink-figure__sheet { position: relative; inset: auto; aspect-ratio: 1; }
 .trio .ink-figure--live .ink-figure__mount { position: absolute; inset: 0; }
 .trio figcaption { text-align: center; margin-top: 6px; padding: 0 4px; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.1em; line-height: 1.35; text-transform: uppercase; color: var(--ink); }
-.notes { list-style: none; margin: 0; padding: 0; max-width: 760px; }
-.notes li { display: grid; grid-template-columns: 11ch 1fr; gap: 16px; padding: 18px 0; border-bottom: var(--lw-thin) solid var(--line); align-items: baseline; }
+.notes { list-style: none; margin: 0 -14px; padding: 0; max-width: 788px; }
+/* each entry is one link: an underlined title at rest, and the whole row inverts under the pointer */
+.notes li { border-bottom: var(--lw-thin) solid var(--line); }
 .notes li:first-child { border-top: var(--lw-thin) solid var(--line); }
-.notes a { font-family: var(--font-letter); font-size: var(--fs-2); font-weight: 500; text-decoration: none; color: var(--ink); }
-.notes a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.notes p { font-size: var(--fs-1); color: var(--ink-2); margin: 6px 0 0; line-height: 1.5; }
+.notes .entry { display: block; padding: 18px 14px 20px; color: var(--ink); text-decoration: none; transition: background 140ms ease-out, color 140ms ease-out; }
+.notes .entry__title { display: block; font-family: var(--font-letter); font-size: var(--fs-2); font-weight: 500; }
+.notes .entry__arrow { display: inline-block; margin-left: 0.15em; transition: transform 140ms ease-out; }
+.notes .entry:hover .entry__arrow, .notes .entry:focus-visible .entry__arrow { transform: translateX(6px); }
+.notes .entry__blurb { display: block; margin-top: 8px; font-size: var(--fs-1); line-height: 1.5; color: var(--ink-2); }
+.notes .entry:hover, .notes .entry:focus-visible { background: var(--ink); color: var(--paper); outline: none; }
+.notes .entry:hover .entry__blurb, .notes .entry:focus-visible .entry__blurb { color: var(--paper); }
 
 /* ---------- content pages ---------- */
 .page { flex: 1; display: grid; grid-template-columns: var(--label-w) 1fr; }
@@ -262,7 +267,6 @@ p + p { margin-top: 16px; }
   .gen__note { font-size: 0.625rem; }
   .trio__live { gap: 8px; }
   .trio figcaption { font-size: 0.5rem; letter-spacing: 0.08em; }
-  .notes li { grid-template-columns: 1fr; gap: 2px; }
   .page__label, .page__body, .state .wp-frame { padding-left: 16px; padding-right: 16px; }
   .topbar { grid-template-columns: 1fr auto; gap: 12px; padding-left: 16px; padding-right: 16px; }
   .topbar__nav { justify-self: end; gap: 14px; }
