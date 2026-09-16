@@ -113,8 +113,8 @@ function stateDots(V, o = {}) {
   const S = [];
   for (const k in STATES) {
     const v = STATES[k], p = V.P(v), f = depth(v) > 0;
-    const k = Math.min(1, V.R / 130);
-    S.push(dotS(p, (o.r ?? 1.7) * k, f ? 0.95 : 0.55, 4.0 * k));
+    const sc = Math.min(1, V.R / 130);   // points shrink with a small sphere
+    S.push(dotS(p, (o.r ?? 1.7) * sc, f ? 0.95 : 0.55, 4.0 * sc));
     if (o.labels !== false) S.push(textS(k, labelAt(V, p, o.gap ?? 15), { size: V.fs, alpha: f ? 0.9 : 0.6 }));
   }
   return S;
