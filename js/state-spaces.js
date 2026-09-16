@@ -37,6 +37,7 @@ const AX = { x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1], h: norm([1, 0, 1]) };
 const GATE = { H: { n: AX.h, th: Math.PI }, S: { n: AX.z, th: Math.PI / 2 }, T: { n: AX.z, th: Math.PI / 4 } };
 
 // ---------- the view: sphere centre and radius in CSS px ----------
+const stageView = (w, h) => view(w, h, { R: Math.min(0.4 * w, 0.34 * h), cy: 0.47 * h });
 function view(w, h, o = {}) {
   const R = o.R ?? Math.min(0.36 * w, 0.27 * h), cx = w / 2, cy = o.cy ?? h * 0.55;
   const P = (v) => [cx + (v[0] * RIGHT[0] + v[1] * RIGHT[1]) * R, cy - (v[0] * UP[0] + v[1] * UP[1] + v[2] * UP[2]) * R];
@@ -182,8 +183,9 @@ const FIGURES = {
   // the classical bit: a boolean is two points; the sphere around them is only a ghost; X exchanges them
   s2: {
     B: 5, A: 4, get tFallback() { return this.B; },
+    active(t) { return t >= 5 && ((t - 5) % 2) < 0.8 ? ['X'] : []; },   // X acts at each hop
     frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h);
+      const V = stageView(w, h), S = [];
       S.push(...stagger(poleMarks(V), ramp(t, 0.3, 1.8)));
       if (t > 2) S.push(...stagger(sphereWire(V, GHOST), ramp(t, 2, 4.2)));
       if (t > 4.2) S.push(...stagger(xArrow(V), ramp(t, 4.2, 5)));
@@ -196,8 +198,9 @@ const FIGURES = {
   // the Pauli group: from the classical picture, four more states and the octahedron through all six; then half turns
   p1: {
     B: 5.2, A: 6.9, get tFallback() { return this.B; },
+    active(t) { if (t < 5.2) return []; const tau = (t - 5.2) % 6.9, g = Math.min(2, Math.floor(tau / 2.3)), s = tau - 2.3 * g; return s >= 0.9 && s <= 2.1 ? [['X', 'Y', 'Z'][g]] : []; },
     frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h);
+      const V = stageView(w, h), S = [];
       S.push(...sphereWire(V, GHOST), ...poleMarks(V));
       S.push(...faded(xArrow(V), 1 - ramp(t, 0.3, 1.3)));   // the classical arrow leaves: X is about to become a turn
       if (t > 1.5) S.push(...stagger(equatorMarks(V), ramp(t, 1.5, 3.5)));
@@ -210,7 +213,6 @@ const FIGURES = {
       if (g >= 0) {
         const ax = axes[g];
         S.push(lineS(V.P(ax.map((c) => -1.18 * c)), V.P(ax.map((c) => 1.18 * c)), 40, { alpha: 0.5, width: 1.0 }));
-        S.push(textS(names[g], [18, h - 22], { size: V.fs + 2, align: 'left' }));
       }
       // one marked state from each orbit rides the turns: the classical one from the start, the other two once their states exist
       S.push(ringAt(V, pos['0']));
@@ -223,8 +225,9 @@ const FIGURES = {
   // the Clifford group: the sphere becomes real, the octahedron is no longer needed, the orbit of six is drawn, and one state walks it
   c1: {
     B: 4.5, A: 8, get tFallback() { return this.B; },
+    active(t) { if (t < 4.5) return []; const tau = (t - 4.5) % 8, step = Math.min(7, Math.floor(tau)), s = tau - step; return s >= 0.45 ? [WALK[step][1]] : []; },
     frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h);
+      const V = stageView(w, h), S = [];
       const solid = ramp(t, 1.5, 3);
       S.push(...faded(sphereWire(V, GHOST), 1 - solid));
       if (solid > 0) S.push(...stagger(sphereWire(V, SOLID), solid));
@@ -250,8 +253,9 @@ const FIGURES = {
   // a Lie group: from the walked sphere, the whole surface fills in, then it turns and carries the state anywhere
   su2: {
     B: 4, A: 8, get tFallback() { return this.B + 3; },
+    active(t) { return t >= 4 ? ['Rx', 'Rz'] : []; },   // the turn is R_z composed with R_x, continuously
     frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h);
+      const V = stageView(w, h), S = [];
       const fill = ramp(t, 1.5, 4), leave = 1 - ramp(t, 2, 3.5), tt = Math.max(0, t - 4);
       const R3 = (v) => turn(v, tt);
       S.push(...sphereWire(V, { ...SOLID, outline: 1 }, R3));
@@ -313,12 +317,26 @@ function makeClock(L, tFallback) {
 const STAGE_KEYS = ['s2', 'p1', 'c1', 'su2'];
 const STAGE_TITLES = { s2: 'S₂ · state space', p1: 'P₁ · state space', c1: 'C₁ · state space', su2: 'SU(2) · state space' };
 const SPEED = 4;   // playing through to the next layer, or rewinding to the previous, runs this much faster
+const stageState = { host: null, cur: 0, t: 0, rows: [] };   // read by the link canvas
 function mountStage(fig, host) {
   const sections = [...document.querySelectorAll('[data-stage]')];
   const title = document.getElementById('stage-title');
-  let cur = 0, target = 0, t = 0, last = performance.now(), redraw = null;
+  let cur = 0, target = 0, t = 0, last = performance.now(), redraw = null, lit = '';
   const story = (k) => FIGURES[STAGE_KEYS[k]];
-  const apply = () => { if (title) title.textContent = STAGE_TITLES[STAGE_KEYS[cur]]; if (FIXED_T != null || reduceMotion) redraw?.(); };
+  stageState.host = host;
+  // light the generator that is acting, in the panel of the layer being shown
+  const light = () => {
+    const act = story(cur).active?.(t) ?? [], key = cur + ':' + act.join(',');
+    if (key === lit) return; lit = key;
+    stageState.cur = cur; stageState.t = t; stageState.rows = [];
+    sections.forEach((sec, i) => {
+      const panel = sec.querySelector('.gen'); if (!panel) return;
+      const on = i === cur && act.length > 0;
+      panel.classList.toggle('has-active', on);
+      panel.querySelectorAll('.gen__row').forEach((row) => { const isOn = on && act.includes(row.dataset.gen); row.classList.toggle('is-on', isOn); if (isOn) stageState.rows.push(row); });
+    });
+  };
+  const apply = () => { if (title) title.textContent = STAGE_TITLES[STAGE_KEYS[cur]]; light(); if (FIXED_T != null || reduceMotion) redraw?.(); };
   const choose = () => {   // the last section whose top has passed the middle of the viewport
     let k = 0; const line = window.innerHeight * 0.55;
     sections.forEach((el, i) => { if (el.getBoundingClientRect().top < line) k = Math.min(i, STAGE_KEYS.length - 1); });
@@ -326,8 +344,8 @@ function mountStage(fig, host) {
   };
   const clock = () => {
     const n = performance.now(), dt = Math.min(0.1, (n - last) / 1000); last = n;
-    if (FIXED_T != null) return +FIXED_T;
-    if (reduceMotion) return story(cur).tFallback;
+    if (FIXED_T != null) { t = +FIXED_T; light(); return t; }
+    if (reduceMotion) { t = story(cur).tFallback; light(); return t; }
     let { B, A } = story(cur);
     if (target > cur) {
       // play on, faster, to the next hand-off point: the end of the build, or the end of the current lap
@@ -343,6 +361,7 @@ function mountStage(fig, host) {
       t += dt;
       if (t >= B + 2 * A) t -= A;   // laps are identical: keep one full lap of history and no more
     }
+    light();
     return t;
   };
   const frame = (tt) => story(cur).frame(tt, host.clientWidth, host.clientHeight);
@@ -352,6 +371,32 @@ function mountStage(fig, host) {
   window.addEventListener('scroll', choose, { passive: true });
   window.addEventListener('resize', choose);
   choose(); apply();
+}
+
+// the connection: a pencil line from the acting generator, wherever it is on the page, to the sphere
+function mountLink(link) {
+  const bez = (a, c1, c2, b, k = 60) => { const pts = []; for (let i = 0; i <= k; i++) { const u = i / k, v = 1 - u; pts.push([v*v*v*a[0] + 3*v*v*u*c1[0] + 3*v*u*u*c2[0] + u*u*u*b[0], v*v*v*a[1] + 3*v*v*u*c1[1] + 3*v*u*u*c2[1] + u*u*u*b[1]]); } return pts; };
+  const frame = () => {
+    const host = stageState.host; if (!host || !stageState.rows.length) return [];
+    const hr = host.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+    if (hr.bottom < 0 || hr.top > vh) return [];
+    const V = stageView(hr.width, hr.height), C = [hr.left + V.cx, hr.top + V.cy], S = [];
+    for (const row of stageState.rows) {
+      const el = row.querySelector('.katex') || row, r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh || r.width === 0) continue;
+      const toRight = r.right + 40 < C[0], below = r.top > C[1];
+      const A = toRight ? [r.right + 10, r.top + r.height / 2] : [r.left + r.width / 2, below ? r.top - 8 : r.bottom + 8];
+      // aim at the sphere's near side; from below (the phone band) at its lower shoulder, clear of the caption
+      const d = toRight ? norm2([A[0] - C[0], A[1] - C[1]]) : [Math.sin(0.6), below ? Math.cos(0.6) : -Math.cos(0.6)];
+      const B = [C[0] + d[0] * (V.R + 8), C[1] + d[1] * (V.R + 8)];
+      const dx = B[0] - A[0], dy = B[1] - A[1];
+      const pts = toRight ? bez(A, [A[0] + 0.45 * dx, A[1]], [B[0] - 0.45 * dx, B[1]], B) : bez(A, [A[0], A[1] + 0.45 * dy], [B[0], B[1] - 0.45 * dy], B);
+      S.push({ pts, weight: 'graphite', scale: 1.2 });
+      const n = pts.length; S.push(...headS(pts[n - 1], norm2([pts[n - 1][0] - pts[n - 3][0], pts[n - 1][1] - pts[n - 3][1]])));
+    }
+    return S;
+  };
+  sketch(link, { ink: INK, fps: FPS, takes: 4, font: FONT, clock: () => performance.now() / 1000, frame });
 }
 
 export function mountAll() {
@@ -369,7 +414,7 @@ export function mountAll() {
     if (!host) continue;
     // only with the stylesheet that positions the mount; a stale or missing one leaves the still drawings in place
     if (getComputedStyle(host).position !== 'absolute') { if (fig.dataset.figure === 'stage') document.documentElement.classList.add('no-stage'); continue; }
-    if (fig.dataset.figure === 'stage') { mountStage(fig, host); continue; }
+    if (fig.dataset.figure === 'stage') { mountStage(fig, host); const link = document.getElementById('link'); if (link && getComputedStyle(link).position === 'fixed') mountLink(link); continue; }
     const def = FIGURES[fig.dataset.figure];
     if (!def) continue;
     fig.classList.add('is-live');
