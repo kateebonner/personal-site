@@ -210,7 +210,7 @@ p + p { margin-top: 16px; }
 .trio .ink-figure--live { display: flex; flex-direction: column; min-width: 0; aspect-ratio: auto; }
 .trio .ink-figure--live .ink-figure__sheet { position: relative; inset: auto; aspect-ratio: 1; }
 .trio .ink-figure--live .ink-figure__mount { position: absolute; inset: 0; }
-.trio figcaption { text-align: center; margin-top: 6px; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+.trio figcaption { text-align: center; margin-top: 6px; padding: 0 4px; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.1em; line-height: 1.35; text-transform: uppercase; color: var(--ink); }
 .notes { list-style: none; margin: 0; padding: 0; max-width: 760px; }
 .notes li { display: grid; grid-template-columns: 11ch 1fr; gap: 16px; padding: 18px 0; border-bottom: var(--lw-thin) solid var(--line); align-items: baseline; }
 .notes li:first-child { border-top: var(--lw-thin) solid var(--line); }

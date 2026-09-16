@@ -47,7 +47,7 @@ function view(w, h, o = {}) {
 // ---------- stroke builders ----------
 function circle2d(p, r, k) { const pts = []; for (let i = 0; i <= k; i++) { const a = i / k * Math.PI * 2; pts.push([p[0] + r * Math.cos(a), p[1] + r * Math.sin(a)]); } return pts; }
 function lineS(p, q, k = 24, o = {}) { const pts = []; for (let i = 0; i <= k; i++) { const u = i / k; pts.push([p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u]); } return { pts, weight: 'light', alpha: o.alpha ?? 0.5, width: o.width ?? 0.9 }; }
-const dotS = (p, r = 2.1, alpha = 0.95) => ({ pts: circle2d(p, r, 12), weight: 'light', width: 4.0, alpha });
+const dotS = (p, r = 2.1, alpha = 0.95, width = 4.0) => ({ pts: circle2d(p, r, 12), weight: 'light', width, alpha });
 const hollowS = (p, r = 3.6, alpha = 0.9) => ({ pts: circle2d(p, r, 24), weight: 'light', width: 1.3, alpha });   // a state that is not selected
 const fullS = (p, r = 2.6, alpha = 0.95) => ({ pts: circle2d(p, r, 14), weight: 'light', width: 4.6, alpha });      // the selected state
 const ringS = (p, r = 9) => ({ pts: circle2d(p, r, 28), weight: 'graphite', scale: 1.2 });
@@ -113,7 +113,8 @@ function stateDots(V, o = {}) {
   const S = [];
   for (const k in STATES) {
     const v = STATES[k], p = V.P(v), f = depth(v) > 0;
-    S.push(dotS(p, o.r ?? 1.7, f ? 0.95 : 0.55));
+    const k = Math.min(1, V.R / 130);
+    S.push(dotS(p, (o.r ?? 1.7) * k, f ? 0.95 : 0.55, 4.0 * k));
     if (o.labels !== false) S.push(textS(k, labelAt(V, p, o.gap ?? 15), { size: V.fs, alpha: f ? 0.9 : 0.6 }));
   }
   return S;
@@ -290,7 +291,8 @@ const FIGURES = {
       const V = view(w, h, { R: 0.42 * Math.min(w, h), cy: h / 2 });
       const S = sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 });
       const count = 6 + Math.floor((t / 12) * (CT_POINTS.length - 6));
-      for (let i = 0; i < count; i++) { const v = CT_POINTS[i], f = depth(v) > 0; S.push(dotS(V.P(v), i < 6 ? 2.1 : 1.6, f ? 0.9 : 0.4)); }
+      const k = Math.min(1, V.R / 130);   // on a small sphere the points shrink with it
+      for (let i = 0; i < count; i++) { const v = CT_POINTS[i], f = depth(v) > 0; S.push(dotS(V.P(v), (i < 6 ? 2.1 : 1.5) * k, f ? 0.9 : 0.4, 3.6 * k)); }
       const u = t / 12, edge = Math.min(u, 1 - u), f = Math.min(1, edge / 0.06);
       return { strokes: S, ink: f * f * (3 - 2 * f) };
     },
