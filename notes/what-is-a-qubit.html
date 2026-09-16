@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>What is a qubit? · Kate Bonner</title>
-  <meta name="description" content="A classical bit is a boolean; a quantum bit is a point on a sphere. The difference, told through the groups that act on each: S₂, the Pauli group, the Clifford group, SU(2).">
+  <meta name="description" content="Classical bits and qubits share one state space, a sphere. What differs is the set of operations allowed on it: one flip, or every rotation. Built one group at a time: S₂, the Pauli group, the Clifford group, SU(2).">
   <meta property="og:title" content="What is a qubit?">
-  <meta property="og:description" content="A classical bit is a boolean; a quantum bit is a point on a sphere. The difference, told through the groups that act on each.">
+  <meta property="og:description" content="Classical bits and qubits share one state space, a sphere. What differs is the set of operations allowed on it: one flip, or every rotation. Built one group at a time: S₂, the Pauli group, the Clifford group, SU(2).">
   <meta property="og:url" content="https://katebonner.ai/notes/what-is-a-qubit">
   <meta property="og:type" content="article">
   <link rel="canonical" href="https://katebonner.ai/notes/what-is-a-qubit">
@@ -40,8 +40,10 @@
       </figure>
       <article class="prose note">
         <span class="meta"><a href="/notes/">Notes</a> · 2026-09-14</span>
-        <p class="epigraph">A classical bit is a boolean; a quantum bit is a point on a sphere.</p>
-        <p>A qubit is any two-level quantum system into which we can encode data, control, and read out. Some degrees of freedom we exploit today are the spin of an electron, the polarization of a photon, and the two lowest levels of a superconducting circuit. The modality varies; the state space does not. It is always a sphere, and what separates a qubit from a bit is the group that acts on it.</p>
+        <p>The prevailing explanation of a qubit is odd to me. It builds its structure by separating classical bits from qubits, but they are not separate. Their states inhabit the same space. Both are vectors pointing to a location on a sphere.</p>
+        <p>The difference is precisely which set of operations can be applied to that vector. A classical bit admits one reversible operation, the flip (the \(X\) gate). The classical vector flips between the two poles of the sphere, 0 and 1. A qubit admits every rotation of the sphere, including the flip. The quantum vector can point anywhere on the sphere, not just at the poles.</p>
+        <p>Physically, the qubit can be any two-level quantum system that we can faithfully prepare, control, and read out. The spin of an electron, the polarization of a photon, and the two lowest levels of a superconducting circuit are a few systems in use today. The modality varies, but the state space does not.</p>
+        <p>Let's build an intuition through the lens of group theory, one group at a time.</p>
 
         <section data-stage="s2">
         <h2>Classical information</h2>
@@ -49,27 +51,28 @@
               <div class="gen__row" data-gen="X">$$X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$$</div>
               <p class="gen__note">a cyclic group of order 2</p></div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/s2-state-space.png" width="900" height="1503" alt="Hand-drawn panel, S2 state space: a sphere with only its two poles marked 0 and 1, and an arrow between them." loading="lazy"></figure>
-        <p>The symmetry group of a classical bit is \(S_2 = \langle x \mid x^2 = I \rangle\), a cyclic group of order 2. It acts on the set \(\{0, 1\}\). The action is free and transitive, so the orbit of 0 is \(\{0, 1\}\) with trivial stabilizer. Choosing the outcomes as a basis of \(\mathbb{C}^2\) turns this action into a faithful representation \(\rho: S_2 \to U(2)\), which is how the classical group sits inside the quantum one.</p>
+        <p>The symmetry group of a classical bit is \(S_2 = \langle x \mid x^2 = I \rangle\), a cyclic group of order 2. It acts on the set \(\{0, 1\}\). The action is free and transitive, so the orbit of 0 is \(\{0, 1\}\). Choosing the outcomes as a basis of \(\mathbb{C}^2\) turns this action into a faithful representation \(\rho: S_2 \to U(2)\), which is how the classical group sits inside the quantum one.</p>
         </section>
         <section data-stage="p1">
         <h2>Quantum information</h2>
+        <h3>The Pauli group</h3>
           <figure class="gen-panel"><figcaption class="gen-panel__title">P₁ · generators</figcaption><div class="gen">
               <div class="gen__row" data-gen="X">$$X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$$</div>
               <div class="gen__row" data-gen="Y">$$Y = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}$$</div>
               <div class="gen__row" data-gen="Z">$$Z = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$$</div></div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/p1-state-space.png" width="900" height="1433" alt="Hand-drawn panel, P1 state space: an octahedron inscribed in the sphere, its six vertices labelled 0, 1, plus, minus, plus i, minus i." loading="lazy"></figure>
-        <p>The Pauli group is \(P_1 = \langle X, Y, Z \rangle \subset U(2)\), of order 16, with \(X^2 = Y^2 = Z^2 = I\). The six axis states \(0, 1, +, -, +i, -i\) are the eigenstates of \(Z\), \(X\), and \(Y\), and the vertices of an octahedron inscribed in the sphere. Under the Pauli group they form three orbits, the antipodal pairs \(\{0, 1\}\), \(\{+, -\}\), and \(\{+i, -i\}\). Each pair is an eigenbasis of one generator, which fixes it, and the other two generators swap it.</p>
+        <p>The Pauli group is \(P_1 = \langle X, Y, Z \rangle \subset U(2)\), of order 16, with \(X^2 = Y^2 = Z^2 = I\). The six axis states \(0, 1, +, -, +i, -i\) are the eigenstates of \(Z\), \(X\), and \(Y\), and the vertices of an octahedron inscribed in the sphere. Under the Pauli group they form three orbits, the antipodal pairs \(\{0, 1\}\), \(\{+, -\}\), and \(\{+i, -i\}\). Each pair is the eigenbasis of one generator, which fixes it, and the other two generators swap it. The orbit of 0 is still \(\{0, 1\}\); the Pauli group moves quantum states, but it maps classical states to classical states.</p>
         </section>
         <section data-stage="c1">
-        <h2>The Clifford group</h2>
+        <h3>The Clifford group</h3>
           <figure class="gen-panel"><figcaption class="gen-panel__title">C₁ · generators</figcaption><div class="gen">
               <div class="gen__row" data-gen="H">$$H = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$$</div>
               <div class="gen__row" data-gen="S">$$S = \begin{bmatrix} 1 & 0 \\ 0 & i \end{bmatrix}$$</div></div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/c1-state-space.png" width="900" height="1343" alt="Hand-drawn panel, C1 state space: the sphere with its six axis states and arrows carrying one state to the next around a single orbit." loading="lazy"></figure>
-        <p>The Clifford group is \(C_1 = \langle H, S \rangle \subset U(2)\). It contains the Pauli group (\(S^2 = Z\), \(HZH = X\)) and is its normalizer: the unitaries that map Paulis to Paulis by conjugation. The three Pauli pairs merge into one orbit of six, with stabilizer \(\{I, S, S^2, S^3\}\). It is the first layer to carry a classical state off the poles, and the last finite one.</p>
+        <p>The Clifford group is \(C_1 = \langle H, S \rangle \subset U(2)\), 24 elements up to phase. It contains the Pauli group (\(S^2 = Z\), \(HZH = X\)). \(H\) exchanges the \(x\) and \(z\) axes and \(S\) turns \(x\) into \(y\), so the three Pauli pairs merge into one orbit of six, with stabilizer \(\{I, S, S^2, S^3\}\). It is the first layer to carry a classical state off the poles, and the last finite one.</p>
         </section>
         <section data-stage="su2">
-        <h2>A Lie group</h2>
+        <h3>SU(2), a Lie group</h3>
           <figure class="gen-panel"><figcaption class="gen-panel__title">SU(2) · generators</figcaption><div class="gen gen--wide">
               <div class="gen__row" data-gen="Rx">$$R_x(\theta) = \begin{bmatrix} \cos\tfrac{\theta}{2} & -i\sin\tfrac{\theta}{2} \\[4pt] -i\sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
               <div class="gen__row" data-gen="Ry">$$R_y(\theta) = \begin{bmatrix} \cos\tfrac{\theta}{2} & -\sin\tfrac{\theta}{2} \\[4pt] \sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
