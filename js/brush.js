@@ -6,7 +6,8 @@
 //   const stop = sketch(hostElement, { ink: [r, g, b], fps, takes, frame(t) => strokes, clock });
 //
 // frame(t) returns an array of strokes: { pts: [[x, y], ...] in CSS px, damp?: Float32Array 0..1,
-// weight: 'graphite' | 'light', alpha?, width?, scale? (multiplies every pass width) }, or
+// weight: 'graphite' | 'light', alpha?, width?, scale? (multiplies every pass width), fade? (0..1, multiplies
+// every pass alpha, for strokes appearing or leaving) }, or
 // { strokes, ink } where ink in 0..1 scales every
 // alpha (use it to fade across a loop cut). A stroke may instead be a typed label,
 // { text, at: [x, y], size?, align?, baseline?, alpha? }, set in the ink with the take's wobble in
@@ -144,10 +145,10 @@ export function sketch(host, options) {
       }
       const n = s.pts.length;
       if (s.weight === 'graphite') {
-        o.passes.forEach((g, p) => pass(s.pts, s.damp, takeFor(take * o.passes.length + p, n), g.wob, s.alpha ?? g.a, (s.width ?? g.w) * (s.scale ?? 1), true));
+        o.passes.forEach((g, p) => pass(s.pts, s.damp, takeFor(take * o.passes.length + p, n), g.wob, (s.alpha ?? g.a) * (s.fade ?? 1), (s.width ?? g.w) * (s.scale ?? 1), true));
       } else {
         const g = o.light;
-        pass(s.pts, null, takeFor(1000 + take + (strokeSeq++), n), g.wob, s.alpha ?? g.a, s.width ?? g.w, false);
+        pass(s.pts, null, takeFor(1000 + take + (strokeSeq++), n), g.wob, (s.alpha ?? g.a) * (s.fade ?? 1), s.width ?? g.w, false);
       }
     }
     ctx.globalAlpha = 1;

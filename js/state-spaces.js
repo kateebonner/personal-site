@@ -37,6 +37,7 @@ const AX = { x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1], h: norm([1, 0, 1]) };
 const GATE = { H: { n: AX.h, th: Math.PI }, S: { n: AX.z, th: Math.PI / 2 }, T: { n: AX.z, th: Math.PI / 4 } };
 
 // ---------- the view: sphere centre and radius in CSS px ----------
+const stageView = (w, h) => view(w, h, { R: Math.min(0.4 * w, 0.34 * h), cy: 0.47 * h });
 function view(w, h, o = {}) {
   const R = o.R ?? Math.min(0.36 * w, 0.27 * h), cx = w / 2, cy = o.cy ?? h * 0.55;
   const P = (v) => [cx + (v[0] * RIGHT[0] + v[1] * RIGHT[1]) * R, cy - (v[0] * UP[0] + v[1] * UP[1] + v[2] * UP[2]) * R];
@@ -46,7 +47,9 @@ function view(w, h, o = {}) {
 // ---------- stroke builders ----------
 function circle2d(p, r, k) { const pts = []; for (let i = 0; i <= k; i++) { const a = i / k * Math.PI * 2; pts.push([p[0] + r * Math.cos(a), p[1] + r * Math.sin(a)]); } return pts; }
 function lineS(p, q, k = 24, o = {}) { const pts = []; for (let i = 0; i <= k; i++) { const u = i / k; pts.push([p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u]); } return { pts, weight: 'light', alpha: o.alpha ?? 0.5, width: o.width ?? 0.9 }; }
-const dotS = (p, r = 2.1, alpha = 0.95) => ({ pts: circle2d(p, r, 12), weight: 'light', width: 4.0, alpha });
+const dotS = (p, r = 2.1, alpha = 0.95, width = 4.0) => ({ pts: circle2d(p, r, 12), weight: 'light', width, alpha });
+const hollowS = (p, r = 3.6, alpha = 0.9) => ({ pts: circle2d(p, r, 24), weight: 'light', width: 1.3, alpha });   // a state that is not selected
+const fullS = (p, r = 2.6, alpha = 0.95) => ({ pts: circle2d(p, r, 14), weight: 'light', width: 4.6, alpha });      // the selected state
 const ringS = (p, r = 9) => ({ pts: circle2d(p, r, 28), weight: 'graphite', scale: 1.2 });
 const textS = (text, at, o = {}) => ({ text, at, size: o.size ?? 13, alpha: o.alpha ?? 0.9, align: o.align, baseline: o.baseline });
 function headS(tip, dir, size = 7) {   // an arrowhead: two arms meeting at the tip, pointing along dir
@@ -56,10 +59,6 @@ function headS(tip, dir, size = 7) {   // an arrowhead: two arms meeting at the 
   return [lineS(a, tip, 6, { alpha: 0.95, width: 2.0 }), lineS(b, tip, 6, { alpha: 0.95, width: 2.0 })];
 }
 function labelAt(V, p, gap = 15) { const d = norm2([p[0] - V.cx, p[1] - V.cy]); return [p[0] + d[0] * gap, p[1] + d[1] * gap]; }
-function frameS(w, h) {   // the hand-drawn frame around the panel, like the notebook's
-  const m = 3, k = 40, g = (l) => ({ pts: l.pts, weight: 'graphite', scale: 1.7 });
-  return [g(lineS([m, m], [w - m, m], k)), g(lineS([w - m, m], [w - m, h - m], k)), g(lineS([w - m, h - m], [m, h - m], k)), g(lineS([m, h - m], [m, m], k))];
-}
 
 // k points of the circle of radius r about centre c (3D) with normal n
 function circleOn(n, r, c, k = 144) {
@@ -69,7 +68,7 @@ function circleOn(n, r, c, k = 144) {
 }
 
 // a closed loop of 3D points -> strokes: front runs solid, back runs lighter and dashed
-function dashed2d(pts, alpha, width) { const out = []; for (let i = 0; i + 3 < pts.length; i += 18) out.push({ pts: pts.slice(i, i + 12), weight: 'light', alpha, width }); return out; }
+function dashed2d(pts, alpha, width, on = 12, off = 6) { const out = []; for (let i = 0; i + 3 < pts.length; i += on + off) out.push({ pts: pts.slice(i, i + on), weight: 'light', alpha, width }); return out; }
 function loopStrokes(V, pts3, o) {
   const n = pts3.length, d = pts3.map(depth), out = [];
   let start = 0;
@@ -77,7 +76,7 @@ function loopStrokes(V, pts3, o) {
   let run = [], front = d[start] > 0;
   const flush = () => {
     if (run.length >= 2) {
-      if (o.ghost) out.push(...dashed2d(run.map(V.P), front ? o.front : o.back, o.width ?? 1.3));   // a ghost: dashed all round, front heavier
+      if (o.ghost) out.push(...dashed2d(run.map(V.P), front ? o.front : o.back, o.width ?? 1.3, ...(o.dash ?? [12, 6])));   // a ghost: dashed all round, front heavier
       else if (front || o.dashed === false) out.push({ pts: run.map(V.P), weight: 'light', alpha: front ? o.front : o.back, width: o.width ?? 1.3 });
       else out.push(...dashed2d(run.map(V.P), o.back, o.width ?? 1.3));
     }
@@ -102,7 +101,7 @@ function pathStrokes(V, pts3, backAlpha = 0.3) {
 
 function sphereWire(V, o, R3 = null) {
   const S = [];
-  if (o.outline) S.push(...(o.ghost ? dashed2d(circle2d([V.cx, V.cy], V.R, 144), 0.75, 1.4) : [{ pts: circle2d([V.cx, V.cy], V.R, 96), weight: 'graphite', scale: 1.6 }]));
+  if (o.outline) S.push(...(o.ghost ? dashed2d(circle2d([V.cx, V.cy], V.R, 144), o.outlineAlpha ?? 0.75, 1.4, ...(o.dash ?? [12, 6])) : [{ pts: circle2d([V.cx, V.cy], V.R, 96), weight: 'graphite', scale: 1.6 }]));
   const loops = [];
   for (const z of o.lats ?? []) loops.push(circleOn(AX.z, Math.sqrt(1 - z * z), [0, 0, z]));
   const m = o.mers ?? 0;
@@ -114,7 +113,8 @@ function stateDots(V, o = {}) {
   const S = [];
   for (const k in STATES) {
     const v = STATES[k], p = V.P(v), f = depth(v) > 0;
-    S.push(dotS(p, o.r ?? 1.7, f ? 0.95 : 0.55));
+    const sc = Math.min(1, V.R / 130);   // points shrink with a small sphere
+    S.push(dotS(p, (o.r ?? 1.7) * sc, f ? 0.95 : 0.55, 4.0 * sc));
     if (o.labels !== false) S.push(textS(k, labelAt(V, p, o.gap ?? 15), { size: V.fs, alpha: f ? 0.9 : 0.6 }));
   }
   return S;
@@ -134,98 +134,149 @@ const CT_POINTS = (() => {
   return out;
 })();
 
+// ---------- time helpers ----------
+// Each layer is a story: a build (B seconds, once) that opens on the previous layer's finished picture,
+// then an action that repeats with period A and returns to that finished picture at every lap boundary.
+// So the stage can always play forward to a hand-off point, or rewind, without a cut.
+const ramp = (t, a, b) => ease((t - a) / (b - a));
+const partial = (pts, u) => pts.slice(0, Math.max(2, Math.round(pts.length * u)));
+// strokes appear one after another as u runs 0..1: each is drawn along its length, labels fade in
+function stagger(S, u) {
+  const k = S.length, out = [];
+  for (let i = 0; i < k; i++) {
+    const f = Math.max(0, Math.min(1, u * (k + 2) - i));
+    if (f <= 0) break;
+    const s = S[i];
+    out.push(s.text != null ? { ...s, alpha: (s.alpha ?? 0.9) * f } : { ...s, pts: partial(s.pts, f) });
+  }
+  return out;
+}
+const faded = (S, f) => (f <= 0.01 ? [] : S.map((s) => (s.text != null ? { ...s, alpha: (s.alpha ?? 0.9) * f } : { ...s, fade: (s.fade ?? 1) * f })));
+const poleMarks = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [hollowS(top), textS('0', [top[0], top[1] - 19], { size: V.fs }), hollowS(bot), textS('1', [bot[0], bot[1] + 19], { size: V.fs })]; };
+const equatorMarks = (V) => { const S = []; for (const k of ['+', '+i', '−', '−i']) { const v = STATES[k], p = V.P(v), f = depth(v) > 0; S.push(hollowS(p, 3.6, f ? 0.9 : 0.5)); S.push(textS(k, labelAt(V, p, 17), { size: V.fs, alpha: f ? 0.9 : 0.6 })); } return S; };
+const hopArrow = (V, from, to) => { const a = V.P(STATES[from]), b = V.P(STATES[to]), d = norm2([b[0] - a[0], b[1] - a[1]]); const A = [a[0] + d[0] * 14, a[1] + d[1] * 14], B = [b[0] - d[0] * 13, b[1] - d[1] * 13]; return [{ pts: lineS(A, B, 30).pts, weight: 'graphite', scale: 1.3 }, ...headS(B, d, 8)]; };
+const GHOST = { lats: [-0.5, 0, 0.5], mers: 3, merOffset: 0.25, ghost: true, front: 0.65, back: 0.35, outline: 1 };
+const GHOST_LIGHT = { ...GHOST, front: 0.42, back: 0.22, outlineAlpha: 0.5, dash: [7, 6] };   // before quantum: fainter, more broken
+const SOLID = { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 };
+const DENSE = { lats: [-0.85, -0.7, -0.55, -0.4, -0.25, -0.1, 0.05, 0.2, 0.35, 0.5, 0.65, 0.8], mers: 8, front: 0.4, back: 0.18, width: 1.0, dashed: false, outline: 0 };
+// the octahedron's edges at the given vertex positions, back first
+function octEdges(V, pos, fade = 1) {
+  const edges = OCT_EDGES.map(([a, b]) => ({ a, b, d: depth(pos[a]) + depth(pos[b]) })).sort((p, q) => p.d - q.d);
+  return edges.map((e) => { const l = lineS(V.P(pos[e.a]), V.P(pos[e.b]), 24, { alpha: 0.45, width: 1.1 }); return e.d > 0 ? { pts: l.pts, weight: 'graphite', scale: 1.4, fade } : { ...l, fade }; });
+}
+const REST = {}; for (const k in STATES) REST[k] = STATES[k];
+// the Clifford walk: each step is the great-circle arc between two neighbouring axis states
+const WALK = [['0', 'H'], ['+', 'S'], ['+i', 'S'], ['−', 'H'], ['1', 'H'], ['−', 'S'], ['−i', 'S'], ['+', 'H']];
+const walkTarget = (i) => { const [from, gn] = WALK[i], g = GATE[gn]; return rot(STATES[from], g.n, g.th); };
+const slerp = (a, b, u) => { const O = Math.acos(Math.max(-1, Math.min(1, dot(a, b)))), sO = Math.sin(O) || 1; const p = Math.sin((1 - u) * O) / sO, q = Math.sin(u * O) / sO; return [a[0] * p + b[0] * q, a[1] * p + b[1] * q, a[2] * p + b[2] * q]; };
+const walkArc = (i, uu, k = 36) => { const a = STATES[WALK[i][0]], b = walkTarget(i), pts = []; for (let j = 0; j <= k; j++) pts.push(slerp(a, b, uu * j / k)); return pts; };
+const orbitArcs = (V, fade = 1) => WALK.map((_, i) => ({ pts: walkArc(i, 1).map(V.P), weight: 'light', alpha: 0.4, width: 1.3, fade }));
+const fullAt = (V, v, fade = 1) => ({ ...fullS(V.P(v), 2.6, depth(v) > 0 ? 0.95 : 0.55), fade });   // a selected state, wherever it is
+// a path in SU(2): a turn about z composed with a slower turn about x, both closing after 8 s
+const OM = Math.PI * 2 / 8;
+const turn = (v, tt) => rot(rot(v, AX.x, OM * tt), AX.z, 2 * OM * tt);
+
 const FIGURES = {
-  // just the hand-drawn frame, for the typeset generator panels beside the drawings
-  frame: { L: 1, tFallback: 0, frame(t, w, h) { return frameS(w, h); } },
-  // the classical bit: two outcomes, and X exchanging them
+  // the classical bit: a boolean is two points; the sphere around them is only a ghost; X exchanges them
   s2: {
-    L: 4, tFallback: 0.5,
+    // one lap: at 0, then at tau = 1 X fires and the state hops to 1, at tau = 3 it fires again and the state hops back;
+    // the lap boundary is a quiet moment, so hand-offs are clean
+    B: 4.5, A: 4, HOPS: [1, 3], get tFallback() { return this.B + 1.05; },
+    active(t) { if (t < 4.5) return []; const tau = (t - 4.5) % 4; return this.HOPS.some((h) => tau >= h - 0.3 && tau < h + 0.4) ? ['X'] : []; },
     frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h);
-      S.push(...sphereWire(V, { lats: [-0.5, 0, 0.5], mers: 3, merOffset: 0.25, ghost: true, front: 0.65, back: 0.35, outline: 1 }));
-      const top = V.P(STATES['0']), bot = V.P(STATES['1']);
-      S.push({ pts: lineS([V.cx, top[1] + 14], [V.cx, bot[1] - 14], 30).pts, weight: 'graphite', scale: 1.3 });
-      S.push(...headS([V.cx, top[1] + 11], [0, -1]), ...headS([V.cx, bot[1] - 11], [0, 1]));
-      S.push(dotS(top), dotS(bot));
-      S.push(textS('0', [top[0], top[1] - 17], { size: V.fs }), textS('1', [bot[0], bot[1] + 17], { size: V.fs }));
-      S.push(ringS((t % 4) < 2 ? top : bot, 8));   // the state hops; there is nothing in between
-      return S;
-    },
-  },
-  // the Pauli group: each generator is a half turn about its axis; the octahedron lands on itself
-  p1: {
-    L: 9, tFallback: 2.0,
-    frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h);
-      const axes = [AX.x, AX.y, AX.z], names = ['X', 'Y', 'Z'];
-      const g = Math.min(2, Math.floor(t / 3)), s = t - 3 * g, th = Math.PI * ease((s - 1.4) / 1.2);
-      // where the octahedron's vertex that started at v is now: the half turns so far, then this one
-      const place = (v) => { for (let k = 0; k < g; k++) v = rot(v, axes[k], Math.PI); return rot(v, axes[g], th); };
-      S.push(...sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, ghost: true, front: 0.6, back: 0.32, outline: 1 }));
-      const ax = axes[g];
-      S.push(lineS(V.P(ax.map((c) => -1.18 * c)), V.P(ax.map((c) => 1.18 * c)), 40, { alpha: 0.5, width: 1.0 }));
-      S.push(textS(names[g], [18, h - 22], { size: V.fs + 2, align: 'left' }));   // the generator acting now
-      const pos = {}; for (const k in STATES) pos[k] = place(STATES[k]);
-      const edges = OCT_EDGES.map(([a, b]) => ({ a, b, d: depth(pos[a]) + depth(pos[b]) })).sort((p, q) => p.d - q.d);
-      for (const e of edges) {
-        const l = lineS(V.P(pos[e.a]), V.P(pos[e.b]), 24, { alpha: 0.45, width: 1.1 });
-        S.push(e.d > 0 ? { pts: l.pts, weight: 'graphite', scale: 1.4 } : l);
+      const V = stageView(w, h), S = [];
+      S.push(...stagger(poleMarks(V), ramp(t, 0.3, 1.8)));
+      if (t > 2) S.push(...stagger(sphereWire(V, GHOST_LIGHT), ramp(t, 2, 4.2)));
+      const tau = t < 4.5 ? 0 : (t - 4.5) % 4;
+      const state = tau >= 1 && tau < 3 ? '1' : '0';
+      for (const [i, hop] of this.HOPS.entries()) {   // the arrow: drawn just before the hop, gone just after
+        if (tau < hop - 0.3 || tau >= hop + 0.4) continue;
+        const from = i === 0 ? '0' : '1', to = i === 0 ? '1' : '0';
+        S.push(...faded(stagger(hopArrow(V, from, to), ramp(tau, hop - 0.3, hop - 0.1)), 1 - ramp(tau, hop + 0.2, hop + 0.4)));
       }
-      // the six states are fixed points of the sphere and keep their names; the group only permutes them
-      S.push(...stateDots(V));
-      // one marked state from each orbit rides the turn: {0,1}, {+,-}, {+i,-i}
-      for (const k of ['0', '+', '+i']) { const v = pos[k]; S.push(depth(v) > 0 ? ringS(V.P(v), 9) : { pts: circle2d(V.P(v), 9, 28), weight: 'light', alpha: 0.5, width: 1.3 }); }
+      S.push(fullS(V.P(STATES[state])));
       return S;
     },
   },
-  // the Clifford group: H and S walk one state through all six; the orbit stays drawn once walked
-  c1: (() => {
-    const WALK = [['0', 'H'], ['+', 'S'], ['+i', 'S'], ['−', 'H'], ['1', 'H'], ['−', 'S'], ['−i', 'S'], ['+', 'H']];
-    let lastT = 0, loops = 0;
-    return {
-      L: 8, tFallback: 0.85,
-      frame(t, w, h) {
-        if (t < lastT - 1) loops++; lastT = t;
-        const V = view(w, h), S = frameS(w, h);
-        S.push(...sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 }));
-        const step = Math.min(7, Math.floor(t)), s = t - step, u = ease((s - 0.45) / 0.55);
-        // each step is a map between two axis states; draw it as the great-circle arc between them
-        // (a quarter turn, all eight pairs being neighbours on the octahedron), not as one particular rotation path
-        const target = (i) => { const [from, gn] = WALK[i], g = GATE[gn]; return rot(STATES[from], g.n, g.th); };
-        const slerp = (a, b, u) => { const O = Math.acos(Math.max(-1, Math.min(1, dot(a, b)))), sO = Math.sin(O) || 1; const p = Math.sin((1 - u) * O) / sO, q = Math.sin(u * O) / sO; return [a[0] * p + b[0] * q, a[1] * p + b[1] * q, a[2] * p + b[2] * q]; };
-        const arc3 = (i, uu, k = 36) => { const a = STATES[WALK[i][0]], b = target(i), pts = []; for (let j = 0; j <= k; j++) pts.push(slerp(a, b, uu * j / k)); return pts; };
-        const walked = loops > 0 ? 8 : step;
-        for (let i = 0; i < walked; i++) if (i !== step || loops > 0) S.push({ pts: arc3(i, 1).map(V.P), weight: 'light', alpha: 0.4, width: 1.3 });
-        S.push(...stateDots(V));
-        const here = slerp(STATES[WALK[step][0]], target(step), u);
-        if (u > 0.02) {
-          const p3 = arc3(step, u); S.push(...pathStrokes(V, p3));
-          const p = p3.map(V.P), n = p.length; S.push(...headS(p[n - 1], norm2([p[n - 1][0] - p[n - 3][0], p[n - 1][1] - p[n - 3][1]])));
-        }
-        S.push(ringS(V.P(here), 8));
-        const li = s >= 0.45 ? step : step - 1;   // the gate's letter, from the start of its move through the next hold
-        if (li >= 0) { const mid = arc3(li, 1)[18], p = V.P(mid); S.push(textS(WALK[li][1], labelAt(V, p, 16), { size: V.fs })); }
-        return S;
-      },
-    };
-  })(),
-  // a Lie group: the sphere itself turns, and carries a state along a smooth path
-  su2: {
-    L: 12, tFallback: 3,
+
+  // the Pauli group: from the classical picture, four more states and the octahedron through all six; then half turns
+  p1: {
+    B: 5.2, A: 6.9, get tFallback() { return this.B; },
+    active(t) { if (t < 5.2) return []; const tau = (t - 5.2) % 6.9, g = Math.min(2, Math.floor(tau / 2.3)), s = tau - 2.3 * g; return s >= 0.9 && s <= 2.1 ? [['X', 'Y', 'Z'][g]] : []; },
     frame(t, w, h) {
-      const V = view(w, h), S = frameS(w, h), om = Math.PI * 2 / 12;
-      // a path in the group: a turn about z composed with a slower turn about x, both closing after one loop
-      const R3t = (v, tt) => rot(rot(v, AX.x, om * tt), AX.z, 2 * om * tt), R3 = (v) => R3t(v, t);
-      S.push(...sphereWire(V, { lats: [-0.85, -0.7, -0.55, -0.4, -0.25, -0.1, 0.05, 0.2, 0.35, 0.5, 0.65, 0.8], mers: 8, front: 0.4, back: 0.18, width: 1.0, dashed: false, outline: 1 }, R3));
-      const q0 = norm([0.2, 0.75, 0.62]), trail = [];
-      for (let j = 0; j <= 40; j++) trail.push(R3t(q0, t - 2.5 + 2.5 * j / 40));
-      S.push(...pathStrokes(V, trail));
-      const p = trail.map(V.P), k = p.length;
-      S.push(...headS(p[k - 1], norm2([p[k - 1][0] - p[k - 3][0], p[k - 1][1] - p[k - 3][1]])));
-      S.push(dotS(p[k - 1], 2.4));
+      const V = stageView(w, h), S = [], firm = ramp(t, 0.3, 1.5);
+      S.push(...faded(sphereWire(V, GHOST_LIGHT), 1 - firm), ...faded(sphereWire(V, GHOST), firm), ...poleMarks(V));
+      if (t > 1.5) S.push(...stagger(equatorMarks(V), ramp(t, 1.5, 3.5)));
+      const axes = [AX.x, AX.y, AX.z], names = ['X', 'Y', 'Z'];
+      const tau = t < 5.2 ? -1 : (t - 5.2) % 6.9, g = tau < 0 ? -1 : Math.min(2, Math.floor(tau / 2.3)), s = tau - 2.3 * g;
+      const th = g < 0 ? 0 : Math.PI * ease((s - 0.9) / 1.2);
+      const place = (v) => { for (let k = 0; k < g; k++) v = rot(v, axes[k], Math.PI); return g < 0 ? v : rot(v, axes[g], th); };
+      const pos = {}; for (const k in STATES) pos[k] = place(STATES[k]);
+      if (t > 3.5) S.push(...stagger(octEdges(V, pos), ramp(t, 3.5, 5)));
+      if (g >= 0) {
+        const ax = axes[g];
+        S.push(lineS(V.P(ax.map((c) => -1.18 * c)), V.P(ax.map((c) => 1.18 * c)), 40, { alpha: 0.5, width: 1.0 }));
+      }
+      // one marked state from each orbit rides the turns: the classical one from the start, the other two once their states exist
+      S.push(fullAt(V, pos['0']));
+      const f2 = ramp(t, 4.6, 5.2);
+      if (f2 > 0) S.push(fullAt(V, pos['+'], f2), fullAt(V, pos['+i'], f2));
       return S;
     },
   },
+
+  // the Clifford group: the sphere becomes real, the octahedron is no longer needed, the orbit of six is drawn, and one state walks it
+  c1: {
+    B: 4.5, A: 8, get tFallback() { return this.B; },
+    active(t) { if (t < 4.5) return []; const tau = (t - 4.5) % 8, step = Math.min(7, Math.floor(tau)), s = tau - step; return s >= 0.45 ? [WALK[step][1]] : []; },
+    frame(t, w, h) {
+      const V = stageView(w, h), S = [];
+      const solid = ramp(t, 1.5, 3);
+      S.push(...faded(sphereWire(V, GHOST), 1 - solid));
+      if (solid > 0) S.push(...stagger(sphereWire(V, SOLID), solid));
+      S.push(...faded(octEdges(V, REST), 1 - solid));
+      S.push(...poleMarks(V), ...equatorMarks(V));
+      if (t > 3) S.push(...stagger(orbitArcs(V), ramp(t, 3, 4.5)));   // the three pairs join into one orbit of six
+      const tau = t < 4.5 ? -1 : (t - 4.5) % 8, step = tau < 0 ? -1 : Math.min(7, Math.floor(tau)), s = tau - step, u = step < 0 ? 0 : ease((s - 0.45) / 0.55);
+      let here = STATES['0'];
+      if (step >= 0 && u > 0.02) {
+        const p3 = walkArc(step, u); S.push(...pathStrokes(V, p3));
+        const p = p3.map(V.P), n = p.length; S.push(...headS(p[n - 1], norm2([p[n - 1][0] - p[n - 3][0], p[n - 1][1] - p[n - 3][1]])));
+      }
+      if (step >= 0) here = slerp(STATES[WALK[step][0]], walkTarget(step), u);
+      S.push(fullAt(V, here));
+      // the other two selected states from the Pauli layer leave as the orbit reaches them
+      if (t < 3.6) S.push(fullAt(V, STATES['+'], 1 - ramp(t, 3.2, 3.6)));
+      if (t < 3.9) S.push(fullAt(V, STATES['+i'], 1 - ramp(t, 3.5, 3.9)));
+      if (step >= 0) { const li = s >= 0.45 ? step : step - 1; if (li >= 0) S.push(textS(WALK[li][1], labelAt(V, V.P(walkArc(li, 1)[18]), 16), { size: V.fs })); }
+      return S;
+    },
+  },
+
+  // a Lie group: from the walked sphere, the whole surface fills in, then it turns and carries the state anywhere
+  su2: {
+    B: 4, A: 8, get tFallback() { return this.B + 3; },
+    active(t) { return t >= 4 ? ['Rx', 'Rz'] : []; },   // the turn is R_z composed with R_x, continuously
+    frame(t, w, h) {
+      const V = stageView(w, h), S = [];
+      const fill = ramp(t, 1.5, 4), leave = 1 - ramp(t, 2, 3.5), tt = Math.max(0, t - 4);
+      const R3 = (v) => turn(v, tt);
+      S.push(...sphereWire(V, { ...SOLID, outline: 1 }, R3));
+      if (fill > 0) S.push(...stagger(sphereWire(V, DENSE, R3), fill));
+      S.push(...faded(orbitArcs(V), leave));
+      for (const k in STATES) { const v = R3(STATES[k]), f = depth(v) > 0; S.push(hollowS(V.P(v), 3.6, (f ? 0.9 : 0.5) * (0.4 + 0.6 * leave))); if (leave > 0) S.push(textS(k, labelAt(V, V.P(v), 17), { size: V.fs, alpha: (f ? 0.9 : 0.6) * leave })); }
+      const q = R3(STATES['0']);
+      if (tt > 0) {
+        const trail = []; for (let j = 0; j <= 40; j++) trail.push(turn(STATES['0'], Math.max(0, tt - 2.5 + 2.5 * j / 40)));   // the turn is 8 s periodic, so the trail runs on across laps
+        S.push(...pathStrokes(V, trail));
+        const p = trail.map(V.P), k = p.length;
+        if (tt > 0.1) S.push(...headS(p[k - 1], norm2([p[k - 1][0] - p[k - 3][0], p[k - 1][1] - p[k - 3][1]])));
+      }
+      S.push(fullAt(V, q));
+      return S;
+    },
+  },
+
   // the row: six points; the Clifford + T orbit filling in; the continuous sphere
   clifford: {
     L: 1, tFallback: 0,
@@ -240,7 +291,8 @@ const FIGURES = {
       const V = view(w, h, { R: 0.42 * Math.min(w, h), cy: h / 2 });
       const S = sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 });
       const count = 6 + Math.floor((t / 12) * (CT_POINTS.length - 6));
-      for (let i = 0; i < count; i++) { const v = CT_POINTS[i], f = depth(v) > 0; S.push(dotS(V.P(v), i < 6 ? 2.1 : 1.6, f ? 0.9 : 0.4)); }
+      const k = Math.min(1, V.R / 130);   // on a small sphere the points shrink with it
+      for (let i = 0; i < count; i++) { const v = CT_POINTS[i], f = depth(v) > 0; S.push(dotS(V.P(v), (i < 6 ? 2.1 : 1.5) * k, f ? 0.9 : 0.4, 3.6 * k)); }
       const u = t / 12, edge = Math.min(u, 1 - u), f = Math.min(1, edge / 0.06);
       return { strokes: S, ink: f * f * (3 - 2 * f) };
     },
@@ -256,12 +308,70 @@ const FIGURES = {
 };
 
 // ---------- clocks, visibility, and the sheet ----------
+const FIXED_T = new URLSearchParams(location.search).get('t');   // ?t=6.5 holds every figure at that moment, for review
 function makeClock(L, tFallback) {
   let acc = 0, last = performance.now(), visible = true;
   return {
     setVisible(v) { visible = v; },
-    now() { if (reduceMotion) return tFallback; const n = performance.now(); if (visible) acc += (n - last) / 1000; last = n; return acc % L; },
+    now() { if (FIXED_T != null) return +FIXED_T % L; if (reduceMotion) return tFallback; const n = performance.now(); if (visible) acc += (n - last) / 1000; last = n; return acc % L; },
   };
+}
+
+// ---------- the stage: one figure that follows the layer being read ----------
+const STAGE_KEYS = ['s2', 'p1', 'c1', 'su2'];
+const STAGE_TITLES = { s2: 'S₂ · state space', p1: 'P₁ · state space', c1: 'C₁ · state space', su2: 'SU(2) · state space' };
+const SPEED = 4;   // playing through to the next layer, or rewinding to the previous, runs this much faster
+function mountStage(fig, host) {
+  const sections = [...document.querySelectorAll('[data-stage]')];
+  const title = document.getElementById('stage-title');
+  let cur = 0, target = 0, t = 0, last = performance.now(), redraw = null, lit = '';
+  const story = (k) => FIGURES[STAGE_KEYS[k]];
+  // light the generator that is acting, in the panel of the layer being shown
+  const light = () => {
+    const act = story(cur).active?.(t) ?? [], key = cur + ':' + act.join(',');
+    if (key === lit) return; lit = key;
+    sections.forEach((sec, i) => {
+      const panel = sec.querySelector('.gen'); if (!panel) return;
+      const on = i === cur && act.length > 0;
+      panel.classList.toggle('has-active', on);
+      panel.querySelectorAll('.gen__row').forEach((row) => row.classList.toggle('is-on', on && act.includes(row.dataset.gen)));
+    });
+  };
+  const apply = () => { if (title) title.textContent = STAGE_TITLES[STAGE_KEYS[cur]]; light(); if (FIXED_T != null || reduceMotion) redraw?.(); };
+  const choose = () => {   // the last section whose top has passed the middle of the viewport
+    let k = 0; const line = window.innerHeight * 0.55;
+    sections.forEach((el, i) => { if (el.getBoundingClientRect().top < line) k = Math.min(i, STAGE_KEYS.length - 1); });
+    if (k !== target) { target = k; if (FIXED_T != null || reduceMotion) { cur = target; t = story(cur).tFallback; apply(); } }
+  };
+  const clock = () => {
+    const n = performance.now(), dt = Math.min(0.1, (n - last) / 1000); last = n;
+    if (FIXED_T != null) { t = +FIXED_T; light(); return t; }
+    if (reduceMotion) { t = story(cur).tFallback; light(); return t; }
+    let { B, A } = story(cur);
+    if (target > cur) {
+      // play on, faster, to the next hand-off point: the end of the build, or the end of the current lap
+      const hand = t < B ? B : B + Math.ceil((t - B) / A - 1e-6) * A;
+      t += SPEED * dt;
+      if (t >= hand) { cur++; t = 0; apply(); }
+    } else if (target < cur) {
+      // rewind, faster, to the opening picture, which is the previous layer's finished one; it then runs on from there
+      if (t >= B + 2 * A) t = B + A + ((t - B) % A);
+      t -= SPEED * dt;
+      if (t <= 0) { cur--; ({ B, A } = story(cur)); t = B; apply(); }
+    } else {
+      t += dt;
+      if (t >= B + 2 * A) t -= A;   // laps are identical: keep one full lap of history and no more
+    }
+    light();
+    return t;
+  };
+  const frame = (tt) => story(cur).frame(tt, host.clientWidth, host.clientHeight);
+  fig.classList.add('is-live');
+  const stop = sketch(host, { ink: INK, fps: FPS, takes: 4, font: FONT, clock, frame });
+  redraw = stop.redraw;
+  window.addEventListener('scroll', choose, { passive: true });
+  window.addEventListener('resize', choose);
+  choose(); apply();
 }
 
 export function mountAll() {
@@ -275,10 +385,13 @@ export function mountAll() {
   const clocks = new Map();
   const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => { for (const e of entries) clocks.get(e.target)?.setVisible(e.isIntersecting); }, { rootMargin: '120px' }) : null;
   for (const fig of document.querySelectorAll('.ink-figure--live[data-figure]')) {
-    const host = fig.querySelector('.ink-figure__mount'), def = FIGURES[fig.dataset.figure];
-    if (!host || !def) continue;
+    const host = fig.querySelector('.ink-figure__mount');
+    if (!host) continue;
     // only with the stylesheet that positions the mount; a stale or missing one leaves the still drawings in place
-    if (getComputedStyle(host).position !== 'absolute') continue;
+    if (getComputedStyle(host).position !== 'absolute') { if (fig.dataset.figure === 'stage') document.documentElement.classList.add('no-stage'); continue; }
+    if (fig.dataset.figure === 'stage') { mountStage(fig, host); continue; }
+    const def = FIGURES[fig.dataset.figure];
+    if (!def) continue;
     fig.classList.add('is-live');
     const clock = makeClock(def.L, def.tFallback);
     clocks.set(host, clock);
