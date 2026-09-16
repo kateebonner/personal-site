@@ -172,7 +172,6 @@ p + p { margin-top: 16px; }
 .ink-figure--live.is-live .ink-figure__mount { display: block; }
 .ink-figure--live.is-live .ink-figure__fallback { display: none; }
 .ink-figure--live:not(.is-live) .ink-figure__fallback ~ .ink-figure__sheet { display: none; }
-.ink-figure--gen:not(.is-live) .ink-figure__sheet { outline: var(--lw-thin) solid var(--line); outline-offset: -3px; }
 .ink-figure__title { position: absolute; top: 12px; left: 14px; z-index: 1; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; pointer-events: none; }
 [data-sheet] { transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot)); will-change: transform; }
 /* the stage: one state-space figure that sides with the text and follows the layer being read */
@@ -190,14 +189,14 @@ p + p { margin-top: 16px; }
 /* the generator acting on the state space lights up; the others step back */
 .gen__row { transition: opacity 240ms ease-out; }
 .gen.has-active .gen__row:not(.is-on) { opacity: 0.38; }
-/* the drawn connection from the acting generator to the sphere, on a fixed page-level canvas */
-.link { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
-.gen-panel { width: min(100%, 360px); aspect-ratio: 9 / 11; margin: 16px 0 20px; }
+
+.gen-panel { width: min(100%, 360px); margin: 12px 0 20px; }
+.gen-panel__title { font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); margin-bottom: 4px; }
 .prose .still { margin: 16px 0 20px; max-width: 360px; }
 .js .still { display: none; }
 .js.no-stage .still { display: block; }
 /* typeset generators inside the frame */
-.gen { position: absolute; inset: 40px 14px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; text-align: center; }
+.gen { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 10px 0 2px; text-align: center; }
 .gen .katex { font-size: 1.5em; }
 .gen .katex-display { margin: 0; max-width: 100%; overflow: hidden; }
 .gen .katex-display > .katex { white-space: normal; }
@@ -251,13 +250,13 @@ p + p { margin-top: 16px; }
   .page__label { border-right: 0; }
   .panels { gap: 12px; }
   .ink-figure__title { top: 8px; left: 10px; font-size: 0.5625rem; letter-spacing: 0.1em; }
-  .gen { inset: 30px 12px 12px; gap: 12px; font-size: 0.9rem; }
+  .gen { gap: 12px; padding: 6px 0 0; font-size: 0.9rem; }
   .gen .katex { font-size: 1.4em; }
   .gen--wide .katex { font-size: 1.15em; }
   .note-layout { display: block; }
   .stage { position: sticky; top: 0; z-index: 2; aspect-ratio: auto; height: 42vh; min-height: 300px; margin: 0 -16px 20px; background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat; border-bottom: var(--lw-thin) solid var(--line); }
   .stage .ink-figure__sheet { inset: 10px 16px; }
-  .gen-panel { width: 100%; aspect-ratio: 4 / 3; }
+  .gen-panel { width: 100%; }
   .gen__note { font-size: 0.625rem; }
   .trio__live { gap: 8px; }
   .trio figcaption { font-size: 0.5rem; letter-spacing: 0.08em; }

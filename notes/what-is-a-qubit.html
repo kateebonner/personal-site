@@ -45,40 +45,35 @@
 
         <section data-stage="s2">
         <h2>Classical information</h2>
-          <figure class="ink-figure ink-figure--live ink-figure--gen gen-panel" data-figure="frame"><div class="ink-figure__sheet" data-sheet><div class="ink-figure__mount" aria-hidden="true"></div><span class="ink-figure__title">S₂ · generator</span><div class="gen">
-              <div class="gen__row" data-gen="I">$$I = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$$</div>
+          <figure class="gen-panel"><figcaption class="gen-panel__title">S₂ · generator</figcaption><div class="gen">
               <div class="gen__row" data-gen="X">$$X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$$</div>
-              <p class="gen__note">a cyclic group of order 2</p>
-            </div></div></figure>
+              <p class="gen__note">a cyclic group of order 2</p></div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/s2-state-space.png" width="900" height="1503" alt="Hand-drawn panel, S2 state space: a sphere with only its two poles marked 0 and 1, and an arrow between them." loading="lazy"></figure>
         <p>The symmetry group of a classical bit is \(S_2 = \langle x \mid x^2 = I \rangle\), a cyclic group of order 2. It acts on the set \(\{0, 1\}\). The action is free and transitive, so the orbit of 0 is \(\{0, 1\}\) with trivial stabilizer. Choosing the outcomes as a basis of \(\mathbb{C}^2\) turns this action into a faithful representation \(\rho: S_2 \to U(2)\), which is how the classical group sits inside the quantum one.</p>
         </section>
         <section data-stage="p1">
         <h2>Quantum information</h2>
-          <figure class="ink-figure ink-figure--live ink-figure--gen gen-panel" data-figure="frame"><div class="ink-figure__sheet" data-sheet><div class="ink-figure__mount" aria-hidden="true"></div><span class="ink-figure__title">P₁ · generators</span><div class="gen">
+          <figure class="gen-panel"><figcaption class="gen-panel__title">P₁ · generators</figcaption><div class="gen">
               <div class="gen__row" data-gen="X">$$X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$$</div>
               <div class="gen__row" data-gen="Y">$$Y = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}$$</div>
-              <div class="gen__row" data-gen="Z">$$Z = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$$</div>
-            </div></div></figure>
+              <div class="gen__row" data-gen="Z">$$Z = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$$</div></div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/p1-state-space.png" width="900" height="1433" alt="Hand-drawn panel, P1 state space: an octahedron inscribed in the sphere, its six vertices labelled 0, 1, plus, minus, plus i, minus i." loading="lazy"></figure>
         <p>The Pauli group is \(P_1 = \langle X, Y, Z \rangle \subset U(2)\), of order 16, with \(X^2 = Y^2 = Z^2 = I\). The six axis states \(0, 1, +, -, +i, -i\) are the eigenstates of \(Z\), \(X\), and \(Y\), and the vertices of an octahedron inscribed in the sphere. Under the Pauli group they form three orbits, the antipodal pairs \(\{0, 1\}\), \(\{+, -\}\), and \(\{+i, -i\}\). Each pair is an eigenbasis of one generator, which fixes it, and the other two generators swap it.</p>
         </section>
         <section data-stage="c1">
         <h2>The Clifford group</h2>
-          <figure class="ink-figure ink-figure--live ink-figure--gen gen-panel" data-figure="frame"><div class="ink-figure__sheet" data-sheet><div class="ink-figure__mount" aria-hidden="true"></div><span class="ink-figure__title">C₁ · generators</span><div class="gen">
+          <figure class="gen-panel"><figcaption class="gen-panel__title">C₁ · generators</figcaption><div class="gen">
               <div class="gen__row" data-gen="H">$$H = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$$</div>
-              <div class="gen__row" data-gen="S">$$S = \begin{bmatrix} 1 & 0 \\ 0 & i \end{bmatrix}$$</div>
-            </div></div></figure>
+              <div class="gen__row" data-gen="S">$$S = \begin{bmatrix} 1 & 0 \\ 0 & i \end{bmatrix}$$</div></div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/c1-state-space.png" width="900" height="1343" alt="Hand-drawn panel, C1 state space: the sphere with its six axis states and arrows carrying one state to the next around a single orbit." loading="lazy"></figure>
         <p>The Clifford group is \(C_1 = \langle H, S \rangle \subset U(2)\). It contains the Pauli group (\(S^2 = Z\), \(HZH = X\)) and is its normalizer: the unitaries that map Paulis to Paulis by conjugation. The three Pauli pairs merge into one orbit of six, with stabilizer \(\{I, S, S^2, S^3\}\). It is the first layer to carry a classical state off the poles, and the last finite one.</p>
         </section>
         <section data-stage="su2">
         <h2>A Lie group</h2>
-          <figure class="ink-figure ink-figure--live ink-figure--gen gen-panel" data-figure="frame"><div class="ink-figure__sheet" data-sheet><div class="ink-figure__mount" aria-hidden="true"></div><span class="ink-figure__title">SU(2) · generators</span><div class="gen gen--wide">
+          <figure class="gen-panel"><figcaption class="gen-panel__title">SU(2) · generators</figcaption><div class="gen gen--wide">
               <div class="gen__row" data-gen="Rx">$$R_x(\theta) = \begin{bmatrix} \cos\tfrac{\theta}{2} & -i\sin\tfrac{\theta}{2} \\[4pt] -i\sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
               <div class="gen__row" data-gen="Ry">$$R_y(\theta) = \begin{bmatrix} \cos\tfrac{\theta}{2} & -\sin\tfrac{\theta}{2} \\[4pt] \sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
-              <div class="gen__row" data-gen="Rz">$$R_z(\theta) = \begin{bmatrix} e^{-i\theta/2} & 0 \\[4pt] 0 & e^{i\theta/2} \end{bmatrix}$$</div>
-            </div></div></figure>
+              <div class="gen__row" data-gen="Rz">$$R_z(\theta) = \begin{bmatrix} e^{-i\theta/2} & 0 \\[4pt] 0 & e^{i\theta/2} \end{bmatrix}$$</div></div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/su2-state-space.png" width="900" height="1484" alt="Hand-drawn panel, SU(2) state space: a fully shaded sphere with a short arc of rotation drawn on its surface." loading="lazy"></figure>
         <p>\(SU(2)\) is a Lie group: a group that is also a smooth manifold. Its rotations \(R_x(\theta)\), \(R_y(\theta)\), \(R_z(\theta)\) reach every point of the sphere. Here the group has dimension 3. Every group before it had dimension 0.</p>
         </section>
@@ -90,7 +85,6 @@
       </div>
     </div>
   </main>
-  <div class="link" id="link" aria-hidden="true" data-sheet></div>
   <script defer src="/assets/katex/katex.min.js"></script>
   <script defer src="/assets/katex/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }], throwOnError: false });"></script>
   <script type="module" src="/js/paper.js"></script>

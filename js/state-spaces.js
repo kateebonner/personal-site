@@ -48,6 +48,8 @@ function view(w, h, o = {}) {
 function circle2d(p, r, k) { const pts = []; for (let i = 0; i <= k; i++) { const a = i / k * Math.PI * 2; pts.push([p[0] + r * Math.cos(a), p[1] + r * Math.sin(a)]); } return pts; }
 function lineS(p, q, k = 24, o = {}) { const pts = []; for (let i = 0; i <= k; i++) { const u = i / k; pts.push([p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u]); } return { pts, weight: 'light', alpha: o.alpha ?? 0.5, width: o.width ?? 0.9 }; }
 const dotS = (p, r = 2.1, alpha = 0.95) => ({ pts: circle2d(p, r, 12), weight: 'light', width: 4.0, alpha });
+const hollowS = (p, r = 3.6, alpha = 0.9) => ({ pts: circle2d(p, r, 24), weight: 'light', width: 1.3, alpha });   // a state that is not selected
+const fullS = (p, r = 2.6, alpha = 0.95) => ({ pts: circle2d(p, r, 14), weight: 'light', width: 4.6, alpha });      // the selected state
 const ringS = (p, r = 9) => ({ pts: circle2d(p, r, 28), weight: 'graphite', scale: 1.2 });
 const textS = (text, at, o = {}) => ({ text, at, size: o.size ?? 13, alpha: o.alpha ?? 0.9, align: o.align, baseline: o.baseline });
 function headS(tip, dir, size = 7) {   // an arrowhead: two arms meeting at the tip, pointing along dir
@@ -57,10 +59,6 @@ function headS(tip, dir, size = 7) {   // an arrowhead: two arms meeting at the 
   return [lineS(a, tip, 6, { alpha: 0.95, width: 2.0 }), lineS(b, tip, 6, { alpha: 0.95, width: 2.0 })];
 }
 function labelAt(V, p, gap = 15) { const d = norm2([p[0] - V.cx, p[1] - V.cy]); return [p[0] + d[0] * gap, p[1] + d[1] * gap]; }
-function frameS(w, h) {   // the hand-drawn frame around the panel, like the notebook's
-  const m = 3, k = 40, g = (l) => ({ pts: l.pts, weight: 'graphite', scale: 1.7 });
-  return [g(lineS([m, m], [w - m, m], k)), g(lineS([w - m, m], [w - m, h - m], k)), g(lineS([w - m, h - m], [m, h - m], k)), g(lineS([m, h - m], [m, m], k))];
-}
 
 // k points of the circle of radius r about centre c (3D) with normal n
 function circleOn(n, r, c, k = 144) {
@@ -70,7 +68,7 @@ function circleOn(n, r, c, k = 144) {
 }
 
 // a closed loop of 3D points -> strokes: front runs solid, back runs lighter and dashed
-function dashed2d(pts, alpha, width) { const out = []; for (let i = 0; i + 3 < pts.length; i += 18) out.push({ pts: pts.slice(i, i + 12), weight: 'light', alpha, width }); return out; }
+function dashed2d(pts, alpha, width, on = 12, off = 6) { const out = []; for (let i = 0; i + 3 < pts.length; i += on + off) out.push({ pts: pts.slice(i, i + on), weight: 'light', alpha, width }); return out; }
 function loopStrokes(V, pts3, o) {
   const n = pts3.length, d = pts3.map(depth), out = [];
   let start = 0;
@@ -78,7 +76,7 @@ function loopStrokes(V, pts3, o) {
   let run = [], front = d[start] > 0;
   const flush = () => {
     if (run.length >= 2) {
-      if (o.ghost) out.push(...dashed2d(run.map(V.P), front ? o.front : o.back, o.width ?? 1.3));   // a ghost: dashed all round, front heavier
+      if (o.ghost) out.push(...dashed2d(run.map(V.P), front ? o.front : o.back, o.width ?? 1.3, ...(o.dash ?? [12, 6])));   // a ghost: dashed all round, front heavier
       else if (front || o.dashed === false) out.push({ pts: run.map(V.P), weight: 'light', alpha: front ? o.front : o.back, width: o.width ?? 1.3 });
       else out.push(...dashed2d(run.map(V.P), o.back, o.width ?? 1.3));
     }
@@ -103,7 +101,7 @@ function pathStrokes(V, pts3, backAlpha = 0.3) {
 
 function sphereWire(V, o, R3 = null) {
   const S = [];
-  if (o.outline) S.push(...(o.ghost ? dashed2d(circle2d([V.cx, V.cy], V.R, 144), 0.75, 1.4) : [{ pts: circle2d([V.cx, V.cy], V.R, 96), weight: 'graphite', scale: 1.6 }]));
+  if (o.outline) S.push(...(o.ghost ? dashed2d(circle2d([V.cx, V.cy], V.R, 144), o.outlineAlpha ?? 0.75, 1.4, ...(o.dash ?? [12, 6])) : [{ pts: circle2d([V.cx, V.cy], V.R, 96), weight: 'graphite', scale: 1.6 }]));
   const loops = [];
   for (const z of o.lats ?? []) loops.push(circleOn(AX.z, Math.sqrt(1 - z * z), [0, 0, z]));
   const m = o.mers ?? 0;
@@ -153,10 +151,11 @@ function stagger(S, u) {
   return out;
 }
 const faded = (S, f) => (f <= 0.01 ? [] : S.map((s) => (s.text != null ? { ...s, alpha: (s.alpha ?? 0.9) * f } : { ...s, fade: (s.fade ?? 1) * f })));
-const poleMarks = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [dotS(top), textS('0', [top[0], top[1] - 17], { size: V.fs }), dotS(bot), textS('1', [bot[0], bot[1] + 17], { size: V.fs })]; };
-const equatorMarks = (V) => { const S = []; for (const k of ['+', '+i', '−', '−i']) { const v = STATES[k], p = V.P(v), f = depth(v) > 0; S.push(dotS(p, 2.1, f ? 0.95 : 0.55)); S.push(textS(k, labelAt(V, p), { size: V.fs, alpha: f ? 0.9 : 0.6 })); } return S; };
+const poleMarks = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [hollowS(top), textS('0', [top[0], top[1] - 19], { size: V.fs }), hollowS(bot), textS('1', [bot[0], bot[1] + 19], { size: V.fs })]; };
+const equatorMarks = (V) => { const S = []; for (const k of ['+', '+i', '−', '−i']) { const v = STATES[k], p = V.P(v), f = depth(v) > 0; S.push(hollowS(p, 3.6, f ? 0.9 : 0.5)); S.push(textS(k, labelAt(V, p, 17), { size: V.fs, alpha: f ? 0.9 : 0.6 })); } return S; };
 const xArrow = (V) => { const top = V.P(STATES['0']), bot = V.P(STATES['1']); return [{ pts: lineS([V.cx, top[1] + 14], [V.cx, bot[1] - 14], 30).pts, weight: 'graphite', scale: 1.3 }, ...headS([V.cx, top[1] + 11], [0, -1]), ...headS([V.cx, bot[1] - 11], [0, 1])]; };
 const GHOST = { lats: [-0.5, 0, 0.5], mers: 3, merOffset: 0.25, ghost: true, front: 0.65, back: 0.35, outline: 1 };
+const GHOST_LIGHT = { ...GHOST, front: 0.42, back: 0.22, outlineAlpha: 0.5, dash: [7, 6] };   // before quantum: fainter, more broken
 const SOLID = { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 };
 const DENSE = { lats: [-0.85, -0.7, -0.55, -0.4, -0.25, -0.1, 0.05, 0.2, 0.35, 0.5, 0.65, 0.8], mers: 8, front: 0.4, back: 0.18, width: 1.0, dashed: false, outline: 0 };
 // the octahedron's edges at the given vertex positions, back first
@@ -171,15 +170,12 @@ const walkTarget = (i) => { const [from, gn] = WALK[i], g = GATE[gn]; return rot
 const slerp = (a, b, u) => { const O = Math.acos(Math.max(-1, Math.min(1, dot(a, b)))), sO = Math.sin(O) || 1; const p = Math.sin((1 - u) * O) / sO, q = Math.sin(u * O) / sO; return [a[0] * p + b[0] * q, a[1] * p + b[1] * q, a[2] * p + b[2] * q]; };
 const walkArc = (i, uu, k = 36) => { const a = STATES[WALK[i][0]], b = walkTarget(i), pts = []; for (let j = 0; j <= k; j++) pts.push(slerp(a, b, uu * j / k)); return pts; };
 const orbitArcs = (V, fade = 1) => WALK.map((_, i) => ({ pts: walkArc(i, 1).map(V.P), weight: 'light', alpha: 0.4, width: 1.3, fade }));
-const ringAt = (V, v, fade = 1) => (depth(v) > 0 ? { ...ringS(V.P(v), 9), fade } : { pts: circle2d(V.P(v), 9, 28), weight: 'light', alpha: 0.5, width: 1.3, fade });
+const fullAt = (V, v, fade = 1) => ({ ...fullS(V.P(v), 2.6, depth(v) > 0 ? 0.95 : 0.55), fade });   // a selected state, wherever it is
 // a path in SU(2): a turn about z composed with a slower turn about x, both closing after 8 s
 const OM = Math.PI * 2 / 8;
 const turn = (v, tt) => rot(rot(v, AX.x, OM * tt), AX.z, 2 * OM * tt);
 
 const FIGURES = {
-  // just the hand-drawn frame, for the typeset generator panels beside the drawings
-  frame: { L: 1, tFallback: 0, frame(t, w, h) { return frameS(w, h); } },
-
   // the classical bit: a boolean is two points; the sphere around them is only a ghost; X exchanges them
   s2: {
     B: 5, A: 4, get tFallback() { return this.B; },
@@ -187,10 +183,10 @@ const FIGURES = {
     frame(t, w, h) {
       const V = stageView(w, h), S = [];
       S.push(...stagger(poleMarks(V), ramp(t, 0.3, 1.8)));
-      if (t > 2) S.push(...stagger(sphereWire(V, GHOST), ramp(t, 2, 4.2)));
+      if (t > 2) S.push(...stagger(sphereWire(V, GHOST_LIGHT), ramp(t, 2, 4.2)));
       if (t > 4.2) S.push(...stagger(xArrow(V), ramp(t, 4.2, 5)));
       const tau = t < 5 ? 0 : (t - 5) % 4;   // the hop: 0 for two seconds, 1 for two
-      S.push(ringS(tau < 2 ? V.P(STATES['0']) : V.P(STATES['1']), 8));
+      S.push(fullS(tau < 2 ? V.P(STATES['0']) : V.P(STATES['1'])));
       return S;
     },
   },
@@ -200,8 +196,8 @@ const FIGURES = {
     B: 5.2, A: 6.9, get tFallback() { return this.B; },
     active(t) { if (t < 5.2) return []; const tau = (t - 5.2) % 6.9, g = Math.min(2, Math.floor(tau / 2.3)), s = tau - 2.3 * g; return s >= 0.9 && s <= 2.1 ? [['X', 'Y', 'Z'][g]] : []; },
     frame(t, w, h) {
-      const V = stageView(w, h), S = [];
-      S.push(...sphereWire(V, GHOST), ...poleMarks(V));
+      const V = stageView(w, h), S = [], firm = ramp(t, 0.3, 1.5);
+      S.push(...faded(sphereWire(V, GHOST_LIGHT), 1 - firm), ...faded(sphereWire(V, GHOST), firm), ...poleMarks(V));
       S.push(...faded(xArrow(V), 1 - ramp(t, 0.3, 1.3)));   // the classical arrow leaves: X is about to become a turn
       if (t > 1.5) S.push(...stagger(equatorMarks(V), ramp(t, 1.5, 3.5)));
       const axes = [AX.x, AX.y, AX.z], names = ['X', 'Y', 'Z'];
@@ -215,9 +211,9 @@ const FIGURES = {
         S.push(lineS(V.P(ax.map((c) => -1.18 * c)), V.P(ax.map((c) => 1.18 * c)), 40, { alpha: 0.5, width: 1.0 }));
       }
       // one marked state from each orbit rides the turns: the classical one from the start, the other two once their states exist
-      S.push(ringAt(V, pos['0']));
+      S.push(fullAt(V, pos['0']));
       const f2 = ramp(t, 4.6, 5.2);
-      if (f2 > 0) S.push(ringAt(V, pos['+'], f2), ringAt(V, pos['+i'], f2));
+      if (f2 > 0) S.push(fullAt(V, pos['+'], f2), fullAt(V, pos['+i'], f2));
       return S;
     },
   },
@@ -241,10 +237,10 @@ const FIGURES = {
         const p = p3.map(V.P), n = p.length; S.push(...headS(p[n - 1], norm2([p[n - 1][0] - p[n - 3][0], p[n - 1][1] - p[n - 3][1]])));
       }
       if (step >= 0) here = slerp(STATES[WALK[step][0]], walkTarget(step), u);
-      S.push(ringAt(V, here));
-      // the other two orbit markers from the Pauli layer leave as the orbit reaches their states
-      if (t < 3.6) S.push(ringAt(V, STATES['+'], 1 - ramp(t, 3.2, 3.6)));
-      if (t < 3.9) S.push(ringAt(V, STATES['+i'], 1 - ramp(t, 3.5, 3.9)));
+      S.push(fullAt(V, here));
+      // the other two selected states from the Pauli layer leave as the orbit reaches them
+      if (t < 3.6) S.push(fullAt(V, STATES['+'], 1 - ramp(t, 3.2, 3.6)));
+      if (t < 3.9) S.push(fullAt(V, STATES['+i'], 1 - ramp(t, 3.5, 3.9)));
       if (step >= 0) { const li = s >= 0.45 ? step : step - 1; if (li >= 0) S.push(textS(WALK[li][1], labelAt(V, V.P(walkArc(li, 1)[18]), 16), { size: V.fs })); }
       return S;
     },
@@ -261,7 +257,7 @@ const FIGURES = {
       S.push(...sphereWire(V, { ...SOLID, outline: 1 }, R3));
       if (fill > 0) S.push(...stagger(sphereWire(V, DENSE, R3), fill));
       S.push(...faded(orbitArcs(V), leave));
-      for (const k in STATES) { const v = R3(STATES[k]), f = depth(v) > 0; S.push(dotS(V.P(v), 2.1, (f ? 0.95 : 0.55) * (0.45 + 0.55 * leave))); if (leave > 0) S.push(textS(k, labelAt(V, V.P(v)), { size: V.fs, alpha: (f ? 0.9 : 0.6) * leave })); }
+      for (const k in STATES) { const v = R3(STATES[k]), f = depth(v) > 0; S.push(hollowS(V.P(v), 3.6, (f ? 0.9 : 0.5) * (0.4 + 0.6 * leave))); if (leave > 0) S.push(textS(k, labelAt(V, V.P(v), 17), { size: V.fs, alpha: (f ? 0.9 : 0.6) * leave })); }
       const q = R3(STATES['0']);
       if (tt > 0) {
         const trail = []; for (let j = 0; j <= 40; j++) trail.push(turn(STATES['0'], Math.max(0, tt - 2.5 + 2.5 * j / 40)));   // the turn is 8 s periodic, so the trail runs on across laps
@@ -269,7 +265,7 @@ const FIGURES = {
         const p = trail.map(V.P), k = p.length;
         if (tt > 0.1) S.push(...headS(p[k - 1], norm2([p[k - 1][0] - p[k - 3][0], p[k - 1][1] - p[k - 3][1]])));
       }
-      S.push(ringAt(V, q));
+      S.push(fullAt(V, q));
       return S;
     },
   },
@@ -317,23 +313,20 @@ function makeClock(L, tFallback) {
 const STAGE_KEYS = ['s2', 'p1', 'c1', 'su2'];
 const STAGE_TITLES = { s2: 'S₂ · state space', p1: 'P₁ · state space', c1: 'C₁ · state space', su2: 'SU(2) · state space' };
 const SPEED = 4;   // playing through to the next layer, or rewinding to the previous, runs this much faster
-const stageState = { host: null, cur: 0, t: 0, rows: [] };   // read by the link canvas
 function mountStage(fig, host) {
   const sections = [...document.querySelectorAll('[data-stage]')];
   const title = document.getElementById('stage-title');
   let cur = 0, target = 0, t = 0, last = performance.now(), redraw = null, lit = '';
   const story = (k) => FIGURES[STAGE_KEYS[k]];
-  stageState.host = host;
   // light the generator that is acting, in the panel of the layer being shown
   const light = () => {
     const act = story(cur).active?.(t) ?? [], key = cur + ':' + act.join(',');
     if (key === lit) return; lit = key;
-    stageState.cur = cur; stageState.t = t; stageState.rows = [];
     sections.forEach((sec, i) => {
       const panel = sec.querySelector('.gen'); if (!panel) return;
       const on = i === cur && act.length > 0;
       panel.classList.toggle('has-active', on);
-      panel.querySelectorAll('.gen__row').forEach((row) => { const isOn = on && act.includes(row.dataset.gen); row.classList.toggle('is-on', isOn); if (isOn) stageState.rows.push(row); });
+      panel.querySelectorAll('.gen__row').forEach((row) => row.classList.toggle('is-on', on && act.includes(row.dataset.gen)));
     });
   };
   const apply = () => { if (title) title.textContent = STAGE_TITLES[STAGE_KEYS[cur]]; light(); if (FIXED_T != null || reduceMotion) redraw?.(); };
@@ -373,32 +366,6 @@ function mountStage(fig, host) {
   choose(); apply();
 }
 
-// the connection: a pencil line from the acting generator, wherever it is on the page, to the sphere
-function mountLink(link) {
-  const bez = (a, c1, c2, b, k = 60) => { const pts = []; for (let i = 0; i <= k; i++) { const u = i / k, v = 1 - u; pts.push([v*v*v*a[0] + 3*v*v*u*c1[0] + 3*v*u*u*c2[0] + u*u*u*b[0], v*v*v*a[1] + 3*v*v*u*c1[1] + 3*v*u*u*c2[1] + u*u*u*b[1]]); } return pts; };
-  const frame = () => {
-    const host = stageState.host; if (!host || !stageState.rows.length) return [];
-    const hr = host.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
-    if (hr.bottom < 0 || hr.top > vh) return [];
-    const V = stageView(hr.width, hr.height), C = [hr.left + V.cx, hr.top + V.cy], S = [];
-    for (const row of stageState.rows) {
-      const el = row.querySelector('.katex') || row, r = el.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > vh || r.width === 0) continue;
-      const toRight = r.right + 40 < C[0], below = r.top > C[1];
-      const A = toRight ? [r.right + 10, r.top + r.height / 2] : [r.left + r.width / 2, below ? r.top - 8 : r.bottom + 8];
-      // aim at the sphere's near side; from below (the phone band) at its lower shoulder, clear of the caption
-      const d = toRight ? norm2([A[0] - C[0], A[1] - C[1]]) : [Math.sin(0.6), below ? Math.cos(0.6) : -Math.cos(0.6)];
-      const B = [C[0] + d[0] * (V.R + 8), C[1] + d[1] * (V.R + 8)];
-      const dx = B[0] - A[0], dy = B[1] - A[1];
-      const pts = toRight ? bez(A, [A[0] + 0.45 * dx, A[1]], [B[0] - 0.45 * dx, B[1]], B) : bez(A, [A[0], A[1] + 0.45 * dy], [B[0], B[1] - 0.45 * dy], B);
-      S.push({ pts, weight: 'graphite', scale: 1.2 });
-      const n = pts.length; S.push(...headS(pts[n - 1], norm2([pts[n - 1][0] - pts[n - 3][0], pts[n - 1][1] - pts[n - 3][1]])));
-    }
-    return S;
-  };
-  sketch(link, { ink: INK, fps: FPS, takes: 4, font: FONT, clock: () => performance.now() / 1000, frame });
-}
-
 export function mountAll() {
   // drawings move with the paper: each element turns about the viewport centre, in its own coordinates
   const bound = [...document.querySelectorAll('[data-sheet]')];
@@ -414,7 +381,7 @@ export function mountAll() {
     if (!host) continue;
     // only with the stylesheet that positions the mount; a stale or missing one leaves the still drawings in place
     if (getComputedStyle(host).position !== 'absolute') { if (fig.dataset.figure === 'stage') document.documentElement.classList.add('no-stage'); continue; }
-    if (fig.dataset.figure === 'stage') { mountStage(fig, host); const link = document.getElementById('link'); if (link && getComputedStyle(link).position === 'fixed') mountLink(link); continue; }
+    if (fig.dataset.figure === 'stage') { mountStage(fig, host); continue; }
     const def = FIGURES[fig.dataset.figure];
     if (!def) continue;
     fig.classList.add('is-live');
