@@ -186,9 +186,9 @@ p + p { margin-top: 16px; }
 .note-layout > .prose { grid-column: 1; grid-row: 1; }
 .stage { grid-column: 2; grid-row: 1; position: sticky; top: 40px; aspect-ratio: 5 / 6; margin: 0; align-self: start; }
 .stage .ink-figure__title { top: auto; bottom: 5%; left: 0; right: 0; text-align: center; }
-/* the generator acting on the state space lights up; the others step back */
-.gen__row { transition: opacity 240ms ease-out; }
-.gen.has-active .gen__row:not(.is-on) { opacity: 0.38; }
+/* generators rest light; the one firing on the state space goes dark, in step with the drawing */
+.gen__row { opacity: 0.5; transition: opacity 60ms linear; }
+.gen__row.is-on { opacity: 1; }
 
 .gen-panel { width: min(100%, 360px); margin: 12px 0 20px; }
 .gen-panel__title { font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); margin-bottom: 4px; }

@@ -179,7 +179,7 @@ const FIGURES = {
   // the classical bit: a boolean is two points; the sphere around them is only a ghost; X exchanges them
   s2: {
     B: 5, A: 4, get tFallback() { return this.B; },
-    active(t) { return t >= 5 && ((t - 5) % 2) < 0.8 ? ['X'] : []; },   // X acts at each hop
+    active(t) { return t >= 5 && ((t - 5) % 2) < 0.6 ? ['X'] : []; },   // X fires at each hop
     frame(t, w, h) {
       const V = stageView(w, h), S = [];
       S.push(...stagger(poleMarks(V), ramp(t, 0.3, 1.8)));
