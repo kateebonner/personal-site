@@ -390,10 +390,13 @@ function mountStage(fig, host) {
 export function mountAll() {
   // drawings move with the paper: each element turns about the viewport centre, in its own coordinates
   const bound = [...document.querySelectorAll('[data-sheet]')];
-  const origins = () => {
+  const origins = () => {   // read every box, then write: interleaving the two forces a layout per element
     const vw = window.innerWidth / 2, vh = window.innerHeight / 2;
-    for (const el of bound) { const r = el.getBoundingClientRect(); el.style.transformOrigin = `${(vw - r.left).toFixed(1)}px ${(vh - r.top).toFixed(1)}px`; }
+    const rects = bound.map((el) => el.getBoundingClientRect());
+    bound.forEach((el, i) => { el.style.transformOrigin = `${(vw - rects[i].left).toFixed(1)}px ${(vh - rects[i].top).toFixed(1)}px`; });
   };
+  let queued = false;
+  const originsSoon = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; origins(); }); };
   document.querySelectorAll('.trio').forEach((el) => el.classList.add('is-live'));
   const clocks = new Map();
   const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => { for (const e of entries) clocks.get(e.target)?.setVisible(e.isIntersecting); }, { rootMargin: '120px' }) : null;
@@ -413,8 +416,8 @@ export function mountAll() {
   }
   if (!reduceMotion) {
     origins();
-    window.addEventListener('scroll', origins, { passive: true });
-    window.addEventListener('resize', origins);
+    window.addEventListener('scroll', originsSoon, { passive: true });
+    window.addEventListener('resize', originsSoon);
     let last = -1;
     const tick = () => { const idx = Math.floor(performance.now() * FPS / 1000); if (idx !== last) { last = idx; origins(); } requestAnimationFrame(tick); };
     requestAnimationFrame(tick);

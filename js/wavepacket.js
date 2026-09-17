@@ -79,7 +79,7 @@ export function mount(figure, host, clock) {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     view.left = 0.06 * w; view.ex = (0.97 * w - 0.06 * w) / (PARAMS.xMax - PARAMS.xMin); view.cy = 0.5 * h;
-    const v = Math.min(0.36 * h, 0.2 * w);
+    const v = Math.min(0.36 * h, (h > w ? 0.34 : 0.2) * w)   /* a portrait screen has height to spare: a taller packet */;
     view.eRe = [0, -v]; view.eIm = [0.058 * w, 0.26 * v];
     view.shake = Math.max(1, 0.003 * w);          // hand shake, kept gentle
     drawFrame(true);
