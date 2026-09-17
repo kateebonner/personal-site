@@ -293,16 +293,21 @@ const FIGURES = {
       return [...sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 }), ...stateDots(V, { labels: false })];
     },
   },
+  // Clifford + T: the sphere and the six Clifford points never leave. The orbit fills in over the first nine
+  // seconds, holds, and then only the added points fade back to the six before it fills again.
   cliffordT: {
-    L: 12, tFallback: 9,
+    L: 12, tFallback: 9.5,
     frame(t, w, h) {
       const V = view(w, h, { R: 0.42 * Math.min(w, h), cy: h / 2 });
       const S = sphereWire(V, { lats: [0], mers: 1, merOffset: Math.PI / 2, front: 0.5, back: 0.3, outline: 1 });
-      const count = 6 + Math.floor((t / 12) * (CT_POINTS.length - 6));
-      const k = Math.min(1, V.R / 130);   // on a small sphere the points shrink with it
-      for (let i = 0; i < count; i++) { const v = CT_POINTS[i], f = depth(v) > 0; S.push(dotS(V.P(v), (i < 6 ? 2.1 : 1.5) * k, f ? 0.9 : 0.4, 3.6 * k)); }
-      const u = t / 12, edge = Math.min(u, 1 - u), f = Math.min(1, edge / 0.06);
-      return { strokes: S, ink: f * f * (3 - 2 * f) };
+      const count = 6 + Math.floor(Math.min(1, t / 9) * (CT_POINTS.length - 6));
+      const stay = 1 - ramp(t, 10.4, 11.8);   // the added points' ink; the six and the sphere stay at full
+      const k = Math.min(1, V.R / 130);       // on a small sphere the points shrink with it
+      for (let i = 0; i < count; i++) {
+        const v = CT_POINTS[i], f = depth(v) > 0, a = (f ? 0.9 : 0.4) * (i < 6 ? 1 : stay);
+        if (a > 0.01) S.push(dotS(V.P(v), (i < 6 ? 2.1 : 1.5) * k, a, 3.6 * k));
+      }
+      return S;
     },
   },
   su2small: {
