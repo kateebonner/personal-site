@@ -17,7 +17,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://katebonner.ai/assets/og.jpg">
   <link rel="stylesheet" href="/css/fonts.css">
-  <link rel="stylesheet" href="/css/site.css?v=3bd8c089">
+  <link rel="stylesheet" href="/css/site.css?v=2105fe9c">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="/assets/katex/katex.min.css">
 </head>
@@ -41,7 +41,8 @@
         </div>
       </figure>
       <article class="prose note">
-        <p>The prevailing explanation of a qubit is odd to me. It tries to build intuition by separating classical bits from qubits, but they are not separate. Their states inhabit the same space. Both can be described as vectors pointing to a location on a sphere.</p>
+        <p class="lede">The prevailing explanation of a qubit is odd to me.</p>
+        <p>It tries to build intuition by separating classical bits from qubits, but they are not separate. Their states inhabit the same space. Both can be described as vectors pointing to a location on a sphere.</p>
         <p>The difference is precisely which set of operations can be applied to the vector. A classical bit admits one reversible operation, the flip (the \(X\) gate). The classical vector flips between the two poles of the sphere, 0 and 1. A qubit admits every rotation of the sphere, including the flip. The quantum vector can point anywhere on the sphere, not just at the poles.</p>
         <p>Physically, the qubit can be any two-level quantum system that we can faithfully prepare, control, and read out. The spin of an electron, the polarization of a photon, and the two lowest levels of a superconducting circuit are a few systems in use today. The modality varies, but the state space does not.</p>
         <p>Let's build an intuition through the lens of group theory, one group at a time.</p>
@@ -74,13 +75,21 @@
         </section>
         <section data-stage="su2">
         <h3>U(2), a Lie group</h3>
-          <figure class="gen-panel"><figcaption class="gen-panel__title">U(2) · generators</figcaption><div class="gen gen--wide">
-              <div class="gen__row" data-gen="Rx">$$R_x(\theta) = \begin{bmatrix} \cos\tfrac{\theta}{2} & -i\sin\tfrac{\theta}{2} \\[4pt] -i\sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
-              <div class="gen__row" data-gen="Ry">$$R_y(\theta) = \begin{bmatrix} \cos\tfrac{\theta}{2} & -\sin\tfrac{\theta}{2} \\[4pt] \sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
-              <div class="gen__row" data-gen="Rz">$$R_z(\theta) = \begin{bmatrix} e^{-i\theta/2} & 0 \\[4pt] 0 & e^{i\theta/2} \end{bmatrix}$$</div>
-              <div class="gen__row" data-gen="Ph">$$\mathrm{Ph}(\varphi) = \begin{bmatrix} e^{i\varphi} & 0 \\[4pt] 0 & e^{i\varphi} \end{bmatrix}$$</div></div></figure>
+          <figure class="gen-panel gen-panel--wide"><figcaption class="gen-panel__title">U(2) · generators</figcaption><div class="gen gen--wide">
+              <div class="gen__grid">
+                <div class="gen__row" data-gen="I">$$I = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$$</div>
+                <div class="gen__row" data-gen="X">$$X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$$</div>
+                <div class="gen__row" data-gen="Y">$$Y = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}$$</div>
+                <div class="gen__row" data-gen="Z">$$Z = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$$</div>
+              </div>
+              <div class="gen-panel__title gen__sub">exponentiated</div>
+              <div class="gen__row" data-gen="Ph">$$\mathrm{Ph}(\varphi) = e^{i\varphi I} = \begin{bmatrix} e^{i\varphi} & 0 \\[4pt] 0 & e^{i\varphi} \end{bmatrix}$$</div>
+              <div class="gen__row" data-gen="Rx">$$R_x(\theta) = e^{-i\theta X/2} = \begin{bmatrix} \cos\tfrac{\theta}{2} & -i\sin\tfrac{\theta}{2} \\[4pt] -i\sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
+              <div class="gen__row" data-gen="Ry">$$R_y(\theta) = e^{-i\theta Y/2} = \begin{bmatrix} \cos\tfrac{\theta}{2} & -\sin\tfrac{\theta}{2} \\[4pt] \sin\tfrac{\theta}{2} & \cos\tfrac{\theta}{2} \end{bmatrix}$$</div>
+              <div class="gen__row" data-gen="Rz">$$R_z(\theta) = e^{-i\theta Z/2} = \begin{bmatrix} e^{-i\theta/2} & 0 \\[4pt] 0 & e^{i\theta/2} \end{bmatrix}$$</div>
+            </div></figure>
           <figure class="ink-figure still"><img src="/assets/notes/su2-state-space.png" width="900" height="1484" alt="Hand-drawn panel, SU(2) state space: a fully shaded sphere with a short arc of rotation drawn on its surface." loading="lazy"></figure>
-        <p>\(U(2)\) is a Lie group: a group that is also a smooth manifold. It contains every group above exactly as written. Its rotations \(R_x(\theta)\), \(R_y(\theta)\), \(R_z(\theta)\) reach every point of the sphere. Its fourth generator, the global phase \(\mathrm{Ph}(\varphi)\), moves no point of it. Here the group has dimension 4: three directions that turn the sphere, and one the state never sees. Every group before it had dimension 0.</p>
+        <p>\(U(2)\) is a Lie group: a group that is also a smooth manifold. It contains every group above exactly as written. Its generators are the identity and the Pauli matrices themselves. Exponentiating \(X\), \(Y\), and \(Z\) gives the rotations \(R_x(\theta)\), \(R_y(\theta)\), \(R_z(\theta)\), which reach every point of the sphere.</p>
         </section>
         <div class="panels panels--wide">
           <div class="trio"><img class="ink-figure__fallback" src="/assets/notes/three-spheres.png" width="1400" height="644" alt="Hand-drawn row of three spheres. Clifford: six points. Clifford plus T: a dense scatter of points. SU(2): a continuous, fully shaded sphere." loading="lazy" data-sheet><div class="trio__live"><figure class="ink-figure ink-figure--live" data-figure="clifford"><div class="ink-figure__sheet" data-sheet><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a sphere with six points."></div></div><figcaption>Clifford</figcaption></figure><figure class="ink-figure ink-figure--live" data-figure="cliffordT"><div class="ink-figure__sheet" data-sheet><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a sphere on which points keep appearing until the surface is a scatter."></div></div><figcaption>Clifford + T</figcaption></figure><figure class="ink-figure ink-figure--live" data-figure="su2small"><div class="ink-figure__sheet" data-sheet><div class="ink-figure__mount" role="img" aria-label="Animated pencil drawing: a densely lined sphere turning continuously."></div></div><figcaption>U(2)</figcaption></figure></div></div>

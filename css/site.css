@@ -158,6 +158,7 @@ p + p { margin-top: 16px; }
 .note .meta { display: block; margin-bottom: 28px; }
 .note .meta a { color: inherit; text-decoration: none; }
 .note .meta a:hover { text-decoration: underline; }
+.lede { font-family: var(--font-letter); font-size: 1.3125rem; font-weight: 500; line-height: 1.35; letter-spacing: -0.005em; margin: 0 0 14px; }
 .epigraph { font-family: var(--font-letter); font-size: var(--fs-3); font-weight: 500; line-height: 1.3; letter-spacing: -0.005em; margin: 0 0 24px; max-width: 34ch; }
 .panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin: 24px 0 24px; }
 .panels--wide { grid-template-columns: 1fr; }
@@ -191,6 +192,9 @@ p + p { margin-top: 16px; }
 .gen__row.is-on { opacity: 1; }
 
 .gen-panel { width: min(100%, 360px); margin: 12px 0 20px; }
+.gen-panel--wide { width: 100%; }
+.gen__grid { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; gap: 14px 40px; }
+.gen__sub { align-self: flex-start; margin: 10px 0 0; }
 .gen-panel__title { font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); margin-bottom: 4px; }
 .prose .still { margin: 16px 0 20px; max-width: 360px; }
 .js .still { display: none; }
@@ -259,7 +263,9 @@ p + p { margin-top: 16px; }
   .ink-figure__title { top: 8px; left: 10px; font-size: 0.5625rem; letter-spacing: 0.1em; }
   .gen { gap: 12px; padding: 6px 0 0; font-size: 0.9rem; }
   .gen .katex { font-size: 1.4em; }
-  .gen--wide .katex { font-size: 1.15em; }
+  .gen--wide .katex { font-size: 1.02em; }
+  .gen__grid { gap: 10px 24px; }
+  .gen__grid .katex { font-size: 1.25em; }
   .note-layout { display: block; }
   .stage { position: sticky; top: 0; z-index: 2; aspect-ratio: auto; height: 42vh; min-height: 300px; margin: 0 -16px 20px; background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat; border-bottom: var(--lw-thin) solid var(--line); }
   .stage .ink-figure__sheet { inset: 10px 16px; }
