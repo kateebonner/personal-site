@@ -4,8 +4,8 @@
 //   s2   the classical bit: two poles; the X action hops the state between them
 //   p1   the Pauli group: the octahedron turned by pi about x, then y, then z; two pairs swap, one stays
 //   c1   the Clifford group: a walk 0 -> + -> +i -> - -> 1 -> - -> -i -> + -> 0 by H and S, one orbit of six
-//   su2  a Lie group: the whole sphere turning, a state carried along a smooth path
-//   row  Clifford (six points), Clifford + T (the orbit filling in), SU(2) (continuous)
+//   su2  U(2), a Lie group: the whole sphere turning, a state carried along a smooth path; the global phase moves nothing
+//   row  Clifford (six points), Clifford + T (the orbit filling in), U(2) (continuous)
 // No third-party code. With reduced motion each figure holds one representative frame.
 import { sketch } from './brush.js';
 
@@ -253,13 +253,20 @@ const FIGURES = {
     },
   },
 
-  // a Lie group: from the walked sphere, the whole surface fills in, then it turns and carries the state anywhere
+  // U(2), a Lie group: from the walked sphere, the whole surface fills in, then it turns and carries the state anywhere;
+  // twice a lap the turn rests and only the global phase acts, and nothing on the sphere moves
   su2: {
-    B: 4, A: 8, get tFallback() { return this.B + 3; },
-    active(t) { return t >= 4 ? ['Rx', 'Rz'] : []; },   // the turn is R_z composed with R_x, continuously
+    B: 4, A: 10.4, get tFallback() { return this.B + 3; },
+    // turn time: each lap is two eased half-journeys of 4.4 s (4 units of the 8-unit closed turn), each followed by a 0.8 s rest
+    turnTime(t) {
+      if (t < 4) return 0;
+      const x = t - 4, lap = Math.floor(x / 10.4), tau = x - lap * 10.4, seg = (a) => 4 * ease(a / 4.4);
+      return 8 * lap + (tau < 4.4 ? seg(tau) : tau < 5.2 ? 4 : tau < 9.6 ? 4 + seg(tau - 5.2) : 8);
+    },
+    active(t) { if (t < 4) return []; const tau = (t - 4) % 10.4; return tau < 4.4 || (tau >= 5.2 && tau < 9.6) ? ['Rx', 'Rz'] : ['Ph']; },
     frame(t, w, h) {
       const V = stageView(w, h), S = [];
-      const fill = ramp(t, 1.5, 4), leave = 1 - ramp(t, 2, 3.5), tt = Math.max(0, t - 4);
+      const fill = ramp(t, 1.5, 4), leave = 1 - ramp(t, 2, 3.5), tt = this.turnTime(t);
       const R3 = (v) => turn(v, tt);
       S.push(...sphereWire(V, { ...SOLID, outline: 1 }, R3));
       if (fill > 0) S.push(...stagger(sphereWire(V, DENSE, R3), fill));
@@ -267,7 +274,7 @@ const FIGURES = {
       for (const k in STATES) { const v = R3(STATES[k]), f = depth(v) > 0; S.push(hollowS(V.P(v), 3.6, (f ? 0.9 : 0.5) * (0.4 + 0.6 * leave))); if (leave > 0) S.push(textS(k, labelAt(V, V.P(v), 17), { size: V.fs, alpha: (f ? 0.9 : 0.6) * leave })); }
       const q = R3(STATES['0']);
       if (tt > 0) {
-        const trail = []; for (let j = 0; j <= 40; j++) trail.push(turn(STATES['0'], Math.max(0, tt - 2.5 + 2.5 * j / 40)));   // the turn is 8 s periodic, so the trail runs on across laps
+        const trail = []; for (let j = 0; j <= 40; j++) trail.push(turn(STATES['0'], Math.max(0, tt - 2.5 + 2.5 * j / 40)));   // the turn closes every 8 units, so the trail runs on across laps
         S.push(...pathStrokes(V, trail));
         const p = trail.map(V.P), k = p.length;
         if (tt > 0.1) S.push(...headS(p[k - 1], norm2([p[k - 1][0] - p[k - 3][0], p[k - 1][1] - p[k - 3][1]])));
@@ -319,7 +326,7 @@ function makeClock(L, tFallback) {
 
 // ---------- the stage: one figure that follows the layer being read ----------
 const STAGE_KEYS = ['s2', 'p1', 'c1', 'su2'];
-const STAGE_TITLES = { s2: 'S₂ · state space', p1: 'P₁ · state space', c1: 'C₁ · state space', su2: 'SU(2) · state space' };
+const STAGE_TITLES = { s2: 'S₂ · state space', p1: 'P₁ · state space', c1: 'C₁ · state space', su2: 'U(2) · state space' };
 const SPEED = 4;   // playing through to the next layer, or rewinding to the previous, runs this much faster
 function mountStage(fig, host) {
   const sections = [...document.querySelectorAll('[data-stage]')];
