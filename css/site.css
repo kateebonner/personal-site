@@ -38,15 +38,14 @@ body {
   font-size: var(--fs-2);
   line-height: 1.55;
   min-height: 100vh;
+  min-height: 100svh;   /* phones: the visible height, not the height behind the browser's bars */
   display: flex;
   flex-direction: column;
 }
 /* the sheet: paper and drawing move together frame to frame, about the viewport centre */
-:root { --sheet-rot: 0deg; --sheet-dx: 0px; --sheet-dy: 0px; --sheet-ox: 50%; --sheet-oy: 50%; }
 .paper {
   position: fixed; inset: -6%; z-index: -1;
   background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat;
-  transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot));
   will-change: transform;
   pointer-events: none;
 }
@@ -120,8 +119,6 @@ p + p { margin-top: 16px; }
 .state .wp-frame { width: 100%; height: 100%; display: block; padding: 16px 24px; }
 .state .wp-mount {
   width: 100%; height: 100%; position: relative; overflow: hidden;
-  transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot));
-  transform-origin: var(--sheet-ox) var(--sheet-oy);
   will-change: transform;
 }
 .state .wp-mount canvas { display: block; width: 100%; height: 100%; }
@@ -174,7 +171,7 @@ p + p { margin-top: 16px; }
 .ink-figure--live.is-live .ink-figure__fallback { display: none; }
 .ink-figure--live:not(.is-live) .ink-figure__fallback ~ .ink-figure__sheet { display: none; }
 .ink-figure__title { position: absolute; top: 12px; left: 14px; z-index: 1; font-family: var(--font-letter); font-size: var(--fs-0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; pointer-events: none; }
-[data-sheet] { transform: translate(var(--sheet-dx), var(--sheet-dy)) rotate(var(--sheet-rot)); will-change: transform; }
+[data-sheet] { will-change: transform; }   /* paper.js writes the sheet's transform on these directly */
 /* the stage: one state-space figure that sides with the text and follows the layer being read */
 @media (max-width: 1320px) {
   /* with the stage beside the text there is no room for the title column: it folds above the text */
@@ -251,7 +248,7 @@ p + p { margin-top: 16px; }
   .topbar, .band--story, .state .wp-frame, .page__label, .page__body { padding-left: 20px; padding-right: 20px; }
 }
 @media (max-width: 860px) {
-  .band--figure { flex: 0 0 auto; aspect-ratio: 16 / 10; }
+  .band--figure { flex: 1 1 auto; min-height: 320px; }   /* the drawing takes the screen, as on desktop */
   .band--story { grid-template-columns: 1fr; gap: 20px; padding: 20px 16px 8px; }
   .story h1 { max-width: none; }
   .tiles { grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -260,22 +257,34 @@ p + p { margin-top: 16px; }
   .page { grid-template-columns: 1fr; }
   .page__label { border-right: 0; }
   .panels { gap: 12px; }
-  .ink-figure__title { top: 8px; left: 10px; font-size: 0.5625rem; letter-spacing: 0.1em; }
+  .ink-figure__title { top: 8px; left: 10px; font-size: 0.6875rem; letter-spacing: 0.1em; }
   .gen { gap: 12px; padding: 6px 0 0; font-size: 0.9rem; }
   .gen .katex { font-size: 1.4em; }
   .gen--wide .katex { font-size: 1.02em; }
   .gen__grid { gap: 10px 24px; }
   .gen__grid .katex { font-size: 1.25em; }
   .note-layout { display: block; }
-  .stage { position: sticky; top: 0; z-index: 2; aspect-ratio: auto; height: 42vh; min-height: 300px; margin: 0 -16px 20px; background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat; border-bottom: var(--lw-thin) solid var(--line); }
+  .stage { position: sticky; top: 0; z-index: 2; aspect-ratio: auto; height: 40vh; height: 40svh; min-height: 240px; margin: 0 -16px 20px; background: var(--paper) url('/assets/paper.jpg') center center / 880px auto repeat; border-bottom: var(--lw-thin) solid var(--line); }
   .stage .ink-figure__sheet { inset: 10px 16px; }
   .gen-panel { width: 100%; }
-  .gen__note { font-size: 0.625rem; }
+  .gen__note { font-size: 0.75rem; }
   .trio__live { gap: 8px; }
-  .trio figcaption { font-size: 0.5rem; letter-spacing: 0.08em; }
+  .trio figcaption { font-size: 0.6875rem; letter-spacing: 0.08em; }
   .page__label, .page__body, .state .wp-frame { padding-left: 16px; padding-right: 16px; }
   .topbar { grid-template-columns: 1fr auto; gap: 12px; padding-left: 16px; padding-right: 16px; }
   .topbar__nav { justify-self: end; gap: 14px; }
   .page__label { padding-bottom: 0; }
   .page__label h1 { position: static; }
+}
+
+/* ---------- touch: every link is at least 44px tall ---------- */
+@media (pointer: coarse) {
+  .topbar__mark, .topbar__nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  .page__body .prose > p > a:only-child { display: inline-block; padding-block: 11px; }   /* a link standing alone on its line, as on Contact */
+}
+/* ---------- a phone on its side: the drawing sits beside the text instead of over it ---------- */
+@media (max-width: 860px) and (orientation: landscape) and (max-height: 520px) {
+  .note-layout { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 20px; align-items: start; }
+  .stage { position: sticky; top: 8px; height: calc(100vh - 16px); height: calc(100svh - 16px); min-height: 0; margin: 0; background: none; border-bottom: 0; }
+  .stage .ink-figure__sheet { inset: 0; }
 }
